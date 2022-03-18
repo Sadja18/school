@@ -26,8 +26,6 @@ class _ClassDropDownState extends State<ClassDropDown> {
 
   @override
   void initState() {
-
-    
     super.initState();
   }
 
@@ -59,7 +57,16 @@ class _ClassDropDownState extends State<ClassDropDown> {
               items: classNames.map<DropdownMenuItem<String>>(
                 (String element) {
                   return DropdownMenuItem<String>(
-                    child: Text(element),
+                    child: Container(
+                      decoration: const BoxDecoration(color: Colors.white),
+                      child: Text(
+                        element,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                        ),
+                      ),
+                    ),
                     value: element,
                   );
                 },
@@ -72,7 +79,6 @@ class _ClassDropDownState extends State<ClassDropDown> {
                 widget.selectClass(value.toString());
                 var list = [];
 
-                
                 DBProvider.db.getStudents(_selectedClass).then((value) {
                   if (value.length > 0) {
                     for (var index = 0; index < value.length; index++) {

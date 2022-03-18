@@ -254,9 +254,9 @@ class _StickyBasicReadingState extends State<StickyBasicReading> {
             border: Border.all(
               color: Colors.black,
             ),
-             color: isEven
-              ? const Color.fromARGB(127, 120, 165, 255)
-              : const Color.fromARGB(255, 120, 165, 255),
+            color: isEven
+                ? const Color.fromARGB(127, 120, 165, 255)
+                : const Color.fromARGB(255, 120, 165, 255),
           ),
           width: MediaQuery.of(context).size.width,
           child: SingleChildScrollView(
@@ -271,11 +271,10 @@ class _StickyBasicReadingState extends State<StickyBasicReading> {
             border: Border.all(
               color: Colors.black,
             ),
-             color: isEven
-              ? const Color.fromARGB(127, 120, 165, 255)
-              : const Color.fromARGB(255, 120, 165, 255),
+            color: isEven
+                ? const Color.fromARGB(127, 120, 165, 255)
+                : const Color.fromARGB(255, 120, 165, 255),
           ),
-         
           width: MediaQuery.of(context).size.width,
           child: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
@@ -427,110 +426,111 @@ class _StickyBasicReadingState extends State<StickyBasicReading> {
           ),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
-        child: Center(
-          child: SizedBox(
-            height: MediaQuery.of(context).size.height,
-            child: SingleChildScrollView(
-              child: SizedBox(
-                width: MediaQuery.of(context).size.width,
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      ClassDropDown(
-                          selectClass: selectClass,
-                          getAllStudents: getAllStudents),
-                      DateShow(selectedDate: selectedDate),
-                      (studentList.isEmpty)
-                          ? const Text('')
-                          : LanguageDropDown(
-                              className: _selectedClass!,
-                              selectLanguage: selectLanguage),
-                      (studentList.isNotEmpty &&
-                              (_selectedLanguage != null &&
-                                  _selectedLanguage != ''))
-                          ? Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 12.0),
-                              child: SizedBox(
-                                height:
-                                    MediaQuery.of(context).size.height * 0.60,
-                                child: SingleChildScrollView(
-                                  scrollDirection: Axis.vertical,
-                                  child: SizedBox(
-                                    width: MediaQuery.of(context).size.width *
-                                        0.80,
-                                    child: SingleChildScrollView(
-                                      scrollDirection: Axis.horizontal,
-                                      child: SizedBox(
-                                        height:
-                                            MediaQuery.of(context).size.height *
-                                                0.60,
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                0.80,
-                                        child: assessmentTable(),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            )
-                          : const Text(''),
-                      (studentList.isNotEmpty &&
-                              (_selectedLanguage != null &&
-                                  _selectedLanguage != ''))
-                          ? Container(
-                              margin:
-                                  const EdgeInsets.symmetric(vertical: 12.0),
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  if (studentList.isEmpty ||
-                                      levelSheet.isEmpty ||
-                                      resultSheet.isEmpty) {
-                                    var title = "No Records";
-                                    var message =
-                                        "There is no valid assessment done.\nSubmitting will ignore it.";
-                                    showAlert(title, message);
-                                  } else {
-                                    var title = "Confirm Submit";
-                                    var message =
-                                        "Pressing Confirm will save the record.\n"
-                                        "After confirm, please sync to server";
-                                    var submissionDateUnformatted =
-                                        DateTime.now();
-                                    DateFormat submissionFormat =
-                                        DateFormat('yyyy-MM-dd HH:mm:ss');
-
-                                    var submissionDate = submissionFormat
-                                        .format(submissionDateUnformatted);
-
-                                    if (kDebugMode) {
-                                      print('Submitting to local');
-
-                                      print(submissionDate);
-                                      print(studentList);
-                                      print(_selectedDate);
-                                      print(_selectedLanguage);
-                                    }
-                                    showAlertFinal(
-                                        title, message, submissionDate);
-                                  }
-                                },
-                                child: const Text('Submit'),
-                              ),
-                            )
-                          : const Text(''),
-                    ],
-                  ),
+      body: Container(
+        alignment: Alignment.center,
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  border: Border.all(),
                 ),
+                margin: const EdgeInsets.symmetric(
+                  vertical: 8.0,
+                  horizontal: 8.0,
+                ),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 4.0,
+                  horizontal: 10.0,
+                ),
+                child: ClassDropDown(
+                    selectClass: selectClass, getAllStudents: getAllStudents),
               ),
-            ),
+              Container(
+                margin: const EdgeInsets.symmetric(
+                  vertical: 8.0,
+                  horizontal: 8.0,
+                ),
+                child: DateShow(selectedDate: selectedDate),
+              ),
+              (studentList.isEmpty)
+                  ? const Text('')
+                  : Container(
+                      margin: const EdgeInsets.symmetric(
+                        vertical: 8.0,
+                        horizontal: 8.0,
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 4.0,
+                        horizontal: 10.0,
+                      ),
+                      decoration: BoxDecoration(
+                        border: Border.all(),
+                      ),
+                      child: LanguageDropDown(
+                          className: _selectedClass!,
+                          selectLanguage: selectLanguage),
+                    ),
+              (studentList.isNotEmpty &&
+                      (_selectedLanguage != null && _selectedLanguage != ''))
+                  ? Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(),
+                        ),
+                        height: MediaQuery.of(context).size.height * 0.50,
+                        width: MediaQuery.of(context).size.width,
+                        child: assessmentTable(),
+                      ),
+                    )
+                  : const Text(''),
+              (studentList.isNotEmpty &&
+                      (_selectedLanguage != null && _selectedLanguage != ''))
+                  ? Container(
+                      margin: const EdgeInsets.symmetric(vertical: 12.0),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          if (studentList.isEmpty ||
+                              levelSheet.isEmpty ||
+                              resultSheet.isEmpty) {
+                            var title = "No Records";
+                            var message =
+                                "There is no valid assessment done.\nSubmitting will ignore it.";
+                            showAlert(title, message);
+                          } else {
+                            var title = "Confirm Submit";
+                            var message =
+                                "Pressing Confirm will save the record.\n"
+                                "After confirm, please sync to server";
+                            var submissionDateUnformatted = DateTime.now();
+                            DateFormat submissionFormat =
+                                DateFormat('yyyy-MM-dd HH:mm:ss');
+
+                            var submissionDate = submissionFormat
+                                .format(submissionDateUnformatted);
+
+                            if (kDebugMode) {
+                              print('Submitting to local');
+
+                              print(submissionDate);
+                              print(studentList);
+                              print(_selectedDate);
+                              print(_selectedLanguage);
+                            }
+                            showAlertFinal(title, message, submissionDate);
+                          }
+                        },
+                        child: const Text('Submit'),
+                      ),
+                    )
+                  : const Text(''),
+            ],
           ),
         ),
       ),

@@ -43,7 +43,10 @@ class _LanguageDropDownState extends State<LanguageDropDown> {
                 items: mediumNames.map<DropdownMenuItem<String>>(
                   (String element) {
                     return DropdownMenuItem<String>(
-                      child: Text(element),
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: Text(element),
+                      ),
                       value: element,
                     );
                   },

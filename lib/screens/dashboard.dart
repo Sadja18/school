@@ -128,45 +128,50 @@ class _DashboardState extends State<Dashboard> {
           ),
         ),
       ),
-      body: Center(
-        child: SizedBox(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              TextButton(
-                onPressed: () {
-                  // ignore: avoid_print
-                  // print('Attendance');
-                  // Navigator.of(context).pushNamed(Dummy.routeName);
-                  Navigator.of(context).pushNamed(StickyAttendance.routeName);
-//
-                },
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Image.asset('assets/dashboardIcons/leave.png'),
-                    const Text('Attendance'),
-                  ],
-                ),
-              ),
-              TextButton(
-                onPressed: () {
-                  // ignore: avoid_print
-                  // print("assesment");
-                  Navigator.of(context).pushNamed(AssessmentScreen.routeName);
-                },
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Image.asset('assets/dashboardIcons/assessment.png'),
-                    const Text('Assessment'),
-                  ],
-                ),
-              ),
-            ],
+      body: Container(
+        alignment: Alignment.center,
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/background/img1.jpg'),
+            fit: BoxFit.fill,
           ),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            TextButton(
+              onPressed: () {
+                // ignore: avoid_print
+                // print('Attendance');
+                // Navigator.of(context).pushNamed(Dummy.routeName);
+                Navigator.of(context).pushNamed(StickyAttendance.routeName);
+//
+              },
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Image.asset('assets/dashboardIcons/leave.png'),
+                  const Text('Attendance'),
+                ],
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                // ignore: avoid_print
+                // print("assesment");
+                Navigator.of(context).pushNamed(AssessmentScreen.routeName);
+              },
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Image.asset('assets/dashboardIcons/assessment.png'),
+                  const Text('Assessment'),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );

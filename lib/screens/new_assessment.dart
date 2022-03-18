@@ -60,6 +60,13 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
         ),
       ),
       body: Container(
+        alignment: Alignment.center,
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/background/img1.jpg'),
+            fit: BoxFit.fill,
+          ),
+        ),
         margin: const EdgeInsets.all(10),
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
@@ -74,79 +81,91 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      OutlinedButton(
-                        style: OutlinedButton.styleFrom(
-                          side:
-                              const BorderSide(width: 2.0, color: Colors.blue),
-                        ),
-                        onPressed: () {
-                          print("khgasdh");
-                          // Navigator.of(context).pushNamed(PaceScreen.routeName);
-                          Navigator.of(context)
-                              .pushNamed(StickyPaceWidget.routeName);
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Image.asset(
-                                  'assets/dashboardIcons/assessment.png'),
-                              const Text('PACE'),
-                            ],
+                      Container(
+                        decoration: const BoxDecoration(color: Colors.white),
+                        width: MediaQuery.of(context).size.width * 0.50,
+                        child: OutlinedButton(
+                          style: OutlinedButton.styleFrom(
+                            side: const BorderSide(
+                                width: 2.0, color: Colors.blue),
+                          ),
+                          onPressed: () {
+                            print("khgasdh");
+                            // Navigator.of(context).pushNamed(PaceScreen.routeName);
+                            Navigator.of(context)
+                                .pushNamed(StickyPaceWidget.routeName);
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Image.asset(
+                                    'assets/dashboardIcons/assessment.png'),
+                                const Text('PACE'),
+                              ],
+                            ),
                           ),
                         ),
                       ), // end of pace selection
                       SizedBox(
                         height: MediaQuery.of(context).size.width * 0.1,
                       ),
-                      OutlinedButton(
-                        style: OutlinedButton.styleFrom(
-                          side:
-                              const BorderSide(width: 2.0, color: Colors.blue),
-                        ),
-                        onPressed: () {
-                          print("khgasdh 1");
-                          Navigator.of(context)
-                              .pushNamed(StickyBasicReading.routeName);
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Image.asset(
-                                  'assets/dashboardIcons/assessment.png'),
-                              const Text('Basic Reading'),
-                            ],
+                      Container(
+                        decoration: const BoxDecoration(color: Colors.white),
+                        width: MediaQuery.of(context).size.width * 0.50,
+                        child: OutlinedButton(
+                          style: OutlinedButton.styleFrom(
+                            side: const BorderSide(
+                                width: 2.0, color: Colors.blue),
+                          ),
+                          onPressed: () {
+                            print("khgasdh 1");
+                            Navigator.of(context)
+                                .pushNamed(StickyBasicReading.routeName);
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Image.asset(
+                                    'assets/dashboardIcons/assessment.png'),
+                                const Text('Basic Reading'),
+                              ],
+                            ),
                           ),
                         ),
                       ), // end of basic selection
                       SizedBox(
                         height: MediaQuery.of(context).size.width * 0.1,
                       ),
-                      OutlinedButton(
-                        style: OutlinedButton.styleFrom(
-                          side:
-                              const BorderSide(width: 2.0, color: Colors.blue),
-                        ),
-                        onPressed: () {
-                          print("khgasdh 2");
-                          Navigator.of(context)
-                              .pushNamed(StickyNumericAbility.routeName);
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Image.asset(
-                                  'assets/dashboardIcons/assessment.png'),
-                              const Text('Numerical Ability'),
-                            ],
+                      Container(
+                        decoration: const BoxDecoration(color: Colors.white),
+                        width: MediaQuery.of(context).size.width * 0.50,
+                        child: OutlinedButton(
+                          style: OutlinedButton.styleFrom(
+                            side: const BorderSide(
+                                width: 2.0, color: Colors.blue),
+                          ),
+                          onPressed: () {
+                            print("khgasdh 2");
+                            Navigator.of(context)
+                                .pushNamed(StickyNumericAbility.routeName);
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Image.asset(
+                                    'assets/dashboardIcons/assessment.png'),
+                                const Text('Numerical Ability'),
+                              ],
+                            ),
                           ),
                         ),
                       ), // end of numerical selection

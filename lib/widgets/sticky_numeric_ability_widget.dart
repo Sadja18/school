@@ -55,7 +55,7 @@ class _StickyNumericAbilityState extends State<StickyNumericAbility> {
           levelList.add(level['name']);
         }
         setState(() {
-          levelList.insert(0, 'Not Evaluated');
+          // levelList.insert(0, 'Not Evaluated');
           levelList.insert(0, '0');
           _levelNames = levelList;
         });
@@ -420,85 +420,89 @@ class _StickyNumericAbilityState extends State<StickyNumericAbility> {
           ),
         ),
       ),
-      body: Center(
-        child: Container(
-          margin: const EdgeInsets.symmetric(
-            horizontal: 8.0,
-          ),
-          height: MediaQuery.of(context).size.height,
-          child: SingleChildScrollView(
-            child: SizedBox(
-              width: MediaQuery.of(context).size.width,
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    ClassDropDown(
-                        selectClass: selectClass,
-                        getAllStudents: getAllStudents),
-                    DateShow(selectedDate: selectedDate),
-                    (studentList.isNotEmpty)
-                        ? Container(
-                            height: MediaQuery.of(context).size.height * 0.60,
-                            width: MediaQuery.of(context).size.width,
-                            margin: const EdgeInsets.symmetric(
-                              vertical: 8.0,
-                            ),
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                  // color: Colors.blue,
-                                  ),
-                            ),
-                            child: assessmentTable(),
-                          )
-                        : const Text(''),
-                    (studentList.isNotEmpty)
-                        ? Container(
-                            margin: const EdgeInsets.symmetric(vertical: 12.0),
-                            child: ElevatedButton(
-                              onPressed: () {
-                                if (studentList.isEmpty ||
-                                    levelSheet.isEmpty ||
-                                    resultSheet.isEmpty) {
-                                  var title = "No Records";
-                                  var message =
-                                      "There is no valid assessment done.\nSubmitting will ignore it.";
-                                  showAlert(title, message);
-                                } else {
-                                  var title = "Confirm Submit";
-                                  var message =
-                                      "Pressing Confirm will save the record.\n"
-                                      "After confirm please sync to server";
-                                  var submissionDateUnformatted =
-                                      DateTime.now();
-                                  DateFormat submissionFormat =
-                                      DateFormat('yyyy-MM-dd HH:mm:ss');
-
-                                  var submissionDate = submissionFormat
-                                      .format(submissionDateUnformatted);
-
-                                  if (kDebugMode) {
-                                    print('Submitting to local');
-
-                                    print(submissionDate);
-                                    print(studentList);
-                                    print(_selectedDate);
-                                  }
-                                  showAlertFinal(
-                                      title, message, submissionDate);
-                                }
-                              },
-                              child: const Text('Submit'),
-                            ),
-                          )
-                        : const Text(''),
-                  ],
+      body: Container(
+        alignment: Alignment.center,
+        margin: const EdgeInsets.symmetric(
+          horizontal: 8.0,
+        ),
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  border: Border.all(),
                 ),
+                margin: const EdgeInsets.symmetric(
+                  vertical: 8.0,
+                  horizontal: 8.0,
+                ),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 4.0,
+                  horizontal: 10.0,
+                ),
+                child: ClassDropDown(
+                    selectClass: selectClass, getAllStudents: getAllStudents),
               ),
-            ),
+              DateShow(selectedDate: selectedDate),
+              (studentList.isNotEmpty)
+                  ? Container(
+                      height: MediaQuery.of(context).size.height * 0.50,
+                      width: MediaQuery.of(context).size.width,
+                      margin: const EdgeInsets.symmetric(
+                        vertical: 8.0,
+                      ),
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                            // color: Colors.blue,
+                            ),
+                      ),
+                      child: assessmentTable(),
+                    )
+                  : const Text(''),
+              (studentList.isNotEmpty)
+                  ? Container(
+                      margin: const EdgeInsets.symmetric(vertical: 12.0),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          if (studentList.isEmpty ||
+                              levelSheet.isEmpty ||
+                              resultSheet.isEmpty) {
+                            var title = "No Records";
+                            var message =
+                                "There is no valid assessment done.\nSubmitting will ignore it.";
+                            showAlert(title, message);
+                          } else {
+                            var title = "Confirm Submit";
+                            var message =
+                                "Pressing Confirm will save the record.\n"
+                                "After confirm please sync to server";
+                            var submissionDateUnformatted = DateTime.now();
+                            DateFormat submissionFormat =
+                                DateFormat('yyyy-MM-dd HH:mm:ss');
+
+                            var submissionDate = submissionFormat
+                                .format(submissionDateUnformatted);
+
+                            if (kDebugMode) {
+                              print('Submitting to local');
+
+                              print(submissionDate);
+                              print(studentList);
+                              print(_selectedDate);
+                            }
+                            showAlertFinal(title, message, submissionDate);
+                          }
+                        },
+                        child: const Text('Submit'),
+                      ),
+                    )
+                  : const Text(''),
+            ],
           ),
         ),
       ),

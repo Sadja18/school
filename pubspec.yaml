@@ -48,6 +48,9 @@ flutter:
     - assets/dashboardIcons/leave.png
     - assets/dashboardIcons/assessment.png
     - assets/icons/image_back_1.jpeg
+    - assets/background/img1.jpg
+    - assets/background/img2.jpg
+
 
 
   fonts:
