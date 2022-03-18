@@ -1,0 +1,548 @@
+// ignore_for_file: avoid_print, unused_local_variable, empty_catches
+
+import 'dart:convert';
+import 'dart:developer';
+
+import 'package:flutter/foundation.dart';
+import 'package:http/http.dart' as http;
+import '../services/database_handler.dart';
+import '../models/urlPaths.dart' as uri_paths;
+
+const resultMap = {
+  'noacc': 'Not Achieved',
+  'noeval': 'Not Evaluated',
+  'acc': 'Achieved'
+};
+
+Future<dynamic> sendTestRequest() async {
+  try {
+    var response = await http
+        .get(Uri.parse(uri_paths.baseURL + uri_paths.checkIfOnline + '?get=1'));
+
+    return response;
+  } on Exception catch (e) {
+    return e;
+  }
+}
+
+Future<dynamic> tryLogin(String username, String userpassword) async {
+  try {
+    var response = await http.post(
+      Uri.parse('${uri_paths.baseURL}${uri_paths.onlineLogin}'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'user': username,
+        'password': userpassword,
+      }),
+    );
+    return response;
+  } catch (e) {
+    return e;
+  }
+}
+
+void fetchPersistent() async {
+  try {
+    DBProvider.db.getCredentials().then((value) async {
+      // print(value.toString());
+
+      final userName = value[0]['userName'];
+      final userPassword = value[0]['userPassword'];
+      final dbname = value[0]['dbname'];
+
+      Map<String, String> queryParams = {
+        'userName': userName as String,
+        'userPassword': userPassword as String,
+        'dbname': dbname as String,
+        'Persistent': '1',
+      };
+      var requestURL = Uri(
+          scheme: 'http',
+          host: uri_paths.baseURLA,
+          path: uri_paths.fetchRelevantData,
+          queryParameters: queryParams);
+      print('sending persistent');
+      await http.get(requestURL).then((response) {
+        print(response.statusCode);
+        if (response.statusCode == 200) {
+          final respBody = jsonDecode(response.body);
+          // print(respBody.toString());
+          if (respBody['teacher'].isNotEmpty &&
+              respBody['school'].isNotEmpty &&
+              respBody['classes'].isNotEmpty &&
+              respBody['students'].isNotEmpty) {
+            print('teacger aexpfja');
+            // print(respBody.keys);
+            DBProvider.db.saveFetchedData(respBody);
+          }
+        } else {
+          print('something');
+        }
+      });
+    });
+  } catch (e) {
+    // return e;
+  }
+}
+
+Future<void> attendanceSyncHandler(attendanceRecordQuery) async {
+  try {
+    var valueQ = await DBProvider.db.getCredentials();
+    var value = valueQ.toList();
+    final userName = value[0]['userName'];
+    final userPassword = value[0]['userPassword'];
+    final dbname = value[0]['dbname'];
+
+    var schoolsQ = await DBProvider.db.getSchool();
+    var schools = schoolsQ.toList();
+
+    var school = schools[0];
+    var schoolId = school['school_id'];
+    var schoolName = school['school_name'];
+    var attendanceRecords = attendanceRecordQuery.toList();
+
+    var responses = [];
+    for (var attendance in attendanceRecords) {
+      var className = attendance['class_name'];
+      var classIdQ = await DBProvider.db.getClassId(className);
+      var teacherIdQ = await DBProvider.db.getTeacherId();
+      var classId = classIdQ.toList();
+      var teacherId = teacherIdQ.toList();
+      var submissionDate = attendance['submission_date'];
+
+      var absentees = attendance['absenteeString'];
+
+      Map<String, dynamic> queryParams = {
+        'userName': userName as String,
+        'userPassword': userPassword as String,
+        'dbname': dbname as String,
+        'date': attendance['date'],
+        'className': className,
+        'classId': classId[0]['class_id'],
+        'teacherId': teacherId[0]['teacher_id'],
+        'submissionDate': submissionDate,
+        'absentees': absentees,
+        'schoolId': schoolId,
+        'schoolName': schoolName,
+        'sync': '1'
+      };
+      if (kDebugMode) {
+        log(queryParams.toString());
+      }
+      // print(attendance['class_name']);
+      var body = jsonEncode(queryParams);
+      print('sending request to sync attendance');
+      var a = await http.post(
+        Uri.parse('${uri_paths.baseURL}${uri_paths.syncAttendance}'),
+        headers: {'Content-Type': 'application/json'},
+        body: body,
+      );
+
+      responses.add(a);
+    }
+
+    if (responses.isNotEmpty) {
+      for (var response in responses) {
+        print(response.statusCode);
+        if (response.statusCode == 200 || response.statusCode == '200') {
+          print(response.body.runtimeType);
+          // print(response.body.toString());
+
+          var resp = jsonDecode(response.body);
+          log(resp.toString());
+        }
+      }
+      DBProvider.db.updateAttendance();
+    }
+  } catch (e) {}
+}
+
+String resultKeyGen(resultName) {
+  switch (resultName) {
+    case 'Achieved':
+      return 'acc';
+    case 'Not Achieved':
+      return 'noacc';
+
+    case 'Not Evaluated':
+      return 'noeval';
+
+    default:
+      return 'noeval';
+  }
+}
+
+Future<void> numericSyncHandler(assessmentRecords) async {
+  try {
+    print('user 1 numeric');
+    DBProvider.db.getCredentials().then((usersQ) async {
+      var users = usersQ.toList();
+      print('school 1');
+      var schoolQ = await DBProvider.db.getSchool();
+      var schools = schoolQ.toList();
+      // print(schools);
+
+      var school = schools[0];
+      var schoolId = school['school_id'];
+      var schoolName = school['school_name'];
+      print('teacher 1');
+      var teacherIdQ = await DBProvider.db.getTeacherId();
+      var teacherIds = teacherIdQ.toList();
+      var teacherId = teacherIds[0]['teacher_id'];
+
+      final userName = users[0]['userName'];
+      final userPassword = users[0]['userPassword'];
+      final dbname = users[0]['dbname'];
+
+      print('for 1');
+      var responses = [];
+
+      for (var assessment in assessmentRecords) {
+        print('sending numeric request');
+
+        // print('request');
+        var className = assessment['class_name'];
+        var classesQ = await DBProvider.db.getClassId(className);
+
+        var classes = classesQ.toList();
+        var classId = classes[0]['class_id'];
+
+        var date = assessment['date'];
+        var submissionDate = assessment['submission_date'];
+        var entries = assessment['stringData'];
+        var decodedEntries = jsonDecode(entries);
+        print('here');
+        for (var index = 0; index < decodedEntries.length; index++) {
+          var entry = decodedEntries[index];
+          var studentID = entry.keys.toList()[0];
+          var levelName = entry[studentID][0];
+          var resultName = entry[studentID][1];
+          var result = resultKeyGen(resultName);
+          if (levelName != '0' && resultName != 'Not Evaluated') {
+            var levelIdQ =
+                await DBProvider.db.getNumericLevelId(className, levelName);
+            var levelId = levelIdQ.toList()[0]['levelId'];
+
+            decodedEntries[index][studentID][0] = levelId;
+            decodedEntries[index][studentID][1] = result;
+          } else {
+            decodedEntries[index][studentID][1] = result;
+          }
+        }
+        Map<String, dynamic> body = {
+          'userName': userName,
+          'userPassword': userPassword,
+          'dbname': dbname,
+          'date': date,
+          'className': className,
+          'classId': classId,
+          'teacherId': teacherId,
+          'schoolId': schoolId,
+          'schoolName': schoolName,
+          'submissionDate': submissionDate,
+          'entries': decodedEntries,
+          'numeric': '1'
+        };
+
+        var requestBOdy = jsonEncode(body);
+        print('hgh');
+        // print(requestBOdy);
+        var response = await http.post(
+            Uri.parse('${uri_paths.baseURL}${uri_paths.syncAssessment}'),
+            headers: {'Content-Type': 'application/json'},
+            body: requestBOdy);
+        responses.add(response);
+      }
+      if (responses.isNotEmpty) {
+        for (var response in responses) {
+          print(response.statusCode);
+          if (response.statusCode == 200 || response.statusCode == '200') {
+            print(response.body.runtimeType);
+            print(response.body.toString());
+            var resp = jsonDecode(response.body);
+            if (resp['classId'] != null &&
+                resp['date'] != null &&
+                resp['stringData'] != null) {
+              var cN = resp['classId'];
+              var d = resp['date'];
+              var stringData = resp['stringData'];
+              for (var i = 0; i < stringData.length; i++) {
+                var stringRecord = stringData[i];
+                var sId = stringRecord.keys.toList()[0];
+                var levelId = int.parse(stringRecord[sId][0]);
+                var levelName = '0';
+                var result = resultMap[stringRecord[sId][1]];
+                if (levelId != 0) {
+                  var levelNameQ =
+                      await DBProvider.db.getNumericLevelName(levelId);
+                  // levelName = levelNameQ.toList();
+                  levelName = levelNameQ.toList()[0]['name'];
+                  // print(levelName);
+                }
+                stringData[i][sId] = [levelName, result];
+              }
+              DBProvider.db.updateNumericAssessment(cN, d);
+            } else {
+              print('fault');
+              print(resp);
+            }
+          }
+        }
+      }
+    });
+  } catch (e) {}
+}
+
+Future<void> basicSyncHandler(assessmentRecords) async {
+  try {
+    print('user 1 basic');
+    var usersQ = await DBProvider.db.getCredentials();
+    var users = usersQ.toList();
+    print('school 1');
+    var schoolQ = await DBProvider.db.getSchool();
+    var schools = schoolQ.toList();
+
+    var school = schools[0];
+    var schoolId = school['school_id'];
+    var schoolName = school['school_name'];
+    print('teacher 1');
+    var teacherIdQ = await DBProvider.db.getTeacherId();
+    var teacherIds = teacherIdQ.toList();
+    var teacherId = teacherIds[0]['teacher_id'];
+
+    final userName = users[0]['userName'];
+    final userPassword = users[0]['userPassword'];
+    final dbname = users[0]['dbname'];
+
+    print('for 1');
+    var responses = [];
+
+    for (var assessment in assessmentRecords) {
+      // print(assessment.toString());
+      print('sending basic request');
+
+      var date = assessment['date'];
+      var className = assessment['class_name'];
+      var classesQ = await DBProvider.db.getClassId(className);
+
+      var classes = classesQ.toList();
+      var classId = classes[0]['class_id'];
+      var languageName = assessment['language'];
+      var langId = "";
+      var langIdQ = await DBProvider.db.getLangId(languageName, className);
+
+      if (langIdQ.toList()[0]['langId'] != null) {
+        langId = langIdQ.toList()[0]['langId'];
+      }
+      var entries = assessment['stringData'];
+
+      var decodedEntries = jsonDecode(entries);
+      for (var index = 0; index < decodedEntries.length; index++) {
+        var entry = decodedEntries[index];
+        var studentID = entry.keys.toList()[0];
+        var levelName = entry[studentID][0];
+        var resultName = entry[studentID][1];
+        var result = resultKeyGen(resultName);
+        if (levelName != '0' && resultName != 'Not Evaluated') {
+          var levelIdQ = await DBProvider.db
+              .getBasicLevelId(className, languageName, levelName);
+          var levelId = levelIdQ.toList()[0]['levelId'];
+
+          decodedEntries[index][studentID][0] = levelId;
+          decodedEntries[index][studentID][1] = result;
+        } else {
+          decodedEntries[index][studentID][1] = result;
+        }
+      }
+      Map<String, dynamic> body = {
+        'userName': userName as String,
+        'userPassword': userPassword as String,
+        'dbname': dbname as String,
+        'date': date,
+        'classId': classId,
+        'className': className,
+        'teacherId': teacherId,
+        'schoolId': schoolId,
+        'schoolName': schoolName,
+        'language': languageName,
+        'langId': langId,
+        'entries': decodedEntries,
+        'basic': '1'
+      };
+      var requestBOdy = jsonEncode(body);
+      // print(requestBOdy);
+
+      var response = await http.post(
+          Uri.parse('${uri_paths.baseURL}${uri_paths.syncAssessment}'),
+          headers: {'Content-Type': 'application/json'},
+          body: requestBOdy);
+      responses.add(response);
+    }
+    if (responses.isNotEmpty) {
+      for (var response in responses) {
+        print(response.statusCode);
+        if (response.statusCode == 200 || response.statusCode == '200') {
+          print('aay');
+          // print(response.body.runtimeType);
+          var resp = jsonDecode(response.body);
+
+          var rc = resp['rc'];
+
+          if (rc != null) {
+            print('aay4');
+            var classId = resp['classId'];
+            var date = resp['date'];
+            var language = resp['langauge'];
+            var langId = resp['langId'];
+            var stringData = resp['stringData'];
+            if (classId != null &&
+                date != null &&
+                language != null &&
+                stringData != null) {
+              DBProvider.db.updateBasicAssessment(classId, language, date);
+            }
+          }
+        }
+      }
+    }
+  } catch (e) {}
+}
+
+Future<void> paceSyncHandler(assessmentRecords) async {
+  try {
+    print('user 1 pace');
+    var usersQ = await DBProvider.db.getCredentials();
+    var users = usersQ.toList();
+    print('school 1');
+    var schoolQ = await DBProvider.db.getSchool();
+    var schools = schoolQ.toList();
+
+    var school = schools[0];
+    var schoolId = school['school_id'];
+    var schoolName = school['school_name'];
+    print('teacher 1');
+    var teacherIdQ = await DBProvider.db.getTeacherId();
+    var teacherIds = teacherIdQ.toList();
+    var teacherId = teacherIds[0]['teacher_id'];
+
+    final userName = users[0]['userName'];
+    final userPassword = users[0]['userPassword'];
+    final dbname = users[0]['dbname'];
+
+    print('for 1');
+    var responses = [];
+
+    for (var assessmentQ in assessmentRecords) {
+      print('sending pace request');
+      var assessment = {};
+      assessmentQ.forEach((k, v) => assessment[k] = v);
+      // print(assessment.runtimeType);
+
+      var assessmentName = assessment['assessmentName'];
+      var subjectName = assessment['subject_name'];
+      var mediumName = assessment['medium_name'];
+      var qpCode = assessment['qp_code'];
+
+      var scheduledDate = assessment['scheduledDate'];
+      var uploadDate = assessment['uploadDate'];
+      var className = assessment['class_name'];
+      var classesQ = await DBProvider.db.getClassId(className);
+
+      var classes = classesQ.toList();
+      var classId = classes[0]['class_id'];
+
+      var markSheet = jsonDecode(assessment['marksheet']);
+      var result = jsonDecode(assessment['result']);
+
+      var entries = [];
+
+      var studentIds = markSheet.keys.toList();
+      var keys = assessment.keys.toList();
+
+      var asVal = await DBProvider.db
+          .getTotalMarksPace(assessmentName, scheduledDate, qpCode);
+
+      var subjectId = asVal.toList()[0]['subject_id'];
+      // print(subjectId);
+      var totmarkS = asVal.toList()[0]['totmarks'];
+      // print(totmarks.runtimeType);
+      var standardId = asVal.toList()[0]['standard_id'];
+
+      var mediumId = asVal.toList()[0]['medium_id'];
+
+      var assessmentId = asVal.toList()[0]['id'];
+      if (int.tryParse(totmarkS) != null) {
+        var totmarks = int.parse(totmarkS);
+        for (var id in studentIds) {
+          var res = resultKeyGen(result[id]);
+          var record = {};
+
+          if (res == 'acc' || res == 'noacc') {
+            var marks = markSheet[id];
+            // print(id);
+            // print(marks);
+
+            num sumOfMarks = 0;
+            for (num mark in marks) {
+              sumOfMarks = sumOfMarks + mark;
+            }
+
+            if (sumOfMarks <= totmarks) {
+              var percentage = (sumOfMarks / totmarks) * 100;
+
+              record['sId'] = id;
+              record['res'] = res;
+              record['sum'] = sumOfMarks;
+              record['percentage'] = percentage;
+
+              entries.add(record);
+            }
+          }
+        }
+      }
+
+      Map<String, dynamic> body = {
+        'pace': '1',
+        'userName': userName as String,
+        'userPassword': userPassword as String,
+        'dbname': dbname as String,
+        'scheduledDate': scheduledDate,
+        'uploadDate': uploadDate,
+        'classId': classId,
+        'schoolId': schoolId,
+        'teacherId': teacherId,
+        'className': className,
+        'standardId': standardId,
+        'assessmentName': assessmentName,
+        'assessmentId': assessmentId,
+        'subjectId': subjectId,
+        'mediumName': mediumName,
+        'mediumId': mediumId,
+        'qpCode': qpCode,
+        'entries': entries
+      };
+      var requestBOdy = jsonEncode(body);
+      print(requestBOdy);
+      print('sending body pace');
+
+      var response = await http.post(
+          Uri.parse('${uri_paths.baseURL}${uri_paths.syncAssessment}'),
+          headers: {'Content-Type': 'application/json'},
+          body: requestBOdy);
+      responses.add(response);
+    }
+    if (responses.isNotEmpty) {
+      for (var response in responses) {
+        print(response.statusCode);
+        if (response.statusCode == 200 || response.statusCode == '200') {
+          print(response.body.runtimeType);
+          print(response.body.toString());
+        }
+
+        DBProvider.db.updatePace();
+      }
+    }
+  } catch (e) {}
+}
