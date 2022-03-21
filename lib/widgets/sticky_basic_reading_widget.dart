@@ -427,7 +427,7 @@ class _StickyBasicReadingState extends State<StickyBasicReading> {
         ),
       ),
       body: Container(
-        alignment: Alignment.center,
+        alignment: Alignment.topCenter,
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
         child: SingleChildScrollView(
@@ -448,8 +448,27 @@ class _StickyBasicReadingState extends State<StickyBasicReading> {
                   vertical: 4.0,
                   horizontal: 10.0,
                 ),
-                child: ClassDropDown(
-                    selectClass: selectClass, getAllStudents: getAllStudents),
+                child: Row(
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.only(
+                        right: 28.0,
+                      ),
+                      child: const Text(
+                        'Class:',
+                        softWrap: true,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+                    ClassDropDown(
+                        selectClass: selectClass,
+                        getAllStudents: getAllStudents),
+                  ],
+                ),
               ),
               Container(
                 margin: const EdgeInsets.symmetric(

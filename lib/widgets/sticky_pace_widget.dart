@@ -706,287 +706,289 @@ class _StickyPaceWidgetState extends State<StickyPaceWidget> {
           ),
         ),
       ),
-      body: Center(
+      body: Container(
+        alignment: Alignment.topCenter,
+        margin: const EdgeInsets.symmetric(
+          horizontal: 8.0,
+        ),
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
         child: SizedBox(
-          height: MediaQuery.of(context).size.height * 0.95,
-          width: MediaQuery.of(context).size.width * 0.95,
-          child: SizedBox(
-            height: MediaQuery.of(context).size.height,
-            child: SingleChildScrollView(
-              scrollDirection: Axis.vertical,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(),
-                      ),
-                      margin: const EdgeInsets.symmetric(
-                        vertical: 8.0,
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 4.0,
-                        horizontal: 8.0,
-                      ),
-                      width: MediaQuery.of(context).size.width,
-                      child: SingleChildScrollView(
+          height: MediaQuery.of(context).size.height,
+          child: SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(),
+                    ),
+                    margin: const EdgeInsets.symmetric(
+                      vertical: 8.0,
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 4.0,
+                      horizontal: 8.0,
+                    ),
+                    width: MediaQuery.of(context).size.width,
+                    child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          children: [
+                            Container(
+                              margin: const EdgeInsets.only(
+                                right: 28.0,
+                              ),
+                              child: const Text(
+                                'Class:',
+                                softWrap: true,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20,
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ),
+                            ClassDropDown(
+                              selectClass: selectClass,
+                              getAllStudents: getAllStudents,
+                            ),
+                          ],
+                        ))),
+                (_selectedClass!.isEmpty)
+                    ? const Text('')
+                    : Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(),
+                        ),
+                        margin: const EdgeInsets.symmetric(
+                          vertical: 8.0,
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 4.0,
+                          horizontal: 8.0,
+                        ),
+                        width: MediaQuery.of(context).size.width,
+                        child: SingleChildScrollView(
                           scrollDirection: Axis.horizontal,
                           child: Row(
                             children: [
                               Container(
                                 margin: const EdgeInsets.only(
-                                  right: 28.0,
+                                  right: 8.0,
                                 ),
                                 child: const Text(
-                                  'Class:',
-                                  softWrap: true,
+                                  'Assessment:',
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 20,
-                                    color: Colors.black,
                                   ),
                                 ),
                               ),
-                              ClassDropDown(
-                                selectClass: selectClass,
-                                getAllStudents: getAllStudents,
-                              ),
+                              AssessmentsDropDown(
+                                  selectClass: _selectedClass,
+                                  selectAssessment: selectAssessment),
                             ],
-                          ))),
-                  (_selectedClass!.isEmpty)
-                      ? const Text('')
-                      : Container(
-                          decoration: BoxDecoration(
-                            border: Border.all(),
-                          ),
-                          margin: const EdgeInsets.symmetric(
-                            vertical: 8.0,
-                          ),
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 4.0,
-                            horizontal: 8.0,
-                          ),
-                          width: MediaQuery.of(context).size.width,
-                          child: SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Row(
-                              children: [
-                                Container(
-                                  margin: const EdgeInsets.only(
-                                    right: 8.0,
-                                  ),
-                                  child: const Text(
-                                    'Assessment:',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 20,
-                                    ),
-                                  ),
-                                ),
-                                AssessmentsDropDown(
-                                    selectClass: _selectedClass,
-                                    selectAssessment: selectAssessment),
-                              ],
-                            ),
                           ),
                         ),
-                  (_selectedAssessment!.isEmpty)
-                      ? const Text('')
-                      : Container(
-                          decoration: BoxDecoration(
-                            border: Border.all(),
-                          ),
-                          margin: const EdgeInsets.symmetric(
-                            vertical: 8.0,
-                          ),
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 4.0,
-                            horizontal: 8.0,
-                          ),
-                          width: MediaQuery.of(context).size.width,
-                          child: SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Row(
-                              children: [
-                                Container(
-                                  margin: const EdgeInsets.only(
-                                    right: 8.0,
-                                  ),
-                                  child: const Text(
-                                    'Assessment Date:',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                      ),
+                (_selectedAssessment!.isEmpty)
+                    ? const Text('')
+                    : Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(),
+                        ),
+                        margin: const EdgeInsets.symmetric(
+                          vertical: 8.0,
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 4.0,
+                          horizontal: 8.0,
+                        ),
+                        width: MediaQuery.of(context).size.width,
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            children: [
+                              Container(
+                                margin: const EdgeInsets.only(
+                                  right: 8.0,
+                                ),
+                                child: const Text(
+                                  'Assessment Date:',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                Text(displayDate(_selectedAssessment['date'])),
-                              ],
-                            ),
-                          ),
-                        ),
-                  (_selectedAssessment!.isEmpty)
-                      ? const Text('')
-                      : Container(
-                          decoration: BoxDecoration(
-                            border: Border.all(),
-                          ),
-                          margin: const EdgeInsets.symmetric(
-                            vertical: 8.0,
-                          ),
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 4.0,
-                            horizontal: 8.0,
-                          ),
-                          width: MediaQuery.of(context).size.width,
-                          child: SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Row(
-                              children: [
-                                Container(
-                                  margin: const EdgeInsets.only(
-                                    right: 8.0,
-                                  ),
-                                  child: const Text(
-                                    'Subject:',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                                Text(_selectedAssessment['subject_name']),
-                              ],
-                            ),
-                          ),
-                        ),
-                  (_selectedAssessment!.isEmpty)
-                      ? const Text('')
-                      : Container(
-                          decoration: BoxDecoration(
-                            border: Border.all(),
-                          ),
-                          margin: const EdgeInsets.symmetric(
-                            vertical: 8.0,
-                          ),
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 4.0,
-                            horizontal: 8.0,
-                          ),
-                          width: MediaQuery.of(context).size.width,
-                          child: SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Row(
-                              children: [
-                                Container(
-                                  margin: const EdgeInsets.only(
-                                    right: 8.0,
-                                  ),
-                                  child: const Text(
-                                    'Assessment Medium:',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                                Text(_selectedAssessment['medium_name']),
-                              ],
-                            ),
-                          ),
-                        ),
-                  (_selectedAssessment!.isEmpty)
-                      ? const Text('')
-                      : Container(
-                          decoration: BoxDecoration(
-                            border: Border.all(),
-                          ),
-                          margin: const EdgeInsets.symmetric(
-                            vertical: 8.0,
-                          ),
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 4.0,
-                            horizontal: 8.0,
-                          ),
-                          width: MediaQuery.of(context).size.width,
-                          child: SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Row(
-                              children: [
-                                Container(
-                                  margin: const EdgeInsets.only(
-                                    right: 8.0,
-                                  ),
-                                  child: const Text(
-                                    'Question Paper:',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                                Text(_selectedAssessment['qp_code_name']),
-                              ],
-                            ),
-                          ),
-                        ),
-                  (_selectedAssessment!.isEmpty || _selectedClass!.isEmpty)
-                      ? const Text('')
-                      : SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.4,
-                          width: MediaQuery.of(context).size.width,
-                          child: SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                border: Border.all(),
                               ),
-                              height: MediaQuery.of(context).size.height * 0.4,
-                              width: MediaQuery.of(context).size.width,
-                              child: assessmentTable(),
+                              Text(displayDate(_selectedAssessment['date'])),
+                            ],
+                          ),
+                        ),
+                      ),
+                (_selectedAssessment!.isEmpty)
+                    ? const Text('')
+                    : Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(),
+                        ),
+                        margin: const EdgeInsets.symmetric(
+                          vertical: 8.0,
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 4.0,
+                          horizontal: 8.0,
+                        ),
+                        width: MediaQuery.of(context).size.width,
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            children: [
+                              Container(
+                                margin: const EdgeInsets.only(
+                                  right: 8.0,
+                                ),
+                                child: const Text(
+                                  'Subject:',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                              Text(_selectedAssessment['subject_name']),
+                            ],
+                          ),
+                        ),
+                      ),
+                (_selectedAssessment!.isEmpty)
+                    ? const Text('')
+                    : Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(),
+                        ),
+                        margin: const EdgeInsets.symmetric(
+                          vertical: 8.0,
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 4.0,
+                          horizontal: 8.0,
+                        ),
+                        width: MediaQuery.of(context).size.width,
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            children: [
+                              Container(
+                                margin: const EdgeInsets.only(
+                                  right: 8.0,
+                                ),
+                                child: const Text(
+                                  'Assessment Medium:',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                              Text(_selectedAssessment['medium_name']),
+                            ],
+                          ),
+                        ),
+                      ),
+                (_selectedAssessment!.isEmpty)
+                    ? const Text('')
+                    : Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(),
+                        ),
+                        margin: const EdgeInsets.symmetric(
+                          vertical: 8.0,
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 4.0,
+                          horizontal: 8.0,
+                        ),
+                        width: MediaQuery.of(context).size.width,
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            children: [
+                              Container(
+                                margin: const EdgeInsets.only(
+                                  right: 8.0,
+                                ),
+                                child: const Text(
+                                  'Question Paper:',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                              Text(_selectedAssessment['qp_code_name']),
+                            ],
+                          ),
+                        ),
+                      ),
+                (_selectedAssessment!.isEmpty || _selectedClass!.isEmpty)
+                    ? const Text('')
+                    : SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.4,
+                        width: MediaQuery.of(context).size.width,
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(),
                             ),
+                            height: MediaQuery.of(context).size.height * 0.4,
+                            width: MediaQuery.of(context).size.width,
+                            child: assessmentTable(),
                           ),
                         ),
-                  (_selectedAssessment!.isEmpty || _selectedClass!.isEmpty)
-                      ? const Text('')
-                      : Container(
-                          margin: EdgeInsets.symmetric(
-                              vertical:
-                                  MediaQuery.of(context).size.height * 0.04),
-                          height: MediaQuery.of(context).size.height * 0.04,
-                          child: ElevatedButton(
-                            onPressed: () {
-                              var submissionDateUnformatted = DateTime.now();
-                              DateFormat submissionFormat =
-                                  DateFormat('yyyy-MM-dd HH:mm:ss');
+                      ),
+                (_selectedAssessment!.isEmpty || _selectedClass!.isEmpty)
+                    ? const Text('')
+                    : Container(
+                        margin: EdgeInsets.symmetric(
+                            vertical:
+                                MediaQuery.of(context).size.height * 0.04),
+                        height: MediaQuery.of(context).size.height * 0.04,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            var submissionDateUnformatted = DateTime.now();
+                            DateFormat submissionFormat =
+                                DateFormat('yyyy-MM-dd HH:mm:ss');
 
-                              var submissionDate = submissionFormat
-                                  .format(submissionDateUnformatted);
-                              if (kDebugMode) {
-                                print('Submit');
-                                // print(_markSheet.toString());
-                                // print(_grading.toString());
-                                // print(_result.toString());
-                                print(submissionDate.toString());
-                              }
-                              var validity = paceSubmitValidation(
-                                  studentList, _markSheet, _result);
+                            var submissionDate = submissionFormat
+                                .format(submissionDateUnformatted);
+                            if (kDebugMode) {
+                              print('Submit');
+                              // print(_markSheet.toString());
+                              // print(_grading.toString());
+                              // print(_result.toString());
+                              print(submissionDate.toString());
+                            }
+                            var validity = paceSubmitValidation(
+                                studentList, _markSheet, _result);
 
-                              if (validity["0"] == "Okay") {
-                                var title = "Confirm Submit";
-                                var message =
-                                    "Pressing Confirm will save the record.\n"
-                                    "After confirm, please sync to server";
-                                showAlertFinal(title, message, submissionDate);
-                              } else {
-                                var title = validity["0"];
-                                var message = "Cannot submit an empty form";
+                            if (validity["0"] == "Okay") {
+                              var title = "Confirm Submit";
+                              var message =
+                                  "Pressing Confirm will save the record.\n"
+                                  "After confirm, please sync to server";
+                              showAlertFinal(title, message, submissionDate);
+                            } else {
+                              var title = validity["0"];
+                              var message = "Cannot submit an empty form";
 
-                                showAlert(title, message);
-                              }
-                            },
-                            child: const Text('Submit'),
-                          ),
+                              showAlert(title, message);
+                            }
+                          },
+                          child: const Text('Submit'),
                         ),
-                ],
-              ),
+                      ),
+              ],
             ),
           ),
         ),

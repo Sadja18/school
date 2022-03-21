@@ -139,36 +139,57 @@ class _DashboardState extends State<Dashboard> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            TextButton(
-              onPressed: () {
-                // ignore: avoid_print
-                // print('Attendance');
-                // Navigator.of(context).pushNamed(Dummy.routeName);
-                Navigator.of(context).pushNamed(StickyAttendance.routeName);
+            Container(
+              decoration: BoxDecoration(
+                border: Border.all(),
+              ),
+              width: MediaQuery.of(context).size.width * 0.40,
+              child: TextButton(
+                onPressed: () {
+                  Navigator.of(context).pushNamed(StickyAttendance.routeName);
 //
-              },
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Image.asset('assets/dashboardIcons/leave.png'),
-                  const Text('Attendance'),
-                ],
+                },
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Image.asset('assets/dashboardIcons/leave.png'),
+                    const Text(
+                      'Attendance',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20.0,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
-            TextButton(
-              onPressed: () {
-                // ignore: avoid_print
-                // print("assesment");
-                Navigator.of(context).pushNamed(AssessmentScreen.routeName);
-              },
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Image.asset('assets/dashboardIcons/assessment.png'),
-                  const Text('Assessment'),
-                ],
+            Container(
+              decoration: BoxDecoration(
+                border: Border.all(),
+              ),
+              width: MediaQuery.of(context).size.width * 0.40,
+              child: TextButton(
+                onPressed: () {
+                  // ignore: avoid_print
+                  // print("assesment");
+                  Navigator.of(context).pushNamed(AssessmentScreen.routeName);
+                },
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Image.asset('assets/dashboardIcons/assessment.png'),
+                    const Text(
+                      'Assessment',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20.0,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ],

@@ -38,7 +38,7 @@ class _StickyAttendanceState extends State<StickyAttendance> {
   List<Map<String, Object?>> classesList = [];
 
   /// this variable is required to store the class selected by the user.
-  String? _selectedClass="";
+  String? _selectedClass = "";
 
   /// when the class is selected by the user
   /// all the students in that class are fetched
@@ -250,7 +250,7 @@ class _StickyAttendanceState extends State<StickyAttendance> {
     var selectionClass = _selectedClass;
 
     return FutureBuilder(
-      key: ObjectKey(selectionClass),
+        key: ObjectKey(selectionClass),
         future: editOrCreateNewAttendance(
           selectiondate!,
           selectionClass!,
@@ -330,25 +330,58 @@ class _StickyAttendanceState extends State<StickyAttendance> {
           ),
         ),
       ),
-      body: Center(
-        child: SizedBox(
-          height: MediaQuery.of(context).size.height,
-          child: SingleChildScrollView(
-            child: SizedBox(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  ClassDropDown(
-                    // key: UniqueKey(),
-                    selectClass: selectClass,
-                    getAllStudents: getAllStudents,
+      body: Container(
+        alignment: Alignment.topCenter,
+        margin: const EdgeInsets.symmetric(
+          horizontal: 8.0,
+        ),
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        child: SingleChildScrollView(
+          child: SizedBox(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(),
                   ),
-                  (_selectedClass!.isEmpty)?const Text(''):Text(_selectedClass!),
-                  DateShow(selectedDate: selectedDate),
-                  (studentList.isEmpty) ? const Text('') : createOrEdit(),
-                ],
-              ),
+                  margin: const EdgeInsets.symmetric(
+                    vertical: 8.0,
+                    horizontal: 8.0,
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 4.0,
+                    horizontal: 10.0,
+                  ),
+                  child: Row(
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.only(
+                          right: 28.0,
+                        ),
+                        child: const Text(
+                          'Class:',
+                          softWrap: true,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ),
+                      ClassDropDown(
+                        // key: UniqueKey(),
+                        selectClass: selectClass,
+                        getAllStudents: getAllStudents,
+                      ),
+                    ],
+                  ),
+                ),
+                DateShow(selectedDate: selectedDate),
+                (studentList.isEmpty) ? const Text('') : createOrEdit(),
+              ],
             ),
           ),
         ),

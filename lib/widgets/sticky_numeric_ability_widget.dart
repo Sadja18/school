@@ -421,7 +421,7 @@ class _StickyNumericAbilityState extends State<StickyNumericAbility> {
         ),
       ),
       body: Container(
-        alignment: Alignment.center,
+        alignment: Alignment.topCenter,
         margin: const EdgeInsets.symmetric(
           horizontal: 8.0,
         ),
@@ -435,7 +435,9 @@ class _StickyNumericAbilityState extends State<StickyNumericAbility> {
             children: [
               Container(
                 decoration: BoxDecoration(
-                  border: Border.all(),
+                  border: Border.all(
+                    color: Colors.black,
+                  ),
                 ),
                 margin: const EdgeInsets.symmetric(
                   vertical: 8.0,
@@ -445,8 +447,27 @@ class _StickyNumericAbilityState extends State<StickyNumericAbility> {
                   vertical: 4.0,
                   horizontal: 10.0,
                 ),
-                child: ClassDropDown(
-                    selectClass: selectClass, getAllStudents: getAllStudents),
+                child: Row(
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.only(
+                        right: 28.0,
+                      ),
+                      child: const Text(
+                        'Class:',
+                        softWrap: true,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+                    ClassDropDown(
+                        selectClass: selectClass,
+                        getAllStudents: getAllStudents),
+                  ],
+                ),
               ),
               DateShow(selectedDate: selectedDate),
               (studentList.isNotEmpty)
