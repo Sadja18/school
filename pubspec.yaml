@@ -23,6 +23,7 @@ dependencies:
   path: ^1.8.0
   workmanager: ^0.4.1
   table_sticky_headers: ^2.0.0
+  flutter_svg: ^1.0.3
 
 dev_dependencies:
   flutter_test:
@@ -50,6 +51,7 @@ flutter:
     - assets/icons/image_back_1.jpeg
     - assets/background/img1.jpg
     - assets/background/img2.jpg
+    - assets/icons/logo.png
 
 
 

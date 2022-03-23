@@ -223,10 +223,6 @@ class _LoginState extends State<Login> {
               height: MediaQuery.of(context).size.height * 0.80,
               child: Column(
                 children: [
-                  SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.15,
-                    child: Image.asset('assets/icons/icon-144x144.png'),
-                  ),
                   Container(
                     margin: const EdgeInsets.symmetric(vertical: 15.0),
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -250,10 +246,11 @@ class _LoginState extends State<Login> {
                                 ),
                               ),
                             ),
-                            SizedBox(
-                              height: MediaQuery.of(context).size.height * 0.01,
-                            ),
-                            SizedBox(
+                            Container(
+                              margin: const EdgeInsets.only(
+                                bottom: 15.0,
+                                top: 8.0,
+                              ),
                               width: MediaQuery.of(context).size.width,
                               child: SingleChildScrollView(
                                 scrollDirection: Axis.horizontal,
@@ -298,9 +295,6 @@ class _LoginState extends State<Login> {
                             ),
                           ],
                         ),
-                        SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.04,
-                        ),
                         Column(
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -316,9 +310,6 @@ class _LoginState extends State<Login> {
                                   color: Colors.purpleAccent.shade400,
                                 ),
                               ),
-                            ),
-                            SizedBox(
-                              height: MediaQuery.of(context).size.height * 0.01,
                             ),
                             SizedBox(
                               width: MediaQuery.of(context).size.width,
@@ -387,45 +378,48 @@ class _LoginState extends State<Login> {
                             ),
                           ],
                         ),
-                        const SizedBox(
-                          height: 5,
-                        ),
-                        // ignore: duplicate_ignore
-                        Center(
-                          child: Container(
-                            margin:
-                                const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0),
-                            width: MediaQuery.of(context).size.width * 0.90,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(6.0),
-                              gradient: const LinearGradient(
-                                begin: Alignment(-0.95, 0.0),
-                                end: Alignment(1.0, 0.0),
-                                colors: [
-                                  Color(0xfff21bce),
-                                  Color(0xff826cf0),
-                                ],
-                                stops: [0.0, 1.0],
-                              ),
+                        Container(
+                          alignment: Alignment.center,
+                          margin:
+                              const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0),
+                          width: MediaQuery.of(context).size.width * 0.90,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(6.0),
+                            gradient: const LinearGradient(
+                              begin: Alignment(-0.95, 0.0),
+                              end: Alignment(1.0, 0.0),
+                              colors: [
+                                Color(0xfff21bce),
+                                Color(0xff826cf0),
+                              ],
+                              stops: [0.0, 1.0],
                             ),
-                            child: TextButton(
-                              onPressed: () {
-                                _onClickLogin(context);
-                              },
-                              style: TextButton.styleFrom(
-                                primary: Colors.transparent,
-                                onSurface: Colors.transparent,
-                                shadowColor: Colors.transparent,
-                              ),
-                              child: const Text(
-                                'Login',
-                                style: TextStyle(
-                                  color: Color(0xffffffff),
-                                  fontSize: 16,
-                                ),
+                          ),
+                          child: TextButton(
+                            onPressed: () {
+                              _onClickLogin(context);
+                            },
+                            style: TextButton.styleFrom(
+                              primary: Colors.transparent,
+                              onSurface: Colors.transparent,
+                              shadowColor: Colors.transparent,
+                            ),
+                            child: const Text(
+                              'Login',
+                              style: TextStyle(
+                                color: Color(0xffffffff),
+                                fontSize: 16,
                               ),
                             ),
                           ),
+                        ),
+                        Container(
+                          alignment: Alignment.center,
+                          margin: const EdgeInsets.symmetric(
+                            vertical: 12.0,
+                          ),
+                          height: MediaQuery.of(context).size.height * 0.15,
+                          child: Image.asset('assets/icons/icon-144x144.png'),
                         ),
                       ],
                     ),

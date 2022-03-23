@@ -916,7 +916,7 @@ class DBProvider {
     dba.then((value) async {
       final db = value.batch();
       await db.rawDelete(
-        'UPDATE attendance SET synced="true", editable="false WHERE editable="true" AND synced="false";',
+        'UPDATE attendance SET synced="true", editable="false" WHERE editable="true" AND synced="false";',
       );
 
       db.commit();
