@@ -2,6 +2,7 @@
 
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'dart:convert';
@@ -67,11 +68,17 @@ class _LoginState extends State<Login> {
       return;
     }
 
+    
+
     print('clicked');
 
     var conn = request_handler.sendTestRequest();
 
     conn.then((response) {
+      if(kDebugMode){
+      print('object');
+      print(response.statusCode);
+    }
       if (response.runtimeType == Response) {
         if (response.statusCode == 200) {
           setState(() {

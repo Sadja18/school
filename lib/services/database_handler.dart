@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_print, unused_local_variable, unnecessary_brace_in_string_interps
 
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
 import 'package:path/path.dart';
@@ -285,11 +286,9 @@ class DBProvider {
 
   Future<dynamic> logoutUser() async {
     final db = await initDB();
-    var updateCount = await db.rawQuery(
-      'UPDATE users '
-      'SET loginstatus = 0 '
-      'WHERE loginstatus=1;'
-    );
+    var updateCount = await db.rawQuery('UPDATE users '
+        'SET loginstatus = 0 '
+        'WHERE loginstatus=1;');
     return updateCount;
   }
 
@@ -1077,4 +1076,20 @@ class DBProvider {
     }
   }
   // read isExists and isEditable PACE Assessment on selected date end
+
+  // read all attendance in date range
+  Future<dynamic> readAllAttendanceDateRange(startDate, lastDate) async {
+    try {
+      final db = await initDB();
+      var res = await db.rawQuery(
+          "SELECT * FROM attendance WHERE date>= ? AND date<=?;",
+          [startDate, lastDate]);
+
+      var resl = res.toList();
+      return resl;
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+  // read all attendance in date range end
 }

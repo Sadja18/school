@@ -24,6 +24,7 @@ dependencies:
   workmanager: ^0.4.1
   table_sticky_headers: ^2.0.0
   flutter_svg: ^1.0.3
+  syncfusion_flutter_calendar: ^19.4.56
 
 dev_dependencies:
   flutter_test:

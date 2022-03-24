@@ -14,6 +14,7 @@ import './class_dropdown.dart';
 import './date_widget.dart';
 import '../services/helper_db.dart';
 import './attendance_edit_widget.dart';
+import './date_class_attendance.dart';
 
 class StickyAttendance extends StatefulWidget {
   static const routeName = "attendance-new";
@@ -132,7 +133,6 @@ class _StickyAttendanceState extends State<StickyAttendance> {
                     absentees: [],
                     studentList: studentList,
                     selectedDate: selectedDate!);
-              
               } else {
                 var absenteeString = record['absenteeString'];
 
@@ -161,94 +161,135 @@ class _StickyAttendanceState extends State<StickyAttendance> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        actions: [
-          IconButton(
-            onPressed: () {
-              // print('Home');
-              Navigator.of(context).popAndPushNamed(Dashboard.routeName);
-            },
-            icon: const Icon(Icons.home),
-          ),
-          IconButton(
-            onPressed: () {
-              // ignore: avoid_print
-              // print('logout');
-              Navigator.of(context)
-                  .pushNamedAndRemoveUntil(Login.routeName, (route) => false);
-            },
-            icon: const Icon(Icons.logout),
-          ),
-        ],
-        title: const Text('Attendance'),
-        backgroundColor: Theme.of(context).primaryColor,
-        flexibleSpace: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: <Color>[
-                Color(0xfff21bce),
-                Color(0xff826cf0),
-              ],
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        appBar: AppBar(
+          centerTitle: true,
+          actions: [
+            IconButton(
+              onPressed: () {
+                // print('Home');
+                Navigator.of(context).popAndPushNamed(Dashboard.routeName);
+              },
+              icon: const Icon(Icons.home),
+            ),
+            IconButton(
+              onPressed: () {
+                // ignore: avoid_print
+                // print('logout');
+                Navigator.of(context)
+                    .pushNamedAndRemoveUntil(Login.routeName, (route) => false);
+              },
+              icon: const Icon(Icons.logout),
+            ),
+          ],
+          title: const Text('Attendance'),
+          backgroundColor: Theme.of(context).primaryColor,
+          flexibleSpace: Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                colors: <Color>[
+                  Color(0xfff21bce),
+                  Color(0xff826cf0),
+                ],
+              ),
             ),
           ),
+          bottom: const TabBar(
+            tabs: [
+              Tab(
+                icon: Icon(
+                  Icons.create_outlined,
+                  semanticLabel: 'Mark Attendance',
+                  size: 40,
+                ),
+                child: Text(
+                  'Mark New',
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 15,
+                      letterSpacing: 1.8),
+                ),
+              ),
+              Tab(
+                icon: Icon(
+                  Icons.view_list_outlined,
+                  semanticLabel: 'View Attendance',
+                  size: 40,
+                ),
+                child: Text(
+                  'View Marked',
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 15,
+                      letterSpacing: 1.8),
+                ),
+              ),
+            ],
+          ),
         ),
-      ),
-      body: Container(
-        alignment: Alignment.topCenter,
-        margin: const EdgeInsets.symmetric(
-          horizontal: 8.0,
-        ),
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-        child: SingleChildScrollView(
-          child: SizedBox(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(),
-                  ),
-                  margin: const EdgeInsets.symmetric(
-                    vertical: 8.0,
-                    horizontal: 8.0,
-                  ),
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 4.0,
-                    horizontal: 10.0,
-                  ),
-                  child: Row(
+        body: TabBarView(
+          physics: const NeverScrollableScrollPhysics(),
+          children: [
+            Container(
+              alignment: Alignment.topCenter,
+              margin: const EdgeInsets.symmetric(
+                horizontal: 8.0,
+              ),
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
+              child: SingleChildScrollView(
+                child: SizedBox(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Container(
-                        margin: const EdgeInsets.only(
-                          right: 28.0,
+                        decoration: BoxDecoration(
+                          border: Border.all(),
                         ),
-                        child: const Text(
-                          'Class:',
-                          softWrap: true,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20,
-                            color: Colors.black,
-                          ),
+                        margin: const EdgeInsets.symmetric(
+                          vertical: 8.0,
+                          horizontal: 8.0,
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 4.0,
+                          horizontal: 10.0,
+                        ),
+                        child: Row(
+                          children: [
+                            Container(
+                              margin: const EdgeInsets.only(
+                                right: 28.0,
+                              ),
+                              child: const Text(
+                                'Class:',
+                                softWrap: true,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20,
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ),
+                            ClassDropDown(
+                              // key: UniqueKey(),
+                              selectClass: selectClass,
+                              getAllStudents: getAllStudents,
+                            ),
+                          ],
                         ),
                       ),
-                      ClassDropDown(
-                        // key: UniqueKey(),
-                        selectClass: selectClass,
-                        getAllStudents: getAllStudents,
-                      ),
+                      DateShow(selectedDate: selectedDate),
+                      (studentList.isEmpty) ? const Text('') : createOrEdit(),
                     ],
                   ),
                 ),
-                DateShow(selectedDate: selectedDate),
-                (studentList.isEmpty) ? const Text('') : createOrEdit(),
-              ],
+              ),
             ),
-          ),
+            ViewTakenAttendance(),
+          ],
         ),
       ),
     );

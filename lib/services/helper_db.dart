@@ -1,6 +1,9 @@
 // ignore_for_file: avoid_print
 
+import 'dart:developer';
+
 import 'package:flutter/foundation.dart';
+import 'package:intl/intl.dart';
 
 import '../models/response_struct.dart';
 import '../services/database_handler.dart';
@@ -214,4 +217,22 @@ Future<dynamic> editOrCreateNewPace(
 }
 // check if pace record exists for selected date(format YYYY-MM-DD) end
 
+Future<dynamic> readAllAttendanceActive(
+    startDateUnformat, endDateUnformat) async {
+  try {
+    String startDate = DateFormat('yyyy-MM-dd').format(startDateUnformat),
+        endDate = DateFormat('yyyy-MM-dd').format(endDateUnformat);
 
+    var res =
+        await DBProvider.db.readAllAttendanceDateRange(startDate, endDate);
+
+    if (kDebugMode) {
+      log(res.toString());
+    }
+
+    return res;
+  } catch (e) {
+    // log('konm');
+    log(e.toString());
+  }
+}
