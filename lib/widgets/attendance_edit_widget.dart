@@ -84,30 +84,30 @@ class _EditAttendanceState extends State<EditAttendance> {
         vertical: 8.0,
         horizontal: 2.5,
       ),
-      padding: const EdgeInsets.only(
-        top: 6.0,
-        left: 0.2,
+      padding: const EdgeInsets.symmetric(
+        vertical: 2.0,
+        horizontal: 2.0,
       ),
       decoration: BoxDecoration(
         border: Border.all(),
         // color: Colors.red,
       ),
-      child: Column(
+      child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
             headerString,
             style: const TextStyle(
               fontWeight: FontWeight.bold,
-              fontSize: 18.5,
+              fontSize: 17.0,
             ),
             maxLines: 2,
           ),
           Text(
             '$value',
             style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 18.5,
+              // fontWeight: FontWeight.bold,
+              fontSize: 17.0,
             ),
           ),
         ],
@@ -349,11 +349,12 @@ class _EditAttendanceState extends State<EditAttendance> {
         // padding: const EdgeInsets.fromLTRB(4.0, 4.0, 4.0, 4.0),
         child: StickyHeadersTable(
           cellDimensions: CellDimensions.variableColumnWidthAndRowHeight(
-              columnWidths: List<double>.generate(2, (int index) => 120),
-              rowHeights:
-                  List<double>.generate(studentList.length, (int index) => 75),
-              stickyLegendWidth: 100,
-              stickyLegendHeight: 75),
+            columnWidths: List<double>.generate(2, (int index) => 120),
+            rowHeights:
+                List<double>.generate(studentList.length, (int index) => 35),
+            stickyLegendWidth: 100,
+            stickyLegendHeight: 35,
+          ),
           initialScrollOffsetX: 0.0,
           initialScrollOffsetY: 0.0,
           scrollControllers: scrollControllers(),
@@ -457,9 +458,9 @@ class _EditAttendanceState extends State<EditAttendance> {
                       scrollDirection: Axis.horizontal,
                       child: Row(
                         children: [
-                          countBoxWidget("Students", totalStudent),
-                          countBoxWidget("Toal Present", totalPresent),
-                          countBoxWidget("Total Absent", totalAbsent),
+                          countBoxWidget("Total: ", totalStudent),
+                          countBoxWidget("Present: ", totalPresent),
+                          countBoxWidget("Absent: ", totalAbsent),
                         ],
                       ),
                     ),

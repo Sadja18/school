@@ -318,9 +318,9 @@ class _StickyNumericAbilityState extends State<StickyNumericAbility> {
               columnWidths: List<double>.generate(
                   columnsLengthCalculator(), (int index) => 120),
               rowHeights:
-                  List<double>.generate(studentList.length, (int index) => 100),
+                  List<double>.generate(studentList.length, (int index) => 40),
               stickyLegendWidth: 100,
-              stickyLegendHeight: 100),
+              stickyLegendHeight: 40),
           initialScrollOffsetX: 0.0,
           initialScrollOffsetY: 0.0,
           scrollControllers: scrollControllers(),

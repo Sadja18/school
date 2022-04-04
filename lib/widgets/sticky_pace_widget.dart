@@ -218,7 +218,7 @@ class _StickyPaceWidgetState extends State<StickyPaceWidget> {
     for (int i = 0; i < totQues; i++) {
       titleHeader.add('Q${i + 1}');
     }
-    titleHeader.add('Total Marks');
+    titleHeader.add('Total');
     titleHeader.add('Result');
     return titleHeader[index];
   }
@@ -605,9 +605,9 @@ class _StickyPaceWidgetState extends State<StickyPaceWidget> {
             columnWidths: List<double>.generate(
                 titleColumnLengthCalculator(), (int index) => 120),
             rowHeights:
-                List<double>.generate(studentList.length, (int index) => 100),
+                List<double>.generate(studentList.length, (int index) => 40),
             stickyLegendWidth: 100,
-            stickyLegendHeight: 100),
+            stickyLegendHeight: 40),
         initialScrollOffsetX: 0.0,
         initialScrollOffsetY: 0.0,
         scrollControllers: ScrollControllers(
