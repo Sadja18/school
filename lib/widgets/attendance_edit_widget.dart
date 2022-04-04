@@ -77,26 +77,38 @@ class _EditAttendanceState extends State<EditAttendance> {
 
   Widget countBoxWidget(String headerString, int value) {
     return Container(
-      width: MediaQuery.of(context).size.width * 0.80,
-      margin: const EdgeInsets.symmetric(vertical: 8.0),
-      padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 5.0),
+      alignment: Alignment.center,
+      width: MediaQuery.of(context).size.width * 0.30,
+      height: MediaQuery.of(context).size.height * 0.08,
+      margin: const EdgeInsets.symmetric(
+        vertical: 8.0,
+        horizontal: 2.5,
+      ),
+      padding: const EdgeInsets.symmetric(
+        vertical: 0.2,
+        horizontal: 0.2,
+      ),
       decoration: BoxDecoration(
         border: Border.all(),
+        // color: Colors.red,
       ),
-      child: Table(
-        columnWidths: const {
-          0: IntrinsicColumnWidth(),
-          1: FlexColumnWidth(),
-        },
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          TableRow(
-            children: [
-              Text(headerString),
-              SizedBox(
-                width: MediaQuery.of(context).size.width * 0.02,
-              ),
-              Text('$value'),
-            ],
+          Text(
+            headerString,
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 18.5,
+            ),
+            maxLines: 2,
+          ),
+          Text(
+            '$value',
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 18.5,
+            ),
           ),
         ],
       ),
@@ -339,9 +351,9 @@ class _EditAttendanceState extends State<EditAttendance> {
           cellDimensions: CellDimensions.variableColumnWidthAndRowHeight(
               columnWidths: List<double>.generate(2, (int index) => 120),
               rowHeights:
-                  List<double>.generate(studentList.length, (int index) => 100),
+                  List<double>.generate(studentList.length, (int index) => 75),
               stickyLegendWidth: 100,
-              stickyLegendHeight: 100),
+              stickyLegendHeight: 75),
           initialScrollOffsetX: 0.0,
           initialScrollOffsetY: 0.0,
           scrollControllers: scrollControllers(),
@@ -439,11 +451,18 @@ class _EditAttendanceState extends State<EditAttendance> {
               height: MediaQuery.of(context).size.height,
               child: Column(
                 children: [
-                  countBoxWidget("Total Students:", totalStudent),
-                  countBoxWidget("Toal Present: ", totalPresent),
-                  countBoxWidget("Total Absent:", totalAbsent),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 10.0),
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width,
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: [
+                          countBoxWidget("Students", totalStudent),
+                          countBoxWidget("Toal Present", totalPresent),
+                          countBoxWidget("Total Absent", totalAbsent),
+                        ],
+                      ),
+                    ),
                   ),
                   SizedBox(
                     child: attendanceTableEdit(),
