@@ -84,9 +84,9 @@ class _EditAttendanceState extends State<EditAttendance> {
         vertical: 8.0,
         horizontal: 2.5,
       ),
-      padding: const EdgeInsets.symmetric(
-        vertical: 0.2,
-        horizontal: 0.2,
+      padding: const EdgeInsets.only(
+        top: 6.0,
+        left: 0.2,
       ),
       decoration: BoxDecoration(
         border: Border.all(),
