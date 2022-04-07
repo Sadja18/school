@@ -649,7 +649,7 @@ class _StickyPaceWidgetState extends State<StickyPaceWidget> {
           height: MediaQuery.of(context).size.height,
           width: MediaQuery.of(context).size.width,
           child: const Text(
-            'Roll No',
+            'Roll',
             softWrap: false,
             style: TextStyle(
               fontWeight: FontWeight.bold,
