@@ -39,28 +39,40 @@ class _StickyNumericAbilityState extends State<StickyNumericAbility> {
   ScrollController horizontalBodyController =
       ScrollController(initialScrollOffset: 0.0);
 
+  void getLevels(selectedClass) async {
+    var queryResult = await DBProvider.db.getNumericLevels(selectedClass);
+    var levels = queryResult.toList();
+    List<String> levelList = [];
+    if (kDebugMode) {
+      print('llevels');
+      print(levels.toString());
+    }
+  }
+
   void selectClass(String selectedClass) {
     setState(() {
       _selectedClass = selectedClass;
     });
     if (kDebugMode) {
       print('reverse classData callback');
+      print(selectedClass);
     }
-    DBProvider.db.getNumericLevels(selectedClass).then((queryResult) {
-      // print(levels.runtimeType);
-      var levels = queryResult.toList();
-      List<String> levelList = [];
-      if (levels.isNotEmpty) {
-        for (var level in levels) {
-          levelList.add(level['name']);
-        }
-        setState(() {
-          // levelList.insert(0, 'Not Evaluated');
-          levelList.insert(0, '0');
-          _levelNames = levelList;
-        });
-      }
-    });
+    getLevels(selectedClass);
+    // DBProvider.db.getNumericLevels(selectedClass).then((queryResult) {
+    //   // print(levels.runtimeType);
+    //   var levels = queryResult.toList();
+    //   List<String> levelList = [];
+    //   if (levels.isNotEmpty) {
+    //     for (var level in levels) {
+    //       levelList.add(level['name']);
+    //     }
+    //     setState(() {
+    //       // levelList.insert(0, 'Not Evaluated');
+    //       levelList.insert(0, '0');
+    //       _levelNames = levelList;
+    //     });
+    //   }
+    // });
   }
 
   void selectedDate(String? selectDate) {
@@ -313,24 +325,26 @@ class _StickyNumericAbilityState extends State<StickyNumericAbility> {
           ),
         ),
         // padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 24.0),
-        child: StickyHeadersTable(
-          cellDimensions: CellDimensions.variableColumnWidthAndRowHeight(
-              columnWidths: List<double>.generate(
-                  columnsLengthCalculator(), (int index) => 120),
-              rowHeights:
-                  List<double>.generate(studentList.length, (int index) => 40),
-              stickyLegendWidth: 100,
-              stickyLegendHeight: 40),
-          initialScrollOffsetX: 0.0,
-          initialScrollOffsetY: 0.0,
-          scrollControllers: scrollControllers(),
-          columnsLength: columnsLengthCalculator(),
-          rowsLength: rowsLengthCalculator(),
-          columnsTitleBuilder: columnsTitleBuilder,
-          rowsTitleBuilder: rowsTitleBuilder,
-          contentCellBuilder: (i, j) => cellWidget(i, j),
-          legendCell: legendCellBuilder(),
-        ),
+        child: (1 == 1)
+            ? const Text("")
+            : StickyHeadersTable(
+                cellDimensions: CellDimensions.variableColumnWidthAndRowHeight(
+                    columnWidths: List<double>.generate(
+                        columnsLengthCalculator(), (int index) => 120),
+                    rowHeights: List<double>.generate(
+                        studentList.length, (int index) => 40),
+                    stickyLegendWidth: 100,
+                    stickyLegendHeight: 40),
+                initialScrollOffsetX: 0.0,
+                initialScrollOffsetY: 0.0,
+                scrollControllers: scrollControllers(),
+                columnsLength: columnsLengthCalculator(),
+                rowsLength: rowsLengthCalculator(),
+                columnsTitleBuilder: columnsTitleBuilder,
+                rowsTitleBuilder: rowsTitleBuilder,
+                contentCellBuilder: (i, j) => cellWidget(i, j),
+                legendCell: legendCellBuilder(),
+              ),
       ),
     );
   }

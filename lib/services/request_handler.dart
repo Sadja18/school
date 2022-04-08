@@ -166,18 +166,6 @@ void fetchPersistent() async {
         if (kDebugMode) {
           print('persistent fetched');
           // assessments can be empty
-
-          // print(year);
-          // print(classes);
-          // print(teacher);
-          print(school);
-          // print(students);
-          // print(languages);
-          // print(readingLevels);
-          // print(numericLevels);
-          // print(qPaper);
-          // print(grading);
-          // print(assessments['assessments']);
         }
 
         await DBProvider.db.saveFetchedData(

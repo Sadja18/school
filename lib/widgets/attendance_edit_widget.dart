@@ -344,12 +344,12 @@ class _EditAttendanceState extends State<EditAttendance> {
           border: Border.all(color: Colors.black),
           // borderRadius: BorderRadius.circular(2.0),
         ),
-        width: MediaQuery.of(context).size.width * 0.80,
+        width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height * 0.6,
         // padding: const EdgeInsets.fromLTRB(4.0, 4.0, 4.0, 4.0),
         child: StickyHeadersTable(
           cellDimensions: CellDimensions.variableColumnWidthAndRowHeight(
-            columnWidths: List<double>.generate(2, (int index) => 120),
+            columnWidths: [200, 100],
             rowHeights:
                 List<double>.generate(studentList.length, (int index) => 35),
             stickyLegendWidth: 100,
@@ -465,7 +465,9 @@ class _EditAttendanceState extends State<EditAttendance> {
                       ),
                     ),
                   ),
-                  SizedBox(
+                  Container(
+                    width: MediaQuery.of(context).size.width,
+                    decoration: const BoxDecoration(color:Colors.green),
                     child: attendanceTableEdit(),
                     height: MediaQuery.of(context).size.height * 0.5,
                   ),

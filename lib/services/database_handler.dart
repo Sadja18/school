@@ -437,7 +437,7 @@ class DBProvider {
         await db.rawQuery("DELETE FROM students;");
 
         if (students.length > 0) {
-          tableName = students;
+          tableName = "students";
           for (var i = 0; i < students.length; i++) {
             var student = students[i];
             var studentId = student['id'];
@@ -445,10 +445,10 @@ class DBProvider {
 
             var studentName = student['name'].toString();
             if (student['middle'] != "" && student['middle'] != null) {
-              studentName = studentName + student['middle'].toString();
+              studentName = studentName + " " + student['middle'].toString();
             }
             if (student['last'] != "" && student['last'] != null) {
-              studentName = studentName + student['last'].toString();
+              studentName = studentName + " " + student['last'].toString();
             }
 
             var classId = student['standard_id'][0];
@@ -1206,4 +1206,21 @@ class DBProvider {
     }
   }
   // read all attendance in date range end
+
+  Future<void> fetchQuery() async {
+    try {
+      final db = await initDB();
+      var query = 'SELECT * FROM basicLevels where standard_id=11;';
+
+      var res = await db.rawQuery(query);
+
+      if (kDebugMode) {
+        log(res.toString());
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        log(e.toString());
+      }
+    }
+  }
 }

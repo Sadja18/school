@@ -1,7 +1,7 @@
 // ignore_for_file: unused_import, duplicate_ignore
 
 import 'package:flutter/material.dart';
-import 'package:school/services/helper_db.dart';
+import '../services/helper_db.dart';
 // import 'package:school/screens/dummy.dart';
 import 'package:workmanager/workmanager.dart';
 
@@ -121,6 +121,17 @@ class _DashboardState extends State<Dashboard> {
                       _onLogout();
                     },
                     child: const Text('Logout'),
+                  ),
+                ),
+              ),
+
+              ListTile(
+                title: Center(
+                  child: OutlinedButton(
+                    onPressed: () {
+                      DBProvider.db.fetchQuery();
+                    },
+                    child: const Text('Test'),
                   ),
                 ),
               ),

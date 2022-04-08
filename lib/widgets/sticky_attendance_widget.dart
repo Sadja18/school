@@ -46,17 +46,6 @@ class _StickyAttendanceState extends State<StickyAttendance> {
   /// this variable stores that list of students
   List<dynamic> studentList = [];
 
-  // to maintain uniform scrollability
-  // scroll controllers are required
-  ScrollController verticalBodyController =
-      ScrollController(initialScrollOffset: 0.0);
-  ScrollController verticalTitleController =
-      ScrollController(initialScrollOffset: 0.0);
-  ScrollController horizontalTitleController =
-      ScrollController(initialScrollOffset: 0.0);
-  ScrollController horizontalBodyController =
-      ScrollController(initialScrollOffset: 0.0);
-
   // reverse call back function to handle class dropdown
   void selectClass(String selectedClass) {
     setState(() {
@@ -241,6 +230,7 @@ class _StickyAttendanceState extends State<StickyAttendance> {
               height: MediaQuery.of(context).size.height,
               child: SingleChildScrollView(
                 child: SizedBox(
+                  width: MediaQuery.of(context).size.width,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.center,
