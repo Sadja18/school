@@ -342,7 +342,7 @@ class DBProvider {
         Map<String, Object> data = {"academic_year": year};
         tableName = "academic";
 
-        await db.rawQuery("DELETE FROM academic");
+        await db.rawQuery("DELETE FROM academic;");
 
         var res = await db.insert(tableName, data,
             conflictAlgorithm: ConflictAlgorithm.replace);
@@ -356,7 +356,7 @@ class DBProvider {
       if (teacher.isNotEmpty && teacher != null) {
         tableName = 'teacher';
 
-        await db.rawQuery("DELETE FROM teacher");
+        await db.rawQuery("DELETE FROM teacher;");
 
         Map<String, Object> data = {
           "teacher_id": teacher['teacher_id'],
@@ -376,7 +376,7 @@ class DBProvider {
       if (school.isNotEmpty && school != null) {
         tableName = 'school';
 
-        await db.rawQuery("DELETE FROM school");
+        await db.rawQuery("DELETE FROM school;");
 
         Map<String, Object> data = {
           "school_id": school['school_id'],
@@ -394,7 +394,7 @@ class DBProvider {
 
       // insert classes
       if (classes.isNotEmpty) {
-        await db.rawQuery("DELETE FROM classes");
+        await db.rawQuery("DELETE FROM classes;");
 
         if (classes.length > 0 && classes.runtimeType == List<dynamic>) {
           for (var a = 0; a < classes.length; a++) {
@@ -434,7 +434,7 @@ class DBProvider {
       // insert student
 
       if (students.isNotEmpty && students != null) {
-        await db.rawQuery("DELETE FROM students");
+        await db.rawQuery("DELETE FROM students;");
 
         if (students.length > 0) {
           tableName = students;
@@ -475,7 +475,7 @@ class DBProvider {
 
       //insert languages
       if (languages.isNotEmpty && languages != null && languages.length > 0) {
-        await db.rawQuery("DELETE FROM languages");
+        await db.rawQuery("DELETE FROM languages;");
 
         tableName = "languages";
         for (var a = 0; a < languages.length; a++) {
@@ -501,17 +501,177 @@ class DBProvider {
       // insert languages
 
       // insert grading
+      if (grading.isEmpty && grading != null && grading.length > 0) {
+        await db.rawQuery('DELETE FROM pacegrade;');
+        var tableName = 'pacegrade';
+
+        for (var i = 0; i < grading.length; i++) {
+          var grade = grading[i];
+
+          var id = grade['id'];
+          var fromMarks = grade['from_mark'];
+          var toMarks = grade['to_marks'];
+          var result = grade['result'];
+
+          Map<String, Object> data = {
+            'id': id,
+            'from_marks': fromMarks,
+            'to_marks': toMarks,
+            'result': result,
+          };
+
+          var res = await db.insert(tableName, data,
+              conflictAlgorithm: ConflictAlgorithm.replace);
+
+          if (kDebugMode) {
+            print('Inserted in $tableName $res');
+          }
+        }
+      }
       // insert grading
 
+      // insert qpapers
+      if (qpapers.isNotEmpty && qpapers != null && qpapers.length > 0) {
+        await db.rawQuery("DELETE FROM qPaper;");
+
+        tableName = 'qPaper';
+
+        for (var i = 0; i < qpapers.length; i++) {
+          var qpaper = qpapers[i];
+          var qpaperName = qpaper['qp_code'];
+          var qpaperId = qpaper['id'];
+          var qpaperMedium = qpaper['medium'];
+          var qpaperStdId = qpaper['standard_id'];
+          var qpaperSubj = qpaper['subject'];
+          var totques = qpaper['totques'];
+          var totmarks = qpaper['totmarks'];
+          Map<String, Object> data = {
+            'id': qpaperId,
+            'qp_code': qpaperName,
+            'medium_id': qpaperMedium[0],
+            'subject_id': qpaperSubj[0],
+            'standard_id': qpaperStdId[0],
+            'totques': totques,
+            'totmarks': totmarks
+          };
+          var res = await db.insert(tableName, data,
+              conflictAlgorithm: ConflictAlgorithm.replace);
+
+          if (kDebugMode) {
+            print('Inserted in $tableName $res');
+          }
+        }
+      }
+      // insert qpapers
+
       // insert reading levels
+      if (readingLevels != null &&
+          readingLevels.isNotEmpty &&
+          readingLevels.length > 0) {
+        await db.rawQuery('DELETE FROM basicLevels');
+        tableName = 'basicLevels';
+
+        for (var i = 0; i < readingLevels.length; i++) {
+          var readingLevel = readingLevels[i];
+          var levelId = readingLevel['id'];
+          var standard = readingLevel['standard'];
+          var standardId = standard[0];
+          var name = readingLevel['name'];
+          var subject = readingLevel['subject'];
+          var subjectId = subject[0];
+          var subjectName = subject[1];
+
+          Map<String, Object> data = {
+            'levelId': levelId,
+            'standard_id': standardId,
+            'name': name,
+            'subject_id': subjectId,
+            "subject_name": subjectName
+          };
+
+          var res = await db.insert(tableName, data,
+              conflictAlgorithm: ConflictAlgorithm.replace);
+
+          if (kDebugMode) {
+            print('Inserted $res in $tableName');
+          }
+        }
+      }
       // insert reading levels
 
       // insert numeric levels
+      if (numericLevels != null &&
+          numericLevels.isNotEmpty &&
+          numericLevels.length > 0) {
+        await db.rawQuery('DELETE FROM numericLevels');
+        tableName = 'numericLevels';
+
+        for (var i = 0; i < numericLevels.length; i++) {
+          var numericLevel = numericLevels[i];
+          var levelId = numericLevel['id'];
+          var standard = numericLevel['standard'];
+          var standardId = standard[0];
+          var name = numericLevel['name'];
+
+          Map<String, Object> data = {
+            'levelId': levelId,
+            'standard_id': standardId,
+            'name': name,
+          };
+
+          var res = await db.insert(tableName, data,
+              conflictAlgorithm: ConflictAlgorithm.replace);
+
+          if (kDebugMode) {
+            print('Inserted $res in $tableName');
+          }
+        }
+      }
       // insert numeric levels
 
       // insert assessments
-      // insert assessments
+      if (assessments != null &&
+          assessments.isNotEmpty &&
+          assessments.length > 0) {
+        tableName = 'paceSchedule';
 
+        for (var i = 0; i < assessments.length; i++) {
+          var assessment = assessments[i];
+          var id = assessment['id'];
+          var name = assessment['name'];
+          var subjectId = assessment['subject'][0];
+          var subjectName = assessment['subject'][1];
+          var qpCode = assessment['qp_code'][0];
+          var qpCodeName = assessment['qp_code'][1];
+          var date = assessment['date'];
+          var standardId = assessment['standard_id'][0];
+          var standardName = assessment['standard_id'][1];
+          var mediumId = assessment['medium'][0];
+          var mediumName = assessment['medium'][1];
+          // print('${qpCode} :: ${qpCodeName}');
+
+          Map<String, Object> data = {
+            'id': id,
+            'name': name,
+            'subject_id': subjectId,
+            'subject_name': subjectName,
+            'qp_code': qpCode,
+            'qp_code_name': qpCodeName,
+            'date': date,
+            'standard_id': standardId,
+            'standard_name': standardName,
+            'medium_id': mediumId,
+            'medium_name': mediumName
+          };
+
+          var res = await db.insert(tableName, data,
+              conflictAlgorithm: ConflictAlgorithm.replace);
+          if (kDebugMode) {
+            print('Inserted in $tableName $res');
+          }
+        }
+      }
+      // insert assessments
 
     } catch (e) {
       log(e.toString());
