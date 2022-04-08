@@ -46,10 +46,10 @@ class _DashboardState extends State<Dashboard> {
     super.initState();
     fetchPersistent();
     Workmanager().initialize(callbackDispatcher, isInDebugMode: true);
-    Workmanager().registerOneOffTask("1", fetchOne);
-    Workmanager().registerPeriodicTask("2",
-        fetchOne, //This is the value that will be returned in the callbackDispatcher
-        frequency: const Duration(minutes: 30, hours: 5));
+    // Workmanager().registerOneOffTask("1", fetchOne);
+    // Workmanager().registerPeriodicTask("2",
+    //     fetchOne, //This is the value that will be returned in the callbackDispatcher
+    //     frequency: const Duration(minutes: 30, hours: 5));
     setUserName();
   }
 

@@ -104,8 +104,8 @@ void wrapper() {
   }
   fetchPersistent();
 
-  syncAttendance();
-  syncBasic();
-  syncNumeric();
-  syncPace();
+  // syncAttendance();
+  // syncBasic();
+  // syncNumeric();
+  // syncPace();
 }

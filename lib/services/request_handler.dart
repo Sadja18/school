@@ -45,45 +45,168 @@ Future<dynamic> tryLogin(String username, String userpassword) async {
 
 void fetchPersistent() async {
   try {
-    DBProvider.db.getCredentials().then((value) async {
-      // print(value.toString());
+    var value = await DBProvider.db.getCredentials();
+    final userName = value[0]['userName'];
+    final userPassword = value[0]['userPassword'];
+    final dbname = value[0]['dbname'];
 
-      final userName = value[0]['userName'];
-      final userPassword = value[0]['userPassword'];
-      final dbname = value[0]['dbname'];
+    Map<String, String> queryParams = {
+      'userName': userName as String,
+      'userPassword': userPassword as String,
+      'dbname': dbname as String,
+      'Persistent': '1',
+    };
+    var requestURL = Uri(
+        scheme: 'http',
+        host: uri_paths.baseURLA,
+        path: uri_paths.fetchRelevantData,
+        queryParameters: queryParams);
+    print('sending persistent');
 
-      Map<String, String> queryParams = {
-        'userName': userName as String,
-        'userPassword': userPassword as String,
-        'dbname': dbname as String,
-        'Persistent': '1',
-      };
-      var requestURL = Uri(
-          scheme: 'http',
-          host: uri_paths.baseURLA,
-          path: uri_paths.fetchRelevantData,
-          queryParameters: queryParams);
-      print('sending persistent');
-      await http.get(requestURL).then((response) {
-        print(response.statusCode);
-        if (response.statusCode == 200) {
-          final respBody = jsonDecode(response.body);
-          // print(respBody.toString());
-          if (respBody['teacher'].isNotEmpty &&
-              respBody['school'].isNotEmpty &&
-              respBody['classes'].isNotEmpty &&
-              respBody['students'].isNotEmpty) {
-            print('teacger aexpfja');
-            // print(respBody.keys);
-            DBProvider.db.saveFetchedData(respBody);
-          }
-        } else {
-          print('something');
+    var yearResp = await http.get(Uri(
+        scheme: 'http',
+        host: uri_paths.baseURLA,
+        path: uri_paths.fetchYear,
+        queryParameters: queryParams));
+
+    var teacherResp = await http.get(Uri(
+        scheme: 'http',
+        host: uri_paths.baseURLA,
+        path: uri_paths.fetchTeacher,
+        queryParameters: queryParams));
+
+    var schoolResp = await http.get(Uri(
+        scheme: 'http',
+        host: uri_paths.baseURLA,
+        path: uri_paths.fetchSchool,
+        queryParameters: queryParams));
+
+    var classResp = await http.get(Uri(
+        scheme: 'http',
+        host: uri_paths.baseURLA,
+        path: uri_paths.fetchClasses,
+        queryParameters: queryParams));
+
+    var studentsResp = await http.get(Uri(
+        scheme: 'http',
+        host: uri_paths.baseURLA,
+        path: uri_paths.fetchStudents,
+        queryParameters: queryParams));
+
+    var languagesResp = await http.get(Uri(
+        scheme: 'http',
+        host: uri_paths.baseURLA,
+        path: uri_paths.fetchLanguages,
+        queryParameters: queryParams));
+
+    var readingLevelResp = await http.get(Uri(
+        scheme: 'http',
+        host: uri_paths.baseURLA,
+        path: uri_paths.fetchReadingLevels,
+        queryParameters: queryParams));
+
+    var numericLevelResp = await http.get(Uri(
+        scheme: 'http',
+        host: uri_paths.baseURLA,
+        path: uri_paths.fetchNumericLevels,
+        queryParameters: queryParams));
+
+    var assessmentsResp = await http.get(Uri(
+        scheme: 'http',
+        host: uri_paths.baseURLA,
+        path: uri_paths.fetchAssessments,
+        queryParameters: queryParams));
+
+    var qPaperResp = await http.get(Uri(
+        scheme: 'http',
+        host: uri_paths.baseURLA,
+        path: uri_paths.fetchQPapers,
+        queryParameters: queryParams));
+
+    var gradingResp = await http.get(Uri(
+        scheme: 'http',
+        host: uri_paths.baseURLA,
+        path: uri_paths.fetchGrading,
+        queryParameters: queryParams));
+
+    if (gradingResp.statusCode == 200 &&
+        qPaperResp.statusCode == 200 &&
+        assessmentsResp.statusCode == 200 &&
+        numericLevelResp.statusCode == 200 &&
+        readingLevelResp.statusCode == 200 &&
+        languagesResp.statusCode == 200 &&
+        studentsResp.statusCode == 200 &&
+        classResp.statusCode == 200 &&
+        schoolResp.statusCode == 200 &&
+        teacherResp.statusCode == 200 &&
+        yearResp.statusCode == 200) {
+      var year = jsonDecode(yearResp.body);
+      var teacher = jsonDecode(teacherResp.body);
+      var school = jsonDecode(schoolResp.body);
+      var classes = jsonDecode(classResp.body);
+      var students = jsonDecode(studentsResp.body);
+      var langauges = jsonDecode(languagesResp.body);
+      var readingLevels = jsonDecode(readingLevelResp.body);
+      var numericLevels = jsonDecode(numericLevelResp.body);
+      var assessments = jsonDecode(assessmentsResp.body);
+      var qPaper = jsonDecode(qPaperResp.body);
+      var grading = jsonDecode(gradingResp.body);
+
+      if (year['academic_year'] != null &&
+          classes['classes'] != null &&
+          teacher['teacher'] != null &&
+          school['school'] != null &&
+          students['students'] != null &&
+          langauges['languages'] != null &&
+          readingLevels['reading_levels'] != null &&
+          numericLevels['numeric_levels'] != null &&
+          qPaper['qpapers'] != null &&
+          grading['grading'] != null &&
+          assessments['assessments'] != null) {
+        if (kDebugMode) {
+          print('persistent fetched');
+        
+          print(year);
+          print(classes);
+          print(teacher);
+          print(school);
+          print(students);
+          print(langauges);
+          print(readingLevels);
+          print(numericLevels);
+          print(qPaper);
+          print(grading);
+          print(assessments);
         }
-      });
-    });
+      } else {
+        if (kDebugMode) {
+          print('null body');
+          print(year['academic_year'] != null);
+          print(classes['classes'] != null);
+          print(teacher['teacher'] != null);
+          print(school['school'] != null);
+          print(students['students'] != null);
+          print(langauges['languages'] != null);
+          print(readingLevels['reading_levels'] != null);
+          print(numericLevels['numeric_levels'] != null);
+          print(qPaper['qpapers'] != null);
+          print(grading['grading'] != null);
+          print(assessments['assessments'] != null);
+        }
+      }
+    } else {
+      if (kDebugMode) {
+        print('some not 200 statuscode');
+      }
+    }
+
+    //       DBProvider.db.saveFetchedData(respBody);
+
   } catch (e) {
     // return e;
+    if (kDebugMode) {
+      log(e.toString());
+    }
   }
 }
 
