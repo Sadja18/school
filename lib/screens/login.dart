@@ -1,5 +1,6 @@
 // ignore_for_file: avoid_print, duplicate_ignore, unused_import
 
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
@@ -60,113 +61,91 @@ class _LoginState extends State<Login> {
   }
 
   // ignore: duplicate_ignore, duplicate_ignore
-  void _onClickLogin(BuildContext context) {
-    final enteredUserName = usernameController.text;
-    final enteredUserPassword = userPasswordController.text;
+  void _onClickLogin(BuildContext context) async {
+    try {
+      final enteredUserName = usernameController.text;
+      final enteredUserPassword = userPasswordController.text;
 
-    if (enteredUserPassword.isEmpty || enteredUserName.isEmpty) {
-      return;
-    }
+      if (enteredUserPassword.isEmpty || enteredUserName.isEmpty) {
+        return;
+      }
 
-    
+      print('clicked');
 
-    print('clicked');
+      var connResponse = await request_handler.sendTestRequest();
+      var conn = connResponse;
 
-    var conn = request_handler.sendTestRequest();
+      if (kDebugMode) {
+        log(conn.toString());
+        log(conn.runtimeType.toString());
+      }
 
-    conn.then((response) {
-      if(kDebugMode){
-      print('object');
-      print(response.statusCode);
-    }
-      if (response.runtimeType == Response) {
-        if (response.statusCode == 200) {
-          setState(() {
-            _connection = jsonDecode(response.body);
-          });
-          // print('_connection');
-          if (_connection['connected'] == 'true' ||
-              _connection['connected'] == true) {
-            // print(_connection.toString());
-
-            if (enteredUserPassword.isNotEmpty &&
-                enteredUserPassword.isNotEmpty) {
-              request_handler
-                  .tryLogin(enteredUserName, enteredUserPassword)
-                  .then((response) {
-                if (response.runtimeType == Response) {
-                  // print('gerhqah');
-                  if (response.statusCode == 200) {
-                    var respBody = jsonDecode(response.body);
-                    if (respBody['login_status'] == 1) {
-                      setState(() {
-                        _messageCode = '1LO200';
-                      });
-                      _showAlertDialog();
-
-                      // print(respBody.runtimeType);
-                      saveUserToDB(respBody);
-                    } else {
-                      setState(() {
-                        _messageCode = '1LO01';
-                      });
-                      _showAlertDialog();
-                    }
-                  }
-                } else {
-                  print('offline mode on');
-                }
-              });
-            }
+      if (connResponse.runtimeType != SocketException) {
+        if (connResponse.statusCode == 200) {
+          var g = jsonDecode(connResponse.body);
+          if (kDebugMode) {
+            print('connection: ' + connResponse.statusCode.toString());
+            print('connection: ' + g['connected'].runtimeType.toString());
           }
-        }
-        if (response.statusCode == 402) {
-          print('offline mode, remote server down');
-          offlineLogin(enteredUserName, enteredUserPassword).then((value) {
-            print('here 1');
-            if (value['no_user'] == 1) {
-              setState(() {
-                _messageCode = '0LO01';
-              });
-              _showAlertDialog();
+          if (g != null && g['connected'] == "true") {
+            if (enteredUserPassword.isNotEmpty &&
+                enteredUserPassword != "" &&
+                enteredUserName.isNotEmpty &&
+                enteredUserName != "") {
+              var tryLoginRequest = await request_handler.tryLogin(
+                  enteredUserName, enteredUserPassword);
+              if (kDebugMode) {
+                print('try login: ' + tryLoginRequest.statusCode.toString());
+                print('try login: ' + tryLoginRequest.body.toString());
+              }
 
-              print('here no');
-            } else {
-              print('here 2');
+              if (tryLoginRequest.statusCode == 200) {
+                var loginRespBody = jsonDecode(tryLoginRequest.body);
+                if (loginRespBody != null && loginRespBody.isNotEmpty) {
+                  if (kDebugMode) {
+                    print('try login: ' + loginRespBody['user'].toString());
+                    print('try login: ' + loginRespBody['password'].toString());
+                    print('try login: ' + loginRespBody['dbname'].toString());
+                    print('try login: ' +
+                        loginRespBody['login_status'].toString());
+                    print('try login: ' + loginRespBody['userID'].toString());
+                    print('try login: ' + loginRespBody['isOnline'].toString());
+                  }
 
-              if (value['login_status'] == 1 || value['login_status'] == '1') {
-                setState(() {
-                  _messageCode = '0LO200';
-                });
-                _showAlertDialog();
-
-                print('here 3');
-              } else {
-                setState(() {
-                  _messageCode = '0LO02';
-                });
-                _showAlertDialog();
-
-                print('here 4');
+                  if (loginRespBody['login_status'] == 1 ||
+                      loginRespBody['login_status'] == '1') {
+                    setState(() {
+                      _messageCode = '1LO200';
+                    });
+                    await saveUserToDB(loginRespBody);
+                    _showAlertDialog();
+                  } else {
+                    setState(() {
+                      _messageCode = '1LO01';
+                    });
+                    _showAlertDialog();
+                  }
+                }
               }
             }
-          });
-        }
-      } else {
-        print('offline mode');
-        offlineLogin(enteredUserName, enteredUserPassword).then((value) {
-          print('here 1');
-          if (value['no_user'] == 1) {
+          }
+        } else {
+          if (kDebugMode) {
+            print('remote server down, offline attempt');
+          }
+          var offlineLoginAttempt =
+              await offlineLogin(enteredUserName, enteredUserPassword);
+
+          if (offlineLoginAttempt['no_user'] == 1) {
+            // if no user record was found
             setState(() {
               _messageCode = '0LO01';
             });
             _showAlertDialog();
-
-            print('here no');
           } else {
-            print('here 2');
-
-            if (value['login_status'] == 1 || value['login_status'] == '1') {
+            // if user record was found
+            if (offlineLoginAttempt['login_status'] == 1 ||
+                offlineLoginAttempt['login_status'] == '1') {
               setState(() {
                 _messageCode = '0LO200';
               });
@@ -182,9 +161,43 @@ class _LoginState extends State<Login> {
               print('here 4');
             }
           }
-        });
+        }
+      } else {
+        if (kDebugMode) {
+          print('remote server down, offline attempt');
+        }
+        var offlineLoginAttempt =
+            await offlineLogin(enteredUserName, enteredUserPassword);
+
+        if (offlineLoginAttempt['no_user'] == 1) {
+          // if no user record was found
+          setState(() {
+            _messageCode = '0LO01';
+          });
+          _showAlertDialog();
+        } else {
+          // if user record was found
+          if (offlineLoginAttempt['login_status'] == 1 ||
+              offlineLoginAttempt['login_status'] == '1') {
+            setState(() {
+              _messageCode = '0LO200';
+            });
+            _showAlertDialog();
+
+            print('here 3');
+          } else {
+            setState(() {
+              _messageCode = '0LO02';
+            });
+            _showAlertDialog();
+
+            print('here 4');
+          }
+        }
       }
-    });
+    } catch (e) {
+      log(e.toString());
+    }
   }
 
   @override

@@ -8,17 +8,21 @@ import 'package:intl/intl.dart';
 import '../models/response_struct.dart';
 import '../services/database_handler.dart';
 
-void saveUserToDB(Map<String, dynamic> userData) {
+Future<void> saveUserToDB(Map<String, dynamic> userData) async {
   // print(userData);
-  var userObject = User(
-      userName: userData['user'],
-      userPassword: userData['password'],
-      userId: userData['userID'],
-      loginStatus: userData['login_status'],
-      isOnline: userData['isOnline'],
-      dbname: 'school');
+  try {
+    var userObject = User(
+        userName: userData['user'],
+        userPassword: userData['password'],
+        userId: userData['userID'],
+        loginStatus: userData['login_status'],
+        isOnline: userData['isOnline'],
+        dbname: 'school');
 
-  DBProvider.db.insertUser(userObject);
+    await DBProvider.db.insertUser(userObject);
+  } catch (e) {
+    log(e.toString());
+  }
 }
 
 Future<dynamic> isLoggedIn() async {

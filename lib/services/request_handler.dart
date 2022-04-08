@@ -145,7 +145,7 @@ void fetchPersistent() async {
       var school = jsonDecode(schoolResp.body);
       var classes = jsonDecode(classResp.body);
       var students = jsonDecode(studentsResp.body);
-      var langauges = jsonDecode(languagesResp.body);
+      var languages = jsonDecode(languagesResp.body);
       var readingLevels = jsonDecode(readingLevelResp.body);
       var numericLevels = jsonDecode(numericLevelResp.body);
       var assessments = jsonDecode(assessmentsResp.body);
@@ -157,7 +157,7 @@ void fetchPersistent() async {
           teacher['teacher'] != null &&
           school['school'] != null &&
           students['students'] != null &&
-          langauges['languages'] != null &&
+          languages['languages'] != null &&
           readingLevels['reading_levels'] != null &&
           numericLevels['numeric_levels'] != null &&
           qPaper['qpapers'] != null &&
@@ -165,43 +165,108 @@ void fetchPersistent() async {
           assessments['assessments'] != null) {
         if (kDebugMode) {
           print('persistent fetched');
-        
-          print(year);
-          print(classes);
-          print(teacher);
+          // assessments can be empty
+
+          // print(year);
+          // print(classes);
+          // print(teacher);
           print(school);
-          print(students);
-          print(langauges);
-          print(readingLevels);
-          print(numericLevels);
-          print(qPaper);
-          print(grading);
-          print(assessments);
+          // print(students);
+          // print(languages);
+          // print(readingLevels);
+          // print(numericLevels);
+          // print(qPaper);
+          // print(grading);
+          // print(assessments['assessments']);
         }
+
+        await DBProvider.db.saveFetchedData(
+            year['academic_year'],
+            teacher['teacher'],
+            school['school'],
+            classes['classes'],
+            students['students'],
+            assessments['assessments'],
+            grading['grading'],
+            qPaper['qpapers'],
+            readingLevels['reading_levels'],
+            numericLevels['numeric_levels'],
+            languages['languages']);
       } else {
         if (kDebugMode) {
           print('null body');
-          print(year['academic_year'] != null);
-          print(classes['classes'] != null);
-          print(teacher['teacher'] != null);
-          print(school['school'] != null);
-          print(students['students'] != null);
-          print(langauges['languages'] != null);
-          print(readingLevels['reading_levels'] != null);
-          print(numericLevels['numeric_levels'] != null);
-          print(qPaper['qpapers'] != null);
-          print(grading['grading'] != null);
-          print(assessments['assessments'] != null);
+          // print("year['academic_year'] != null");
+          // print(year['academic_year'] != null);
+
+          // print("classes['classes'] != null");
+          // print(classes['classes'] != null);
+
+          // print("teacher['teacher'] != null");
+          // print(teacher['teacher'] != null);
+
+          // print("school['school'] != null");
+          // print(school['school'] != null);
+
+          // print("students['students'] != null");
+          // print(students['students'] != null);
+
+          // print("languages['languages'] != null");
+          // print(languages['languages'] != null);
+
+          // print("readingLevels['reading_levels'] != null");
+          // print(readingLevels['reading_levels'] != null);
+
+          // print("numericLevels['numeric_levels'] != null");
+          // print(numericLevels['numeric_levels'] != null);
+
+          // print("qPaper['qpapers'] != null");
+          // print(qPaper['qpapers'] != null);
+
+          // print("grading['grading'] != null");
+          // print(grading['grading'] != null);
+
+          // print("assessments['assessments'] != null");
+          // print(assessments['assessments'] != null);
         }
       }
     } else {
       if (kDebugMode) {
         print('some not 200 statuscode');
+        // print("gradingResp.statusCode == 200");
+
+        // print(gradingResp.statusCode == 200);
+        // print("qPaperResp.statusCode == 200");
+
+        // print(qPaperResp.statusCode == 200);
+        // print("assessmentsResp.statusCode == 200");
+
+        // print(assessmentsResp.statusCode == 200);
+        // print("numericLevelResp.statusCode == 200");
+
+        // print(numericLevelResp.statusCode == 200);
+        // print("readingLevelResp.statusCode == 200");
+
+        // print(readingLevelResp.statusCode == 200);
+        // print("languagesResp.statusCode == 200");
+
+        // print(languagesResp.statusCode == 200);
+        // print("studentsResp.statusCode == 200");
+
+        // print(studentsResp.statusCode == 200);
+        // print("classResp.statusCode == 200");
+
+        // print(classResp.statusCode == 200);
+        // print("schoolResp.statusCode == 200");
+
+        // print(schoolResp.statusCode == 200);
+        // print("teacherResp.statusCode == 200");
+
+        // print(teacherResp.statusCode == 200);
+        // print("yearResp.statusCode == 200");
+
+        // print(yearResp.statusCode == 200);
       }
     }
-
-    //       DBProvider.db.saveFetchedData(respBody);
-
   } catch (e) {
     // return e;
     if (kDebugMode) {

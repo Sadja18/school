@@ -60,6 +60,7 @@ class DBProvider {
         "student_id INTEGER PRIMARY KEY,"
         "student_roll_no TEXT,"
         "student_name TEXT,"
+        "class_id INTEGER NOT NULL,"
         "class_name TEXT NOT NULL);";
   }
 
@@ -300,267 +301,205 @@ class DBProvider {
         [1]);
   }
 
-  void saveFetchedData(fetchData) async {
-    final teacher = fetchData['teacher'];
-    final school = fetchData['school'];
-    final classes = fetchData['classes'];
-    final students = fetchData['students'];
-    final assessments = fetchData['assessments'];
-    final grading = fetchData['grading'];
-    final qpapers = fetchData['qpapers'];
-    final readingLevels = fetchData['reading_levels'];
-    final numericLevels = fetchData['numeric_levels'];
-    final languages = fetchData['langauges'];
+  // dynamic method for inserting data
+  Future<dynamic> dynamicInsert(
+      String tableName, Map<String, Object?> data) async {
+    try {
+      if (kDebugMode) {
+        print(tableName);
+      }
+      final db = await initDB();
+      var res = await db.insert(tableName, data,
+          conflictAlgorithm: ConflictAlgorithm.replace);
 
-    print('In save fetched');
-    // print(fetchData['classes'][0].toString());
-    if (classes.isNotEmpty &&
-        school.isNotEmpty &&
-        teacher.isNotEmpty &&
-        students.isNotEmpty &&
-        assessments.isNotEmpty &&
-        grading.isNotEmpty) {
-      final dba = initDB();
-      // final batch = db.batch();
-      dba.then((db) async {
-        final batch = db.batch();
-        batch.execute('DELETE FROM teacher');
-        batch.execute('DELETE FROM school');
-        batch.execute('DELETE FROM academic');
-        batch.execute('DELETE FROM classes');
-        batch.execute('DELETE FROM students');
-        batch.execute('DELETE FROM paceSchedule');
-        batch.execute('DELETE FROM qPaper');
-        batch.execute('DELETE FROM basicLevels');
-        batch.execute('DELETE FROM numericLevels');
+      if (kDebugMode) {
+        print('Inserted in $tableName $res');
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+  // dynamic method for inserting data end
 
-        batch.insert('teacher', {
-          'teacher_id': teacher['teacher_id'],
-          'teacher_name': teacher['teacher_name'],
-        });
-        print('inserting academic');
-        // print(fetchData['academic_year'].toString());
-        batch.insert('academic', {'academic_year': fetchData['academic_year']});
-        // print(2);
-        batch.insert('school', {
-          'school_id': school['school_id'],
-          'school_name': school['school_name'],
-        });
-        print(3);
+  Future<void> saveFetchedData(
+      year,
+      teacher,
+      school,
+      classes,
+      students,
+      assessments,
+      grading,
+      qpapers,
+      readingLevels,
+      numericLevels,
+      languages) async {
+    try {
+      final db = await initDB();
+      String tableName = "";
+
+      // insert academic year
+      if (year != null && year.isNotEmpty) {
+        Map<String, Object> data = {"academic_year": year};
+        tableName = "academic";
+
+        await db.rawQuery("DELETE FROM academic");
+
+        var res = await db.insert(tableName, data,
+            conflictAlgorithm: ConflictAlgorithm.replace);
+        if (kDebugMode) {
+          print('Inserted in $tableName $res');
+        }
+      }
+      // insert academic year
+
+      // insert teacher
+      if (teacher.isNotEmpty && teacher != null) {
+        tableName = 'teacher';
+
+        await db.rawQuery("DELETE FROM teacher");
+
+        Map<String, Object> data = {
+          "teacher_id": teacher['teacher_id'],
+          "teacher_name": teacher['teacher_name']
+        };
+
+        var res = await db.insert(tableName, data,
+            conflictAlgorithm: ConflictAlgorithm.replace);
+
+        if (kDebugMode) {
+          print('Inserted in $tableName $res');
+        }
+      }
+      // insert teacher
+
+      // insert school
+      if (school.isNotEmpty && school != null) {
+        tableName = 'school';
+
+        await db.rawQuery("DELETE FROM school");
+
+        Map<String, Object> data = {
+          "school_id": school['school_id'],
+          "school_name": school['school_name']
+        };
+
+        var res = await db.insert(tableName, data,
+            conflictAlgorithm: ConflictAlgorithm.replace);
+
+        if (kDebugMode) {
+          print('Inserted in $tableName $res');
+        }
+      }
+      // insert school
+
+      // insert classes
+      if (classes.isNotEmpty) {
+        await db.rawQuery("DELETE FROM classes");
+
         if (classes.length > 0 && classes.runtimeType == List<dynamic>) {
-          // print(classes.length);
           for (var a = 0; a < classes.length; a++) {
             // print(a.runtimeType);
             if (classes[a].isNotEmpty && classes.runtimeType != String) {
-              // print('classes $a');
-              try {
-                var classId = classes[a]['id'];
-                var className = classes[a]['name'];
-                var standard = classes[a]['standard_id'];
-                var medium = classes[a]['medium_id'];
-                var division = classes[a]['division_id'];
+              var classRecord = classes[a];
+              var classId = classes[a]['id'];
+              var className = classes[a]['name'];
+              var standard = classes[a]['standard_id'];
+              var medium = classes[a]['medium_id'];
+              var division = classes[a]['division_id'];
 
-                if (standard.isNotEmpty &&
-                    medium.isNotEmpty &&
-                    division.isNotEmpty) {
-                  batch.insert('classes', {
-                    'class_id': classId,
-                    'class_name': className,
-                    'standard_id': standard[0],
-                    'standard_name': standard[1],
-                    'medium_id': medium[0],
-                    'medium_name': medium[1],
-                    'division_id': division[0],
-                    'division_name': division[1]
-                  });
-                }
-              } catch (e) {
-                continue;
+              Map<String, Object> data = {
+                'class_id': classId,
+                'class_name': className,
+                'standard_id': standard[0],
+                'standard_name': standard[1],
+                'medium_id': medium[0],
+                'medium_name': medium[1],
+                'division_id': division[0],
+                'division_name': division[1]
+              };
+              tableName = "classes";
+
+              var res = await db.insert(tableName, data,
+                  conflictAlgorithm: ConflictAlgorithm.replace);
+
+              if (kDebugMode) {
+                print('Inserted in $tableName $res');
               }
             }
           }
         }
-        print(4);
+      }
+      // insert classes
 
-        // start saving reading langauges
-        for (var language in languages) {
-          var id = language['id'];
-          var standard = language['standard_id'];
-          var standardId = standard[0];
-          var medium = language['medium_id'];
-          var languageName = medium[1];
-          var langId = medium[0];
-          // print(langId);
+      // insert student
 
-          if (standardId != null && langId != null && languageName != null) {
-            batch.insert('languages', {
-              'langId': medium[0],
-              'langName': languageName,
-              'standard_id': standardId
-            });
-          }
-          // print(language);
-        }
-        //
+      if (students.isNotEmpty && students != null) {
+        await db.rawQuery("DELETE FROM students");
 
-        //students
-        // print(students.runtimeType);
-        var keys = students.keys.toList();
-        for (var key in keys) {
-          if (students[key].isNotEmpty) {
-            var studentRecords = students[key];
-            var className = key;
-            try {
-              if (studentRecords.isNotEmpty && studentRecords.length > 0) {
-                for (var student in studentRecords) {
-                  var studentId = student['id'];
-                  var studentName = student['name'];
-                  var studentRoll = student['roll_no'];
+        if (students.length > 0) {
+          tableName = students;
+          for (var i = 0; i < students.length; i++) {
+            var student = students[i];
+            var studentId = student['id'];
+            var rollNo = student['roll_no'];
 
-                  batch.insert('students', {
-                    'student_id': studentId,
-                    'student_name': studentName,
-                    'student_roll_no': studentRoll,
-                    'class_name': key
-                  });
-                }
-              }
-            } catch (e) {
-              continue;
+            var studentName = student['name'].toString();
+            if (student['middle'] != "" && student['middle'] != null) {
+              studentName = studentName + student['middle'].toString();
+            }
+            if (student['last'] != "" && student['last'] != null) {
+              studentName = studentName + student['last'].toString();
+            }
+
+            var classId = student['standard_id'][0];
+            var className = student['standard_id'][1];
+
+            Map<String, Object> data = {
+              "student_id": studentId,
+              "student_name": studentName,
+              "student_roll_no": rollNo.toString(),
+              "class_id": classId,
+              "class_name": className.toString()
+            };
+
+            var res = await db.insert(tableName, data,
+                conflictAlgorithm: ConflictAlgorithm.replace);
+
+            if (kDebugMode) {
+              print('Inserted in $tableName $res');
             }
           }
         }
-        // end students
+      }
+      // insert student
 
-        // start of grade save
-        for (var grade in grading) {
-          // print('saving ${grade.toString()}');
-          if (grade.isNotEmpty) {
-            var id = grade['id'];
-            var fromMarks = grade['from_mark'];
-            var toMarks = grade['to_mark'];
-            var result = grade['result'];
-            batch.insert('pacegrade', {
-              'id': id,
-              'from_marks': fromMarks,
-              'to_marks': toMarks,
-              'result': result,
-            });
-            // print(result);
+      //insert languages
+      if (languages.isNotEmpty && languages != null && languages.length > 0) {
+        tableName = "languages";
+        for (var a = 0; a < languages.length; a++) {
+          var language = languages[a];
+
+          var langId = language['medium_id'][0];
+          var langName = language['medium_id'][1].toString();
+          var standardId = language['standard_id'][0];
+
+          Map<String, Object> data = {
+            "langId": langId.toString(),
+            "langName": langName,
+            "standard_id": standardId.toString(),
+          };
+
+          var res = await db.insert(tableName, data,
+              conflictAlgorithm: ConflictAlgorithm.replace);
+          if (kDebugMode) {
+            print('Inserted in $tableName $res');
           }
         }
-        // end of grade save
+      }
+      // insert languages
 
-        // start of schedule pace save
-        for (var i = 0; i < assessments.length; i++) {
-          print('inserting as');
-          try {
-            var id = assessments[i]['id'];
-            var name = assessments[i]['name'];
-            var subjectId = assessments[i]['subject'][0];
-            var subjectName = assessments[i]['subject'][1];
-            var qpCode = assessments[i]['qp_code'][0];
-            var qpCodeName = assessments[i]['qp_code'][1];
-            var date = assessments[i]['date'];
-            var standardId = assessments[i]['standard_id'][0];
-            var standardName = assessments[i]['standard_id'][1];
-            var mediumId = assessments[i]['medium'][0];
-            var mediumName = assessments[i]['medium'][1];
-            // print('${qpCode} :: ${qpCodeName}');
-
-            batch.insert('paceSchedule', {
-              'id': id,
-              'name': name,
-              'subject_id': subjectId,
-              'subject_name': subjectName,
-              'qp_code': qpCode,
-              'qp_code_name': qpCodeName,
-              'date': date,
-              'standard_id': standardId,
-              'standard_name': standardName,
-              'medium_id': mediumId,
-              'medium_name': mediumName
-            });
-          } catch (e) {
-            continue;
-          }
-
-          if (qpapers.isNotEmpty) {
-            try {
-              for (var qpaper in qpapers) {
-                var qpaperName = qpaper['qp_code'];
-                var qpaperId = qpaper['id'];
-                var qpaperMedium = qpaper['medium'];
-                var qpaperStdId = qpaper['standard_id'];
-                var qpaperSubj = qpaper['subject'];
-                var totques = qpaper['totques'];
-                var totmarks = qpaper['totmarks'];
-                batch.insert('qPaper', {
-                  'id': qpaperId,
-                  'qp_code': qpaperName,
-                  'medium_id': qpaperMedium[0],
-                  'subject_id': qpaperSubj[0],
-                  'standard_id': qpaperStdId[0],
-                  'totques': totques,
-                  'totmarks': totmarks
-                });
-                print('saved');
-              }
-            } catch (e) {
-              continue;
-            }
-          }
-        }
-        // end of pace schedule save
-
-        // start saving basic levels
-        print('reading levels');
-
-        for (var readingLevel in readingLevels) {
-          // print(readingLevel);
-          var levelId = readingLevel['id'];
-          var standard = readingLevel['standard'];
-          var standardId = standard[0];
-          var name = readingLevel['name'];
-          var subject = readingLevel['subject'];
-          var subjectId = subject[0];
-          var subjectName = subject[1];
-          // print('${subjectId.runtimeType} :: ${subjectId}');
-          // print('${name.runtimeType} :: ${name}');
-          // print('${standardId.runtimeType} ::  ${standardId}');
-
-          batch.insert('basicLevels', {
-            'levelId': levelId,
-            'standard_id': standardId,
-            'name': name,
-            'subject_id': subjectId,
-            "subject_name": subjectName
-          });
-        }
-
-        //end saving basic levels
-
-        // start saving numeric levels
-        print('numeric levels');
-        for (var numericLevel in numericLevels) {
-          // print(numericLevel);
-          var levelId = numericLevel['id'];
-          var standard = numericLevel['standard'];
-          var standardId = standard[0];
-          var name = numericLevel['name'];
-          // print('${name.runtimeType} :: ${name}');
-          // print('${standardId.runtimeType} ::  ${standardId}');
-
-          batch.insert('numericLevels',
-              {'levelId': levelId, 'standard_id': standardId, 'name': name});
-        }
-        //end saving numeric levels
-
-        print('saved everything');
-        await batch.commit(noResult: true, continueOnError: true).then((value) {
-          print('value saved');
-        });
-      });
+    } catch (e) {
+      log(e.toString());
     }
   }
 
