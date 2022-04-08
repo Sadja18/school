@@ -475,6 +475,8 @@ class DBProvider {
 
       //insert languages
       if (languages.isNotEmpty && languages != null && languages.length > 0) {
+        await db.rawQuery("DELETE FROM languages");
+
         tableName = "languages";
         for (var a = 0; a < languages.length; a++) {
           var language = languages[a];
@@ -497,6 +499,19 @@ class DBProvider {
         }
       }
       // insert languages
+
+      // insert grading
+      // insert grading
+
+      // insert reading levels
+      // insert reading levels
+
+      // insert numeric levels
+      // insert numeric levels
+
+      // insert assessments
+      // insert assessments
+
 
     } catch (e) {
       log(e.toString());
