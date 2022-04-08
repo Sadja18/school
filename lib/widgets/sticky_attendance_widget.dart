@@ -236,15 +236,16 @@ class _StickyAttendanceState extends State<StickyAttendance> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Container(
+                        width: MediaQuery.of(context).size.width * 0.75,
                         decoration: BoxDecoration(
                           border: Border.all(),
                         ),
                         margin: const EdgeInsets.symmetric(
-                          vertical: 8.0,
+                          vertical: 4.0,
                           horizontal: 8.0,
                         ),
                         padding: const EdgeInsets.symmetric(
-                          vertical: 4.0,
+                          vertical: 0.0,
                           horizontal: 10.0,
                         ),
                         child: Row(

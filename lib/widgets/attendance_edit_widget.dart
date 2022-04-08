@@ -78,16 +78,16 @@ class _EditAttendanceState extends State<EditAttendance> {
   Widget countBoxWidget(String headerString, int value) {
     return Container(
       alignment: Alignment.center,
-      width: MediaQuery.of(context).size.width * 0.30,
-      height: MediaQuery.of(context).size.height * 0.08,
+      width: MediaQuery.of(context).size.width * 0.25,
+      height: MediaQuery.of(context).size.height * 0.05,
       margin: const EdgeInsets.symmetric(
-        vertical: 8.0,
+        vertical: 2.0,
         horizontal: 2.5,
       ),
-      padding: const EdgeInsets.symmetric(
-        vertical: 2.0,
-        horizontal: 2.0,
-      ),
+      // padding: const EdgeInsets.symmetric(
+      //   vertical: 1.0,
+      //   horizontal: 1.0,
+      // ),
       decoration: BoxDecoration(
         border: Border.all(),
         // color: Colors.red,
@@ -101,7 +101,7 @@ class _EditAttendanceState extends State<EditAttendance> {
               fontWeight: FontWeight.bold,
               fontSize: 17.0,
             ),
-            maxLines: 2,
+            maxLines: 1,
           ),
           Text(
             '$value',
@@ -218,11 +218,11 @@ class _EditAttendanceState extends State<EditAttendance> {
   String nameForamtter(studentName) {
     String formattedName = "";
 
-    for (var i=0; i<studentName.split(" ").length; i++) {
+    for (var i = 0; i < studentName.split(" ").length; i++) {
       String word = studentName.split(" ")[i];
       String newWord = toBeginningOfSentenceCase(word.toLowerCase()).toString();
       formattedName = formattedName + newWord;
-      if(i< studentName.split(" ").length-1){
+      if (i < studentName.split(" ").length - 1) {
         formattedName = formattedName + " ";
       }
     }
@@ -358,7 +358,7 @@ class _EditAttendanceState extends State<EditAttendance> {
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 2.0),
         decoration: BoxDecoration(
-          border: Border.all(color: Colors.black),
+          border: Border.all(color: Colors.red),
           // borderRadius: BorderRadius.circular(2.0),
         ),
         width: MediaQuery.of(context).size.width,
@@ -469,11 +469,13 @@ class _EditAttendanceState extends State<EditAttendance> {
               height: MediaQuery.of(context).size.height,
               child: Column(
                 children: [
-                  SizedBox(
+                  Container(
+                    alignment: Alignment.center,
                     width: MediaQuery.of(context).size.width,
                     child: SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
                       child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           countBoxWidget("Total: ", totalStudent),
                           countBoxWidget("Present: ", totalPresent),
@@ -482,11 +484,11 @@ class _EditAttendanceState extends State<EditAttendance> {
                       ),
                     ),
                   ),
-                  Container(
+                  SizedBox(
                     width: MediaQuery.of(context).size.width,
-                    decoration: const BoxDecoration(color: Colors.green),
+                    // decoration: const BoxDecoration(color: Colors.green),
                     child: attendanceTableEdit(),
-                    height: MediaQuery.of(context).size.height * 0.5,
+                    height: MediaQuery.of(context).size.height * 0.50,
                   ),
                   ElevatedButton(
                     onPressed: () {

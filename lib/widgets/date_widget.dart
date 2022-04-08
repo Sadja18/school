@@ -38,7 +38,7 @@ class _DateShowState extends State<DateShow> {
 
   @override
   Widget build(BuildContext context) {
-    return OutlinedButton(
+    return ElevatedButton(
       onPressed: () => _selectDate(context),
       child: Text(
         DateFormat('E, MMM dd, yyyy').format(date),
