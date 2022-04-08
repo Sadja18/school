@@ -145,7 +145,7 @@ class _EditAttendanceState extends State<EditAttendance> {
             softWrap: false,
             style: TextStyle(
               fontWeight: FontWeight.bold,
-              fontSize: 20.0,
+              fontSize: 16.0,
               color: Colors.white,
             ),
             overflow: TextOverflow.ellipsis,
@@ -172,7 +172,7 @@ class _EditAttendanceState extends State<EditAttendance> {
             softWrap: false,
             style: TextStyle(
               fontWeight: FontWeight.bold,
-              fontSize: 20.0,
+              fontSize: 16.0,
               color: Colors.white,
             ),
             overflow: TextOverflow.ellipsis,
@@ -240,7 +240,7 @@ class _EditAttendanceState extends State<EditAttendance> {
         return Container(
           // margin: const EdgeInsets.symmetric(horizontal: 2.0, vertical: 5.0),
           // padding: const EdgeInsets.symmetric(horizontal: 0.60),
-          alignment: Alignment.center,
+          alignment: Alignment.centerLeft,
           decoration: BoxDecoration(
             border: Border.all(
               color: Colors.black,
@@ -344,7 +344,7 @@ class _EditAttendanceState extends State<EditAttendance> {
         softWrap: false,
         style: TextStyle(
           fontWeight: FontWeight.bold,
-          fontSize: 20.0,
+          fontSize: 16.0,
           color: Colors.white,
         ),
         overflow: TextOverflow.ellipsis,
@@ -366,10 +366,10 @@ class _EditAttendanceState extends State<EditAttendance> {
         // padding: const EdgeInsets.fromLTRB(4.0, 4.0, 4.0, 4.0),
         child: StickyHeadersTable(
           cellDimensions: CellDimensions.variableColumnWidthAndRowHeight(
-            columnWidths: [220, 80],
+            columnWidths: [260, 80],
             rowHeights:
                 List<double>.generate(studentList.length, (int index) => 35),
-            stickyLegendWidth: 100,
+            stickyLegendWidth: 60,
             stickyLegendHeight: 35,
           ),
           initialScrollOffsetX: 0.0,
