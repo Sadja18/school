@@ -1,11 +1,11 @@
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:school/services/database_handler.dart';
 import 'package:table_sticky_headers/table_sticky_headers.dart';
+import 'package:intl/intl.dart' show toBeginningOfSentenceCase;
 
 class EditAttendance extends StatefulWidget {
   final List<dynamic> absentees;
@@ -215,6 +215,21 @@ class _EditAttendanceState extends State<EditAttendance> {
     );
   }
 
+  String nameForamtter(studentName) {
+    String formattedName = "";
+
+    for (var i=0; i<studentName.split(" ").length; i++) {
+      String word = studentName.split(" ")[i];
+      String newWord = toBeginningOfSentenceCase(word.toLowerCase()).toString();
+      formattedName = formattedName + newWord;
+      if(i< studentName.split(" ").length-1){
+        formattedName = formattedName + " ";
+      }
+    }
+
+    return formattedName;
+  }
+
   Widget cellWidget2(int columnIndex, int studentRowIndex) {
     // return const Text('data');
     var studentIdInt = studentList[studentRowIndex]['studentId'];
@@ -240,7 +255,9 @@ class _EditAttendanceState extends State<EditAttendance> {
           child: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Text(
-              studentList[studentRowIndex]['studentName'],
+              nameForamtter(
+                studentList[studentRowIndex]['studentName'],
+              ),
               overflow: TextOverflow.ellipsis,
               style: const TextStyle(
                 fontWeight: FontWeight.bold,
@@ -349,7 +366,7 @@ class _EditAttendanceState extends State<EditAttendance> {
         // padding: const EdgeInsets.fromLTRB(4.0, 4.0, 4.0, 4.0),
         child: StickyHeadersTable(
           cellDimensions: CellDimensions.variableColumnWidthAndRowHeight(
-            columnWidths: [200, 100],
+            columnWidths: [220, 80],
             rowHeights:
                 List<double>.generate(studentList.length, (int index) => 35),
             stickyLegendWidth: 100,
@@ -467,7 +484,7 @@ class _EditAttendanceState extends State<EditAttendance> {
                   ),
                   Container(
                     width: MediaQuery.of(context).size.width,
-                    decoration: const BoxDecoration(color:Colors.green),
+                    decoration: const BoxDecoration(color: Colors.green),
                     child: attendanceTableEdit(),
                     height: MediaQuery.of(context).size.height * 0.5,
                   ),
