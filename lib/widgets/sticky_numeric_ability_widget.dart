@@ -57,22 +57,22 @@ class _StickyNumericAbilityState extends State<StickyNumericAbility> {
       print('reverse classData callback');
       print(selectedClass);
     }
-    getLevels(selectedClass);
-    // DBProvider.db.getNumericLevels(selectedClass).then((queryResult) {
-    //   // print(levels.runtimeType);
-    //   var levels = queryResult.toList();
-    //   List<String> levelList = [];
-    //   if (levels.isNotEmpty) {
-    //     for (var level in levels) {
-    //       levelList.add(level['name']);
-    //     }
-    //     setState(() {
-    //       // levelList.insert(0, 'Not Evaluated');
-    //       levelList.insert(0, '0');
-    //       _levelNames = levelList;
-    //     });
-    //   }
-    // });
+    // getLevels(selectedClass);
+    DBProvider.db.getNumericLevels(selectedClass).then((queryResult) {
+      // print(levels.runtimeType);
+      var levels = queryResult.toList();
+      List<String> levelList = [];
+      if (levels.isNotEmpty) {
+        for (var level in levels) {
+          levelList.add(level['name']);
+        }
+        setState(() {
+          // levelList.insert(0, 'Not Evaluated');
+          levelList.insert(0, '0');
+          _levelNames = levelList;
+        });
+      }
+    });
   }
 
   void selectedDate(String? selectDate) {

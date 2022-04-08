@@ -125,16 +125,16 @@ class _DashboardState extends State<Dashboard> {
                 ),
               ),
 
-              ListTile(
-                title: Center(
-                  child: OutlinedButton(
-                    onPressed: () {
-                      DBProvider.db.fetchQuery();
-                    },
-                    child: const Text('Test'),
-                  ),
-                ),
-              ),
+              // ListTile(
+              //   title: Center(
+              //     child: OutlinedButton(
+              //       onPressed: () {
+              //         DBProvider.db.fetchQuery();
+              //       },
+              //       child: const Text('Test'),
+              //     ),
+              //   ),
+              // ),
             ],
           ),
         ),
