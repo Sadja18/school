@@ -1,5 +1,7 @@
 // ignore_for_file: unused_import, unused_field, empty_statements
 
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
@@ -85,6 +87,9 @@ class _StickyNumericAbilityState extends State<StickyNumericAbility> {
   }
 
   void getAllStudents(List<dynamic> students) {
+    // if (kDebugMode) {
+    //   log(students.toString());
+    // }
     setState(() {
       studentList = students;
     });
@@ -325,7 +330,7 @@ class _StickyNumericAbilityState extends State<StickyNumericAbility> {
           ),
         ),
         // padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 24.0),
-        child: (1 == 1)
+        child: (1 == 2)
             ? const Text("")
             : StickyHeadersTable(
                 cellDimensions: CellDimensions.variableColumnWidthAndRowHeight(
