@@ -144,7 +144,7 @@ class _StickyNumericAbilityState extends State<StickyNumericAbility> {
   }
 
   Widget columnsTitleBuilder(int index) {
-    var headers = ["Name", "Level", "Result"];
+    var headers = ["Roll", "Level", "Result"];
     return Container(
       alignment: Alignment.center,
       decoration: BoxDecoration(
@@ -161,7 +161,7 @@ class _StickyNumericAbilityState extends State<StickyNumericAbility> {
         softWrap: false,
         style: const TextStyle(
           fontWeight: FontWeight.bold,
-          fontSize: 20,
+          fontSize: 16,
           color: Colors.white,
         ),
         overflow: TextOverflow.ellipsis,
@@ -171,11 +171,26 @@ class _StickyNumericAbilityState extends State<StickyNumericAbility> {
     );
   }
 
+  String nameForamtter(studentName) {
+    String formattedName = "";
+
+    for (var i = 0; i < studentName.split(" ").length; i++) {
+      String word = studentName.split(" ")[i];
+      String newWord = toBeginningOfSentenceCase(word.toLowerCase()).toString();
+      formattedName = formattedName + newWord;
+      if (i < studentName.split(" ").length - 1) {
+        formattedName = formattedName + " ";
+      }
+    }
+
+    return formattedName;
+  }
+
   Widget rowsTitleBuilder(int index) {
     var isEven = index % 2 == 0;
 
     return Container(
-      alignment: Alignment.center,
+      alignment: Alignment.centerLeft,
       decoration: BoxDecoration(
         border: Border.all(
           color: Colors.black,
@@ -187,16 +202,19 @@ class _StickyNumericAbilityState extends State<StickyNumericAbility> {
       ),
       height: MediaQuery.of(context).size.height,
       width: MediaQuery.of(context).size.width,
-      child: Text(
-        studentList[index]['rollNo'],
-        softWrap: false,
-        style: const TextStyle(
-          fontWeight: FontWeight.bold,
-          fontSize: 15.0,
-          color: Colors.black,
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Text(
+          nameForamtter(studentList[index]['studentName']),
+          overflow: TextOverflow.ellipsis,
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 15.0,
+            color: Colors.black,
+          ),
+          softWrap: false,
+          textAlign: TextAlign.left,
         ),
-        overflow: TextOverflow.ellipsis,
-        textAlign: TextAlign.left,
       ),
     );
   }
@@ -214,11 +232,11 @@ class _StickyNumericAbilityState extends State<StickyNumericAbility> {
       height: MediaQuery.of(context).size.height,
       width: MediaQuery.of(context).size.width,
       child: const Text(
-        'Roll',
+        'Name',
         softWrap: false,
         style: TextStyle(
           fontWeight: FontWeight.bold,
-          fontSize: 20.0,
+          fontSize: 16.0,
           color: Colors.white,
         ),
         overflow: TextOverflow.ellipsis,
@@ -283,11 +301,8 @@ class _StickyNumericAbilityState extends State<StickyNumericAbility> {
           ),
           alignment: Alignment.center,
           width: MediaQuery.of(context).size.width,
-          child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Center(
-              child: resultWidget(studentRowIndex),
-            ),
+          child: Center(
+            child: resultWidget(studentRowIndex),
           ),
         );
       case 0:
@@ -304,7 +319,7 @@ class _StickyNumericAbilityState extends State<StickyNumericAbility> {
           child: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Text(
-              studentList[studentRowIndex]['studentName'],
+              studentList[studentRowIndex]['rollNo'],
               overflow: TextOverflow.ellipsis,
               style: const TextStyle(
                 fontWeight: FontWeight.bold,
@@ -334,11 +349,10 @@ class _StickyNumericAbilityState extends State<StickyNumericAbility> {
             ? const Text("")
             : StickyHeadersTable(
                 cellDimensions: CellDimensions.variableColumnWidthAndRowHeight(
-                    columnWidths: List<double>.generate(
-                        columnsLengthCalculator(), (int index) => 120),
+                    columnWidths: [60, 60, 120],
                     rowHeights: List<double>.generate(
-                        studentList.length, (int index) => 40),
-                    stickyLegendWidth: 100,
+                        studentList.length, (int index) => 43),
+                    stickyLegendWidth: 260,
                     stickyLegendHeight: 40),
                 initialScrollOffsetX: 0.0,
                 initialScrollOffsetY: 0.0,
@@ -467,11 +481,11 @@ class _StickyNumericAbilityState extends State<StickyNumericAbility> {
                   horizontal: 10.0,
                 ),
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Container(
-                      margin: const EdgeInsets.only(
-                        right: 28.0,
-                      ),
+                      alignment: Alignment.center,
+                      margin: const EdgeInsets.only(right: 28.0),
                       child: const Text(
                         'Class:',
                         softWrap: true,
@@ -491,10 +505,11 @@ class _StickyNumericAbilityState extends State<StickyNumericAbility> {
               DateShow(selectedDate: selectedDate),
               (studentList.isNotEmpty)
                   ? Container(
-                      height: MediaQuery.of(context).size.height * 0.50,
+                      height: MediaQuery.of(context).size.height * 0.65,
                       width: MediaQuery.of(context).size.width,
-                      margin: const EdgeInsets.symmetric(
-                        vertical: 8.0,
+                      margin: const EdgeInsets.only(
+                        top: 8.0,
+                        bottom: 0.0,
                       ),
                       decoration: BoxDecoration(
                         border: Border.all(
@@ -506,7 +521,7 @@ class _StickyNumericAbilityState extends State<StickyNumericAbility> {
                   : const Text(''),
               (studentList.isNotEmpty)
                   ? Container(
-                      margin: const EdgeInsets.symmetric(vertical: 12.0),
+                      margin: const EdgeInsets.only(top: 6.0),
                       child: ElevatedButton(
                         onPressed: () {
                           if (studentList.isEmpty ||

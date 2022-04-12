@@ -249,8 +249,10 @@ class _StickyAttendanceState extends State<StickyAttendance> {
                           horizontal: 10.0,
                         ),
                         child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Container(
+                              alignment: Alignment.center,
                               margin: const EdgeInsets.only(
                                 right: 28.0,
                               ),

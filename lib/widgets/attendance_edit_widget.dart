@@ -78,7 +78,7 @@ class _EditAttendanceState extends State<EditAttendance> {
   Widget countBoxWidget(String headerString, int value) {
     return Container(
       alignment: Alignment.center,
-      width: MediaQuery.of(context).size.width * 0.25,
+      width: MediaQuery.of(context).size.width * 0.28,
       height: MediaQuery.of(context).size.height * 0.05,
       margin: const EdgeInsets.symmetric(
         vertical: 2.0,
@@ -141,7 +141,7 @@ class _EditAttendanceState extends State<EditAttendance> {
           height: MediaQuery.of(context).size.height,
           width: MediaQuery.of(context).size.width,
           child: const Text(
-            'Name',
+            'Roll',
             softWrap: false,
             style: TextStyle(
               fontWeight: FontWeight.bold,
@@ -189,7 +189,7 @@ class _EditAttendanceState extends State<EditAttendance> {
     var isEven = index % 2 == 0;
 
     return Container(
-      alignment: Alignment.center,
+      alignment: Alignment.centerLeft,
       decoration: BoxDecoration(
         border: Border.all(
           color: Colors.black,
@@ -201,16 +201,21 @@ class _EditAttendanceState extends State<EditAttendance> {
       ),
       height: MediaQuery.of(context).size.height,
       width: MediaQuery.of(context).size.width,
-      child: Text(
-        studentList[index]['rollNo'],
-        softWrap: false,
-        style: const TextStyle(
-          fontWeight: FontWeight.bold,
-          fontSize: 15.0,
-          color: Colors.black,
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Text(
+          nameForamtter(
+            studentList[index]['studentName'],
+          ),
+          overflow: TextOverflow.ellipsis,
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 15.0,
+            color: Colors.black,
+          ),
+          softWrap: false,
+          textAlign: TextAlign.left,
         ),
-        overflow: TextOverflow.ellipsis,
-        textAlign: TextAlign.left,
       ),
     );
   }
@@ -240,7 +245,7 @@ class _EditAttendanceState extends State<EditAttendance> {
         return Container(
           // margin: const EdgeInsets.symmetric(horizontal: 2.0, vertical: 5.0),
           // padding: const EdgeInsets.symmetric(horizontal: 0.60),
-          alignment: Alignment.centerLeft,
+          alignment: Alignment.center,
           decoration: BoxDecoration(
             border: Border.all(
               color: Colors.black,
@@ -256,7 +261,7 @@ class _EditAttendanceState extends State<EditAttendance> {
             scrollDirection: Axis.horizontal,
             child: Text(
               nameForamtter(
-                studentList[studentRowIndex]['studentName'],
+                studentList[studentRowIndex]['rollNo'],
               ),
               overflow: TextOverflow.ellipsis,
               style: const TextStyle(
@@ -340,7 +345,7 @@ class _EditAttendanceState extends State<EditAttendance> {
       height: MediaQuery.of(context).size.height,
       width: MediaQuery.of(context).size.width,
       child: const Text(
-        'Roll',
+        'Name',
         softWrap: false,
         style: TextStyle(
           fontWeight: FontWeight.bold,
@@ -366,10 +371,10 @@ class _EditAttendanceState extends State<EditAttendance> {
         // padding: const EdgeInsets.fromLTRB(4.0, 4.0, 4.0, 4.0),
         child: StickyHeadersTable(
           cellDimensions: CellDimensions.variableColumnWidthAndRowHeight(
-            columnWidths: [260, 80],
+            columnWidths: [60, 80],
             rowHeights:
                 List<double>.generate(studentList.length, (int index) => 35),
-            stickyLegendWidth: 60,
+            stickyLegendWidth: 260,
             stickyLegendHeight: 35,
           ),
           initialScrollOffsetX: 0.0,

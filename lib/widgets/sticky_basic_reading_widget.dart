@@ -141,7 +141,7 @@ class _StickyBasicReadingState extends State<StickyBasicReading> {
   }
 
   Widget columnsTitleBuilder(int index) {
-    var headers = ["Name", "Level", "Result"];
+    var headers = ["Roll", "Level", "Result"];
     return Container(
       alignment: Alignment.center,
       decoration: BoxDecoration(
@@ -156,7 +156,7 @@ class _StickyBasicReadingState extends State<StickyBasicReading> {
         softWrap: false,
         style: const TextStyle(
           fontWeight: FontWeight.bold,
-          fontSize: 20,
+          fontSize: 16,
           color: Colors.white,
         ),
         overflow: TextOverflow.ellipsis,
@@ -166,11 +166,26 @@ class _StickyBasicReadingState extends State<StickyBasicReading> {
     );
   }
 
+  String nameForamtter(studentName) {
+    String formattedName = "";
+
+    for (var i = 0; i < studentName.split(" ").length; i++) {
+      String word = studentName.split(" ")[i];
+      String newWord = toBeginningOfSentenceCase(word.toLowerCase()).toString();
+      formattedName = formattedName + newWord;
+      if (i < studentName.split(" ").length - 1) {
+        formattedName = formattedName + " ";
+      }
+    }
+
+    return formattedName;
+  }
+
   Widget rowsTitleBuilder(int index) {
     var isEven = index % 2 == 0;
 
     return Container(
-      alignment: Alignment.center,
+      alignment: Alignment.centerLeft,
       decoration: BoxDecoration(
         border: Border.all(
           color: Colors.black,
@@ -182,16 +197,19 @@ class _StickyBasicReadingState extends State<StickyBasicReading> {
       ),
       height: MediaQuery.of(context).size.height,
       width: MediaQuery.of(context).size.width,
-      child: Text(
-        studentList[index]['rollNo'],
-        softWrap: false,
-        style: const TextStyle(
-          fontWeight: FontWeight.bold,
-          fontSize: 15.0,
-          color: Colors.black,
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Text(
+          nameForamtter(studentList[index]['studentName']),
+          overflow: TextOverflow.ellipsis,
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 15.0,
+            color: Colors.black,
+          ),
+          softWrap: false,
+          textAlign: TextAlign.left,
         ),
-        overflow: TextOverflow.ellipsis,
-        textAlign: TextAlign.left,
       ),
     );
   }
@@ -209,11 +227,11 @@ class _StickyBasicReadingState extends State<StickyBasicReading> {
       height: MediaQuery.of(context).size.height,
       width: MediaQuery.of(context).size.width,
       child: const Text(
-        'Roll',
+        'Name',
         softWrap: true,
         style: TextStyle(
           fontWeight: FontWeight.bold,
-          fontSize: 20,
+          fontSize: 16,
           color: Colors.white,
         ),
       ),
@@ -276,11 +294,8 @@ class _StickyBasicReadingState extends State<StickyBasicReading> {
                 : const Color.fromARGB(255, 120, 165, 255),
           ),
           width: MediaQuery.of(context).size.width,
-          child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Center(
-              child: resultWidget(studentRowIndex),
-            ),
+          child: Center(
+            child: resultWidget(studentRowIndex),
           ),
         );
       case 0:
@@ -294,19 +309,16 @@ class _StickyBasicReadingState extends State<StickyBasicReading> {
                 : const Color.fromARGB(255, 120, 165, 255),
           ),
           alignment: Alignment.center,
-          child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Text(
-              studentList[studentRowIndex]['studentName'],
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 15.0,
-                color: Colors.black,
-              ),
-              softWrap: false,
-              textAlign: TextAlign.left,
+          child: Text(
+            studentList[studentRowIndex]['rollNo'],
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 15.0,
+              color: Colors.black,
             ),
+            softWrap: false,
+            textAlign: TextAlign.left,
           ),
         );
       default:
@@ -317,16 +329,13 @@ class _StickyBasicReadingState extends State<StickyBasicReading> {
   Widget assessmentTable() {
     return Center(
       child: Container(
-        decoration: const BoxDecoration(
-          
-        ),
+        decoration: const BoxDecoration(),
         child: StickyHeadersTable(
           cellDimensions: CellDimensions.variableColumnWidthAndRowHeight(
-              columnWidths: List<double>.generate(
-                  columnsLengthCalculator(), (int index) => 120),
+              columnWidths: [40, 50, 120],
               rowHeights:
-                  List<double>.generate(studentList.length, (int index) => 40),
-              stickyLegendWidth: 100,
+                  List<double>.generate(studentList.length, (int index) => 43),
+              stickyLegendWidth: 260,
               stickyLegendHeight: 40),
           initialScrollOffsetX: 0.0,
           initialScrollOffsetY: 0.0,
@@ -439,7 +448,7 @@ class _StickyBasicReadingState extends State<StickyBasicReading> {
                   border: Border.all(),
                 ),
                 margin: const EdgeInsets.symmetric(
-                  vertical: 8.0,
+                  vertical: 4.0,
                   horizontal: 8.0,
                 ),
                 padding: const EdgeInsets.symmetric(
@@ -447,11 +456,12 @@ class _StickyBasicReadingState extends State<StickyBasicReading> {
                   horizontal: 10.0,
                 ),
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Container(
-                      margin: const EdgeInsets.only(
-                        right: 28.0,
-                      ),
+                      alignment: Alignment.center,
+                      margin: const EdgeInsets.only(right: 28.0),
+
                       child: const Text(
                         'Class:',
                         softWrap: true,
@@ -470,8 +480,8 @@ class _StickyBasicReadingState extends State<StickyBasicReading> {
               ),
               Container(
                 margin: const EdgeInsets.symmetric(
-                  vertical: 8.0,
-                  horizontal: 8.0,
+                  vertical: 2.0,
+                  // horizontal: 8.0,
                 ),
                 child: DateShow(selectedDate: selectedDate),
               ),
@@ -479,7 +489,7 @@ class _StickyBasicReadingState extends State<StickyBasicReading> {
                   ? const Text('')
                   : Container(
                       margin: const EdgeInsets.symmetric(
-                        vertical: 8.0,
+                        vertical: 2.0,
                         horizontal: 8.0,
                       ),
                       padding: const EdgeInsets.symmetric(
@@ -501,7 +511,7 @@ class _StickyBasicReadingState extends State<StickyBasicReading> {
                         decoration: BoxDecoration(
                           border: Border.all(),
                         ),
-                        height: MediaQuery.of(context).size.height * 0.50,
+                        height: MediaQuery.of(context).size.height * 0.58,
                         width: MediaQuery.of(context).size.width,
                         child: assessmentTable(),
                       ),
@@ -510,7 +520,7 @@ class _StickyBasicReadingState extends State<StickyBasicReading> {
               (studentList.isNotEmpty &&
                       (_selectedLanguage != null && _selectedLanguage != ''))
                   ? Container(
-                      margin: const EdgeInsets.symmetric(vertical: 12.0),
+                      margin: const EdgeInsets.only(top: 6.0),
                       child: ElevatedButton(
                         onPressed: () {
                           if (studentList.isEmpty ||

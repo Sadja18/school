@@ -42,12 +42,26 @@ class _AssessmentsDropDownState extends State<AssessmentsDropDown> {
             // return Text(assessmentOptions.toString());
             // print(_selectedAssessment.toString());
             return DropdownButton(
+                hint: const Text('Select Language'),
+                underline: Container(
+                  height: 2,
+                  color: Colors.deepPurpleAccent,
+                ),
+                elevation: 16,
+                style: const TextStyle(color: Colors.deepPurpleAccent),
                 value: _selectedAssessment!.isNotEmpty
                     ? _selectedAssessment
                     : null,
                 items: assessmentOptions.map((element) {
                   return DropdownMenuItem(
-                      child: Text(element['name']), value: element['name']);
+                      child: Text(
+                        element['name'],
+                        style: const TextStyle(
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      value: element['name']);
                 }).toList(),
                 onChanged: (selectedValue) {
                   setState(() {

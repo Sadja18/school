@@ -209,12 +209,34 @@ class _StickyPaceWidgetState extends State<StickyPaceWidget> {
     return colLength;
   }
 
+  List<double> scrollRowColumnWidthGenerator() {
+    List<double> columnWidths = [];
+
+    // add width of roll field
+    columnWidths.add(40);
+    // add width of checkbox
+    columnWidths.add(40);
+
+    // add width of marks input fields
+    for (var i = 0; i < totQues; i++) {
+      columnWidths.add(70);
+    }
+
+    // add width of total field
+    columnWidths.add(80);
+
+    // add width of result field
+    columnWidths.add(100);
+
+    return columnWidths;
+  }
+
   int titleRowLengthCalculator() {
     return studentList.length;
   }
 
   String makeTitleColumn(int index) {
-    var titleHeader = ['Name', 'NE'];
+    var titleHeader = ['Roll', 'NE'];
     for (int i = 0; i < totQues; i++) {
       titleHeader.add('Q${i + 1}');
     }
@@ -223,9 +245,24 @@ class _StickyPaceWidgetState extends State<StickyPaceWidget> {
     return titleHeader[index];
   }
 
+  String nameForamtter(studentName) {
+    String formattedName = "";
+
+    for (var i = 0; i < studentName.split(" ").length; i++) {
+      String word = studentName.split(" ")[i];
+      String newWord = toBeginningOfSentenceCase(word.toLowerCase()).toString();
+      formattedName = formattedName + newWord;
+      if (i < studentName.split(" ").length - 1) {
+        formattedName = formattedName + " ";
+      }
+    }
+
+    return formattedName;
+  }
+
   Widget makeTitleRow(int index) {
     return Container(
-      alignment: Alignment.center,
+      alignment: Alignment.centerLeft,
       decoration: BoxDecoration(
         border: Border.all(
           color: Colors.black,
@@ -239,9 +276,12 @@ class _StickyPaceWidgetState extends State<StickyPaceWidget> {
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Text(
-          "${studentList[index]['rollNo']}",
+          nameForamtter(studentList[index]['studentName']),
           softWrap: false,
-          style: const TextStyle(fontWeight: FontWeight.bold),
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 15.0,
+          ),
           maxLines: 3,
           overflow: TextOverflow.ellipsis,
           textAlign: TextAlign.left,
@@ -553,11 +593,11 @@ class _StickyPaceWidgetState extends State<StickyPaceWidget> {
           ),
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
-          child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Text(
-              "${studentList[j]['studentName']}",
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+          child: Text(
+            "${studentList[j]['rollNo']}",
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 15,
             ),
           ),
         );
@@ -602,12 +642,11 @@ class _StickyPaceWidgetState extends State<StickyPaceWidget> {
       width: MediaQuery.of(context).size.width,
       child: StickyHeadersTable(
         cellDimensions: CellDimensions.variableColumnWidthAndRowHeight(
-            columnWidths: List<double>.generate(
-                titleColumnLengthCalculator(), (int index) => 120),
+            columnWidths: scrollRowColumnWidthGenerator(),
             rowHeights:
                 List<double>.generate(studentList.length, (int index) => 40),
-            stickyLegendWidth: 100,
-            stickyLegendHeight: 40),
+            stickyLegendWidth: 260,
+            stickyLegendHeight: 30),
         initialScrollOffsetX: 0.0,
         initialScrollOffsetY: 0.0,
         scrollControllers: ScrollControllers(
@@ -629,7 +668,10 @@ class _StickyPaceWidgetState extends State<StickyPaceWidget> {
           child: Text(
             makeTitleColumn(i),
             style: const TextStyle(
-                fontWeight: FontWeight.w800, fontSize: 20, color: Colors.white),
+              fontWeight: FontWeight.w800,
+              fontSize: 16,
+              color: Colors.white,
+            ),
             maxLines: 3,
             overflow: TextOverflow.ellipsis,
             softWrap: false,
@@ -649,11 +691,11 @@ class _StickyPaceWidgetState extends State<StickyPaceWidget> {
           height: MediaQuery.of(context).size.height,
           width: MediaQuery.of(context).size.width,
           child: const Text(
-            'Roll',
+            'Name',
             softWrap: false,
             style: TextStyle(
               fontWeight: FontWeight.bold,
-              fontSize: 20.0,
+              fontSize: 16.0,
               color: Colors.white,
             ),
             overflow: TextOverflow.ellipsis,
@@ -746,7 +788,7 @@ class _StickyPaceWidgetState extends State<StickyPaceWidget> {
                                 softWrap: true,
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 20,
+                                  fontSize: 18,
                                   color: Colors.black,
                                 ),
                               ),
@@ -764,7 +806,7 @@ class _StickyPaceWidgetState extends State<StickyPaceWidget> {
                           border: Border.all(),
                         ),
                         margin: const EdgeInsets.symmetric(
-                          vertical: 8.0,
+                          vertical: 4.0,
                         ),
                         padding: const EdgeInsets.symmetric(
                           vertical: 4.0,
@@ -783,7 +825,7 @@ class _StickyPaceWidgetState extends State<StickyPaceWidget> {
                                   'Assessment:',
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
-                                    fontSize: 20,
+                                    fontSize: 16,
                                   ),
                                 ),
                               ),
@@ -801,7 +843,7 @@ class _StickyPaceWidgetState extends State<StickyPaceWidget> {
                           border: Border.all(),
                         ),
                         margin: const EdgeInsets.symmetric(
-                          vertical: 8.0,
+                          vertical: 4.0,
                         ),
                         padding: const EdgeInsets.symmetric(
                           vertical: 4.0,
@@ -835,7 +877,7 @@ class _StickyPaceWidgetState extends State<StickyPaceWidget> {
                           border: Border.all(),
                         ),
                         margin: const EdgeInsets.symmetric(
-                          vertical: 8.0,
+                          vertical: 4.0,
                         ),
                         padding: const EdgeInsets.symmetric(
                           vertical: 4.0,
@@ -869,7 +911,7 @@ class _StickyPaceWidgetState extends State<StickyPaceWidget> {
                           border: Border.all(),
                         ),
                         margin: const EdgeInsets.symmetric(
-                          vertical: 8.0,
+                          vertical: 4.0,
                         ),
                         padding: const EdgeInsets.symmetric(
                           vertical: 4.0,
@@ -903,7 +945,7 @@ class _StickyPaceWidgetState extends State<StickyPaceWidget> {
                           border: Border.all(),
                         ),
                         margin: const EdgeInsets.symmetric(
-                          vertical: 8.0,
+                          vertical: 4.0,
                         ),
                         padding: const EdgeInsets.symmetric(
                           vertical: 4.0,
@@ -933,7 +975,7 @@ class _StickyPaceWidgetState extends State<StickyPaceWidget> {
                 (_selectedAssessment!.isEmpty || _selectedClass!.isEmpty)
                     ? const Text('')
                     : SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.4,
+                        height: MediaQuery.of(context).size.height * 0.45,
                         width: MediaQuery.of(context).size.width,
                         child: SingleChildScrollView(
                           scrollDirection: Axis.horizontal,
@@ -941,7 +983,7 @@ class _StickyPaceWidgetState extends State<StickyPaceWidget> {
                             decoration: BoxDecoration(
                               border: Border.all(),
                             ),
-                            height: MediaQuery.of(context).size.height * 0.4,
+                            height: MediaQuery.of(context).size.height * 0.45,
                             width: MediaQuery.of(context).size.width,
                             child: assessmentTable(),
                           ),
@@ -950,9 +992,7 @@ class _StickyPaceWidgetState extends State<StickyPaceWidget> {
                 (_selectedAssessment!.isEmpty || _selectedClass!.isEmpty)
                     ? const Text('')
                     : Container(
-                        margin: EdgeInsets.symmetric(
-                            vertical:
-                                MediaQuery.of(context).size.height * 0.04),
+                        margin: const EdgeInsets.symmetric(vertical: 5.0),
                         height: MediaQuery.of(context).size.height * 0.04,
                         child: ElevatedButton(
                           onPressed: () {
