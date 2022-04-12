@@ -865,7 +865,13 @@ class _StickyPaceWidgetState extends State<StickyPaceWidget> {
                                   ),
                                 ),
                               ),
-                              Text(displayDate(_selectedAssessment['date'])),
+                              Text(
+                                displayDate(_selectedAssessment['date']),
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16.0,
+                                ),
+                              ),
                             ],
                           ),
                         ),
@@ -896,10 +902,17 @@ class _StickyPaceWidgetState extends State<StickyPaceWidget> {
                                   'Subject:',
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
+                                    fontSize: 16.0,
                                   ),
                                 ),
                               ),
-                              Text(_selectedAssessment['subject_name']),
+                              Text(
+                                _selectedAssessment['subject_name'],
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16.0,
+                                ),
+                              ),
                             ],
                           ),
                         ),
@@ -930,10 +943,17 @@ class _StickyPaceWidgetState extends State<StickyPaceWidget> {
                                   'Assessment Medium:',
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
+                                    fontSize: 16.0,
                                   ),
                                 ),
                               ),
-                              Text(_selectedAssessment['medium_name']),
+                              Text(
+                                _selectedAssessment['medium_name'],
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16.0,
+                                ),
+                              ),
                             ],
                           ),
                         ),
@@ -964,10 +984,17 @@ class _StickyPaceWidgetState extends State<StickyPaceWidget> {
                                   'Question Paper:',
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
+                                    fontSize: 16.0,
                                   ),
                                 ),
                               ),
-                              Text(_selectedAssessment['qp_code_name']),
+                              Text(
+                                _selectedAssessment['qp_code_name'],
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16.0,
+                                ),
+                              ),
                             ],
                           ),
                         ),
