@@ -78,7 +78,7 @@ class _EditAttendanceState extends State<EditAttendance> {
   Widget countBoxWidget(String headerString, int value) {
     return Container(
       alignment: Alignment.center,
-      width: MediaQuery.of(context).size.width * 0.28,
+      width: MediaQuery.of(context).size.width * 0.30,
       height: MediaQuery.of(context).size.height * 0.05,
       margin: const EdgeInsets.symmetric(
         vertical: 2.0,
