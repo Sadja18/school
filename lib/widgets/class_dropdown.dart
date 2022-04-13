@@ -45,11 +45,17 @@ class _ClassDropDownState extends State<ClassDropDown> {
               classNames.add(classRecord['class_name']);
             }
             return DropdownButton<String>(
-              hint: const Text('Select Class'),
-              underline: Container(
-                height: 2,
-                color: Colors.deepPurpleAccent,
+              hint: const Text(
+                'Select Class',
+                style: TextStyle(
+                  fontSize: 18.0,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
+              // underline: Container(
+              //   height: 2,
+              //   color: Colors.deepPurpleAccent,
+              // ),
               elevation: 16,
               style: const TextStyle(color: Colors.deepPurpleAccent),
               value: _selectedClass.isNotEmpty ? _selectedClass : null,
@@ -62,8 +68,8 @@ class _ClassDropDownState extends State<ClassDropDown> {
                       child: Text(
                         element,
                         style: const TextStyle(
+                          fontSize: 18.0,
                           fontWeight: FontWeight.bold,
-                          fontSize: 18,
                         ),
                       ),
                     ),

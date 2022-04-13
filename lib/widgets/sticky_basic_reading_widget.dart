@@ -124,7 +124,7 @@ class _StickyBasicReadingState extends State<StickyBasicReading> {
   }
 
   int columnsLengthCalculator() {
-    return 3;
+    return 2;
   }
 
   int rowsLengthCalculator() {
@@ -141,7 +141,7 @@ class _StickyBasicReadingState extends State<StickyBasicReading> {
   }
 
   Widget columnsTitleBuilder(int index) {
-    var headers = ["Roll", "Level", "Result"];
+    var headers = ["Level", "Result"];
     return Container(
       alignment: Alignment.center,
       decoration: BoxDecoration(
@@ -265,7 +265,7 @@ class _StickyBasicReadingState extends State<StickyBasicReading> {
     var isEven = studentRowIndex % 2 == 0;
 
     switch (columnIndex) {
-      case 1:
+      case 0:
         return Container(
           alignment: Alignment.center,
           decoration: BoxDecoration(
@@ -282,7 +282,7 @@ class _StickyBasicReadingState extends State<StickyBasicReading> {
             child: Center(child: studentDropDown(studentRowIndex)),
           ),
         );
-      case 2:
+      case 1:
         return Container(
           alignment: Alignment.center,
           decoration: BoxDecoration(
@@ -298,29 +298,29 @@ class _StickyBasicReadingState extends State<StickyBasicReading> {
             child: resultWidget(studentRowIndex),
           ),
         );
-      case 0:
-        return Container(
-          decoration: BoxDecoration(
-            border: Border.all(
-              color: Colors.black,
-            ),
-            color: isEven
-                ? const Color.fromARGB(127, 120, 165, 255)
-                : const Color.fromARGB(255, 120, 165, 255),
-          ),
-          alignment: Alignment.center,
-          child: Text(
-            studentList[studentRowIndex]['rollNo'],
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 15.0,
-              color: Colors.black,
-            ),
-            softWrap: false,
-            textAlign: TextAlign.left,
-          ),
-        );
+      // case 0:
+      //   return Container(
+      //     decoration: BoxDecoration(
+      //       border: Border.all(
+      //         color: Colors.black,
+      //       ),
+      //       color: isEven
+      //           ? const Color.fromARGB(127, 120, 165, 255)
+      //           : const Color.fromARGB(255, 120, 165, 255),
+      //     ),
+      //     alignment: Alignment.center,
+      //     child: Text(
+      //       studentList[studentRowIndex]['rollNo'],
+      //       overflow: TextOverflow.ellipsis,
+      //       style: const TextStyle(
+      //         fontWeight: FontWeight.bold,
+      //         fontSize: 15.0,
+      //         color: Colors.black,
+      //       ),
+      //       softWrap: false,
+      //       textAlign: TextAlign.left,
+      //     ),
+      //   );
       default:
         return const Text('');
     }
@@ -332,7 +332,7 @@ class _StickyBasicReadingState extends State<StickyBasicReading> {
         decoration: const BoxDecoration(),
         child: StickyHeadersTable(
           cellDimensions: CellDimensions.variableColumnWidthAndRowHeight(
-              columnWidths: [40, 50, 120],
+              columnWidths: [50, 120],
               rowHeights:
                   List<double>.generate(studentList.length, (int index) => 43),
               stickyLegendWidth: 260,
@@ -490,10 +490,10 @@ class _StickyBasicReadingState extends State<StickyBasicReading> {
                   : Container(
                       margin: const EdgeInsets.symmetric(
                         vertical: 2.0,
-                        horizontal: 8.0,
+                        // horizontal: 8.0,
                       ),
                       padding: const EdgeInsets.symmetric(
-                        vertical: 4.0,
+                        vertical: 1.0,
                         horizontal: 10.0,
                       ),
                       decoration: BoxDecoration(

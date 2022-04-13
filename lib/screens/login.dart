@@ -135,7 +135,9 @@ class _LoginState extends State<Login> {
           }
           var offlineLoginAttempt =
               await offlineLogin(enteredUserName, enteredUserPassword);
-
+          if (kDebugMode) {
+            print(offlineLoginAttempt.toString());
+          }
           if (offlineLoginAttempt['no_user'] == 1) {
             // if no user record was found
             setState(() {
@@ -177,8 +179,8 @@ class _LoginState extends State<Login> {
           _showAlertDialog();
         } else {
           // if user record was found
-          if (offlineLoginAttempt['login_status'] == 1 ||
-              offlineLoginAttempt['login_status'] == '1') {
+          if (offlineLoginAttempt['loginstatus'] == 1 ||
+              offlineLoginAttempt['loginstatus'] == '1') {
             setState(() {
               _messageCode = '0LO200';
             });
@@ -196,6 +198,7 @@ class _LoginState extends State<Login> {
         }
       }
     } catch (e) {
+      log('error');
       log(e.toString());
     }
   }

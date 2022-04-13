@@ -42,10 +42,14 @@ class _AssessmentsDropDownState extends State<AssessmentsDropDown> {
             // return Text(assessmentOptions.toString());
             // print(_selectedAssessment.toString());
             return DropdownButton(
-                hint: const Text('Select Language'),
+                hint: const Text('Select Assessment',
+                    style: TextStyle(
+                      fontSize: 18.0,
+                      fontWeight: FontWeight.bold,
+                    )),
                 underline: Container(
                   height: 2,
-                  color: Colors.deepPurpleAccent,
+                  color: Colors.transparent,
                 ),
                 elevation: 16,
                 style: const TextStyle(color: Colors.deepPurpleAccent),

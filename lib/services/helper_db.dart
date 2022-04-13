@@ -9,7 +9,7 @@ import '../models/response_struct.dart';
 import '../services/database_handler.dart';
 
 Future<void> saveUserToDB(Map<String, dynamic> userData) async {
-  // print(userData);
+  print(userData);
   try {
     var userObject = User(
         userName: userData['user'],
@@ -26,11 +26,20 @@ Future<void> saveUserToDB(Map<String, dynamic> userData) async {
 }
 
 Future<dynamic> isLoggedIn() async {
-  return DBProvider.db.readUsers().then((value) {
-    // print(value[0].loginStatus.runtimeType);
-    // print('Here ${value[0].runtimeType}');
-    return value[0].loginStatus;
-  });
+  String query ="SELECT * FROM users WHERE loginstatus=1 OR loginstatus='1'";
+  var params = [];
+
+  var result = await DBProvider.db.dynamicRead(query, params);
+
+  if(kDebugMode){
+    print('isLoggedIn()');
+    print(result.toString());
+  }
+  if(result.isEmpty){
+    return 0;
+  }else{
+    return '1';
+  }
 }
 
 Future<String?> getUserName() async {

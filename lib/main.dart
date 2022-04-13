@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors, avoid_print, unused_import
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:workmanager/workmanager.dart';
 
@@ -13,6 +14,7 @@ import './widgets/sticky_pace_widget.dart';
 import './widgets/sticky_basic_reading_widget.dart';
 import './widgets/sticky_numeric_ability_widget.dart';
 import './widgets/sticky_attendance_widget.dart';
+import './widgets/pace_assessment.dart';
 
 const fetchOne = "fetch Persistent";
 
@@ -46,7 +48,12 @@ class _MyAppState extends State<MyApp> {
     return FutureBuilder(
         future: isLoggedIn(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
-          if (snapshot.hasData && snapshot.data == 1) {
+          // if (kDebugMode) {
+          //   print("is login");
+          //   print(snapshot.data.toString());
+          // }
+          if (snapshot.hasData &&
+              (snapshot.data == 1 || snapshot.data == "1")) {
             // print();
             // return StickyAttendance();
 
@@ -87,6 +94,7 @@ class _MyAppState extends State<MyApp> {
         StickyBasicReading.routeName: (ctx) => StickyBasicReading(),
         StickyNumericAbility.routeName: (ctx) => StickyNumericAbility(),
         StickyAttendance.routeName: (ctx) => StickyAttendance(),
+        PaceAssessmentScreen.routeName: (ctx) => PaceAssessmentScreen()
       },
     );
   }

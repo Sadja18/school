@@ -12,6 +12,7 @@ import '../screens/login.dart';
 import '../services/database_handler.dart';
 import '../services/sync_services.dart';
 import '../widgets/sticky_attendance_widget.dart';
+import '../widgets/pace_assessment.dart';
 
 const fetchOne = "fetch Persistent";
 
@@ -91,6 +92,7 @@ class _DashboardState extends State<Dashboard> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Container(
+                alignment: Alignment.center,
                 margin: const EdgeInsets.symmetric(
                   horizontal: 10.0,
                   vertical: 5.0,
@@ -100,7 +102,7 @@ class _DashboardState extends State<Dashboard> {
                     border: Border.all(),
                     borderRadius: BorderRadius.circular(10.0)),
                 child: ListTile(
-                  title: Text(userName!),
+                  title: Center(child: Text(userName!)),
                   tileColor: Colors.transparent,
                 ),
               ),
@@ -129,7 +131,8 @@ class _DashboardState extends State<Dashboard> {
               //   title: Center(
               //     child: OutlinedButton(
               //       onPressed: () {
-              //         DBProvider.db.fetchQuery();
+              //         // DBProvider.db.fetchQuery();
+              //         Navigator.of(context).pushNamed(PaceAssessmentScreen.routeName );
               //       },
               //       child: const Text('Test'),
               //     ),

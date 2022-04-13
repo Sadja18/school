@@ -1223,4 +1223,83 @@ class DBProvider {
       }
     }
   }
+
+  Future<dynamic> isUser(enteredUserName, enteredPassword) async {
+    try {
+      final db = await initDB();
+      var query = "SELECT * FROM users WHERE userName = ? AND userPassword=?;";
+
+      var params = [enteredUserName, enteredPassword];
+
+      var userQ = await db.rawQuery(query, params);
+
+      var user = userQ.toList();
+
+      if (kDebugMode) {
+        print('user is');
+        print(user.toString());
+      }
+      return user;
+    } catch (e) {
+      if (kDebugMode) {
+        log(e.toString());
+      }
+    }
+  }
+
+  Future<dynamic> makeUserOfflineLogin(enteredUserName, enteredPassword) async {
+    try {
+      final db = await initDB();
+      var query =
+          "UPDATE users SET loginStatus = ? WHERE userName = ? AND userPassword=?;";
+
+      var params = ["1", enteredUserName, enteredPassword];
+
+      var userQ = await db.rawQuery(query, params);
+
+      var user = userQ.toList();
+
+      if (kDebugMode) {
+        print('user is');
+        print(user.toString());
+      }
+      return user;
+    } catch (e) {
+      if (kDebugMode) {
+        log(e.toString());
+      }
+    }
+  }
+
+  Future<dynamic> dynamicRead(query, params) async {
+    try {
+      final db = await initDB();
+
+      if (params.isEmpty) {
+        var userQ = await db.rawQuery(query);
+
+        var user = userQ.toList();
+
+        if (kDebugMode) {
+          print('user is');
+          print(user.toString());
+        }
+        return user;
+      } else {
+        var userQ = await db.rawQuery(query, params);
+
+        var user = userQ.toList();
+
+        if (kDebugMode) {
+          print('user is');
+          print(user.toString());
+        }
+        return user;
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        log(e.toString());
+      }
+    }
+  }
 }

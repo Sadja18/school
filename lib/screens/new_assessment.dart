@@ -3,9 +3,10 @@
 import 'package:flutter/material.dart';
 import '../services/database_handler.dart';
 
+import '../widgets/pace_assessment.dart';
 import './dashboard.dart';
 import './login.dart';
-import '../widgets/sticky_pace_widget.dart';
+// import '../widgets/sticky_pace_widget.dart';
 import '../widgets/sticky_basic_reading_widget.dart';
 import '../widgets/sticky_numeric_ability_widget.dart';
 
@@ -92,8 +93,10 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
                           onPressed: () {
                             print("khgasdh");
                             // Navigator.of(context).pushNamed(PaceScreen.routeName);
+                            // Navigator.of(context)
+                            //     .pushNamed(StickyPaceWidget.routeName);
                             Navigator.of(context)
-                                .pushNamed(StickyPaceWidget.routeName);
+                                .pushNamed(PaceAssessmentScreen.routeName);
                           },
                           child: Container(
                             padding: const EdgeInsets.all(8.0),
