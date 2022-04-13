@@ -122,9 +122,7 @@ class _PaceAssessmentScreenState extends State<PaceAssessmentScreen> {
           1: FixedColumnWidth(300),
         },
         border: TableBorder.symmetric(
-          outside: BorderSide(
-            width: 0.5,
-          ),
+          outside: BorderSide.none,
           inside: BorderSide.none,
         ),
         children: [
