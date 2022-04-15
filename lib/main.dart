@@ -71,12 +71,12 @@ class _MyAppState extends State<MyApp> {
       title: 'School Erp',
       theme: ThemeData(
         primaryColor: Colors.purpleAccent,
-        fontFamily: 'Roboto',
+        fontFamily: 'Poppins',
         backgroundColor: Colors.blue,
         textTheme: Theme.of(context).textTheme.apply(
               fontSizeFactor: 1.20,
               fontSizeDelta: 0.5,
-              fontFamily: 'Roboto',
+              fontFamily: 'Poppins',
             ),
       ),
       initialRoute: '/',

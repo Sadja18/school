@@ -1,5 +1,5 @@
 // import 'dart:html';
-// ignore_for_file: prefer_const_constructors_in_immutables
+// ignore_for_file: prefer_const_constructors_in_immutables, prefer_const_constructors
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -38,10 +38,34 @@ class _DateShowState extends State<DateShow> {
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: () => _selectDate(context),
-      child: Text(
-        DateFormat('E, MMM dd, yyyy').format(date),
+    return Container(
+      decoration: BoxDecoration(),
+      width: MediaQuery.of(context).size.width,
+      // margin: const EdgeInsets.symmetric(
+      //   vertical: 0.0,
+      //   horizontal: 8.0,
+      // ),
+      child: TextButton(
+        style: TextButton.styleFrom(
+          alignment: Alignment.center,
+          backgroundColor: Colors.deepPurpleAccent,
+        ),
+        onPressed: () => _selectDate(context),
+        child: Row(
+          children: [
+            const Icon(
+              Icons.calendar_month,
+              size: 30,
+              color: Colors.white,
+            ),
+            Text(
+              DateFormat('E, MMM dd, yyyy').format(date),
+              style: TextStyle(
+                color: Colors.white,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

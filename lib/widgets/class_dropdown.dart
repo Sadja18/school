@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print
+// ignore_for_file: avoid_print, prefer_const_constructors
 
 import 'package:flutter/material.dart';
 import '../services/database_handler.dart';
@@ -44,68 +44,72 @@ class _ClassDropDownState extends State<ClassDropDown> {
             for (var classRecord in classes) {
               classNames.add(classRecord['class_name']);
             }
-            return DropdownButton<String>(
-              hint: const Text(
-                'Select Class',
-                style: TextStyle(
-                  fontSize: 18.0,
-                  fontWeight: FontWeight.bold,
-                ),
+            return Container(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height*0.06,
+             
+              decoration: BoxDecoration(
+                color: Colors.deepPurpleAccent,
               ),
-              // underline: Container(
-              //   height: 2,
-              //   color: Colors.deepPurpleAccent,
-              // ),
-              elevation: 16,
-              style: const TextStyle(color: Colors.deepPurpleAccent),
-              value: _selectedClass.isNotEmpty ? _selectedClass : null,
-              // ignore: prefer_const_literals_to_create_immutables
-              items: classNames.map<DropdownMenuItem<String>>(
-                (String element) {
-                  return DropdownMenuItem<String>(
-                    child: Container(
-                      decoration: const BoxDecoration(color: Colors.white),
-                      child: Text(
-                        element,
-                        style: const TextStyle(
-                          fontSize: 18.0,
-                          fontWeight: FontWeight.bold,
+              child: DropdownButton<String>(
+                hint: const Text(
+                  'Select Class',
+                  style: TextStyle(
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+                elevation: 16,
+                style: const TextStyle(color: Colors.deepPurpleAccent),
+                value: _selectedClass.isNotEmpty ? _selectedClass : null,
+                items: classNames.map<DropdownMenuItem<String>>(
+                  (String element) {
+                    return DropdownMenuItem<String>(
+                      child: Container(
+                        decoration: const BoxDecoration(color: Colors.white),
+                        child: Text(
+                          element,
+                          style: const TextStyle(
+                            fontSize: 18.0,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
-                    ),
-                    value: element,
-                  );
-                },
-              ).toList(),
-              onChanged: (value) {
-                print(value);
-                setState(() {
-                  _selectedClass = value.toString();
-                });
-                widget.selectClass(value.toString());
-                var list = [];
+                      value: element,
+                    );
+                  },
+                ).toList(),
+                onChanged: (value) {
+                  print(value);
+                  setState(() {
+                    _selectedClass = value.toString();
+                  });
+                  widget.selectClass(value.toString());
+                  var list = [];
 
-                DBProvider.db.getStudents(_selectedClass).then((value) {
-                  if (value.length > 0) {
-                    for (var index = 0; index < value.length; index++) {
-                      // print(index);
-                      var a = {
-                        'className': value[index]['class_name'],
-                        'studentId': value[index]['student_id'],
-                        'studentName': value[index]['student_name'],
-                        'rollNo': value[index]['student_roll_no'],
-                        'notEvaluated': false,
-                        'level': '0',
-                        'result': ''
-                      };
-                      list.add(a);
+                  DBProvider.db.getStudents(_selectedClass).then((value) {
+                    if (value.length > 0) {
+                      for (var index = 0; index < value.length; index++) {
+                        // print(index);
+                        var a = {
+                          'className': value[index]['class_name'],
+                          'studentId': value[index]['student_id'],
+                          'studentName': value[index]['student_name'],
+                          'rollNo': value[index]['student_roll_no'],
+                          'notEvaluated': false,
+                          'level': '0',
+                          'result': ''
+                        };
+                        list.add(a);
+                      }
                     }
-                  }
-                  if (list.isNotEmpty) {
-                    widget.getAllStudents(list);
-                  }
-                });
-              },
+                    if (list.isNotEmpty) {
+                      widget.getAllStudents(list);
+                    }
+                  });
+                },
+              ),
             );
           }
         } else {

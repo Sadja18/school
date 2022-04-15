@@ -148,6 +148,62 @@ class _StickyAttendanceState extends State<StickyAttendance> {
         });
   }
 
+  Widget topRow(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+          // color: Color.fromARGB(255, 171, 45, 202),
+
+          ),
+      
+      width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.height * 0.05,
+      child: Table(
+        border: TableBorder.symmetric(
+          inside: BorderSide(
+            color: Colors.black,
+            width: 2.0,
+          ),
+          outside: BorderSide(
+            color: Colors.black,
+            width: 2.0,
+          ),
+        ),
+        columnWidths: <int, TableColumnWidth>{
+          0: FractionColumnWidth(0.50),
+          1: FractionColumnWidth(0.50),
+        },
+        children: [
+          TableRow(
+            children: [
+              TableCell(
+                verticalAlignment: TableCellVerticalAlignment.middle,
+                child: DateShow(
+                  selectedDate: selectedDate,
+                ),
+              ),
+              TableCell(
+                verticalAlignment: TableCellVerticalAlignment.middle,
+                child: Container(
+                  // width: MediaQuery.of(context).size.width * 0.20,
+                  decoration: BoxDecoration(),
+                  margin: const EdgeInsets.symmetric(
+                    horizontal: 0.0,
+                    vertical: 0.0,
+                  ),
+
+                  child: ClassDropDown(
+                    selectClass: selectClass,
+                    getAllStudents: getAllStudents,
+                  ),
+                ),
+              ),
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -226,62 +282,37 @@ class _StickyAttendanceState extends State<StickyAttendance> {
                 color: Colors.white,
               ),
               alignment: Alignment.topCenter,
-              padding: const EdgeInsets.symmetric(
-                horizontal: 8.0,
-              ),
+            
               width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.height,
-              child: SingleChildScrollView(
-                child: SizedBox(
-                  width: MediaQuery.of(context).size.width,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Container(
-                        width: MediaQuery.of(context).size.width * 0.75,
-                        decoration: BoxDecoration(
-                          // border: Border.all(),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height*0.05,
+                    decoration: BoxDecoration(
+                        // border: Border.all(),
                         ),
-                        margin: const EdgeInsets.symmetric(
-                          vertical: 4.0,
-                          horizontal: 8.0,
-                        ),
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 0.0,
-                          horizontal: 10.0,
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Container(
-                              alignment: Alignment.center,
-                              margin: const EdgeInsets.only(
-                                right: 28.0,
-                              ),
-                              child: const Text(
-                                'Class:',
-                                softWrap: true,
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20,
-                                  color: Colors.black,
-                                ),
-                              ),
-                            ),
-                            ClassDropDown(
-                              // key: UniqueKey(),
-                              selectClass: selectClass,
-                              getAllStudents: getAllStudents,
-                            ),
-                          ],
-                        ),
-                      ),
-                      DateShow(selectedDate: selectedDate),
-                      (studentList.isEmpty) ? const Text('') : createOrEdit(),
-                    ],
+                    child: topRow(
+                      context,
+                    ),
                   ),
-                ),
+                  (studentList.isEmpty)
+                      ? const Text('')
+                      : Container(
+                        alignment: Alignment.topCenter,
+                          // margin: const EdgeInsets.only(
+                          //   top: 25.0,
+                          // ),
+                          decoration: BoxDecoration(
+                            color: Colors.amber.shade100,
+                          ),
+                          height: MediaQuery.of(context).size.height * 0.73,
+                          width: MediaQuery.of(context).size.width,
+                          child: createOrEdit()),
+                ],
               ),
             ),
             ViewTakenAttendance(),

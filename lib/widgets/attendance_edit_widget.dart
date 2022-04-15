@@ -47,7 +47,7 @@ class _EditAttendanceState extends State<EditAttendance> {
       ScrollController(initialScrollOffset: 0.0);
 
   int columnsLengthCalculator() {
-    return 2;
+    return 1;
   }
 
   int rowsLengthCalculator() {
@@ -138,61 +138,32 @@ class _EditAttendanceState extends State<EditAttendance> {
     switch (index) {
       case 0:
         return Container(
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        border: Border.all(
-          color: Colors.black,
-        ),
-        // borderRadius: BorderRadius.only(
-        //   topLeft: Radius.circular(
-        //     12.0,
-        //   ),
-        // ),
-        color: columnTitleColor,
-      ),
-      height: MediaQuery.of(context).size.height,
-      width: MediaQuery.of(context).size.width,
-      child: const Text(
-        'Name',
-        softWrap: false,
-        style: TextStyle(
-          fontWeight: FontWeight.bold,
-          fontSize: 18.0,
-          color: Colors.white,
-        ),
-        overflow: TextOverflow.ellipsis,
-        textAlign: TextAlign.left,
-      ),
-    );
-
-      case 1:
-        return Container(
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        border: Border.all(
-          color: Colors.black,
-        ),
-        borderRadius: BorderRadius.only(
-          topRight: Radius.circular(
-            12.0,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: Colors.black,
+            ),
+            borderRadius: BorderRadius.only(
+              topRight: Radius.circular(
+                12.0,
+              ),
+            ),
+            color: columnTitleColor,
           ),
-        ),
-        color: columnTitleColor,
-      ),
-      height: MediaQuery.of(context).size.height,
-      width: MediaQuery.of(context).size.width,
-      child: const Text(
-        'Present',
-        softWrap: false,
-        style: TextStyle(
-          fontWeight: FontWeight.bold,
-          fontSize: 18.0,
-          color: Colors.white,
-        ),
-        overflow: TextOverflow.ellipsis,
-        textAlign: TextAlign.left,
-      ),
-    );
+          height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
+          child: const Text(
+            'Present',
+            softWrap: false,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 18.0,
+              color: Colors.white,
+            ),
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.left,
+          ),
+        );
 
       default:
         return const Text('');
@@ -204,34 +175,48 @@ class _EditAttendanceState extends State<EditAttendance> {
     String studentId = studentList[index]['studentId'].toString();
 
     return Container(
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        border: Border.all(
-          color: Colors.black,
+        alignment: Alignment.centerLeft,
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: Colors.black,
+          ),
+          // borderRadius: BorderRadius.circular(4.0),
+          color: Colors.white,
         ),
-        // borderRadius: BorderRadius.circular(4.0),
-        color: (rowColor[studentId] == null)
-            ? isEven
-                ? Color.fromARGB(124, 204, 93, 248)
-                : textColor
-            : rowColor[studentId],
-      ),
-      height: MediaQuery.of(context).size.height,
-      width: MediaQuery.of(context).size.width,
-      child: Text(
-        studentList[index]['rollNo'],
-        overflow: TextOverflow.ellipsis,
-        style: TextStyle(
-          fontWeight: FontWeight.bold,
-          fontSize: 18.0,
-          color: (rowTextColor[studentId] == null)
-              ? Colors.black
-              : rowTextColor[studentId],
+        padding: const EdgeInsets.only(
+          left: 8.0,
         ),
-        softWrap: false,
-        textAlign: TextAlign.left,
-      ),
-    );
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+                  studentList[index]['rollNo'],
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18.0,
+                    color: Colors.black,
+                  ),
+                  softWrap: false,
+                  textAlign: TextAlign.left,
+                ),
+            Text(
+              nameForamtter(studentList[index]['studentName']),
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 18.0,
+                color: Colors.black,
+              ),
+              maxLines: 3,
+              softWrap: false,
+              textAlign: TextAlign.left,
+            ),
+          ],
+        ));
   }
 
   String nameForamtter(studentName) {
@@ -260,63 +245,20 @@ class _EditAttendanceState extends State<EditAttendance> {
     switch (columnIndex) {
       case 0:
         return Container(
-          // margin: const EdgeInsets.symmetric(horizontal: 2.0, vertical: 5.0),
-          // padding: const EdgeInsets.symmetric(horizontal: 0.60),
-          alignment: Alignment.centerLeft,
-          padding: const EdgeInsets.only(
-            left: 2.0,
-          ),
+          alignment: Alignment.center,
           decoration: BoxDecoration(
             border: Border.all(
               color: Colors.black,
             ),
             // borderRadius: BorderRadius.circular(4.0),
             color: (rowColor[studentId] == null)
-                ? isEven
-                    ? Color.fromARGB(124, 204, 93, 248)
-                    : textColor
-                : rowColor[studentId],
-          ),
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
-          child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Text(
-              nameForamtter(
-                studentList[studentRowIndex]['studentName'],
-              ),
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 18.0,
-                color: (rowColor[studentId] == null)
-                    ? Colors.black
-                    : rowTextColor[studentId],
-              ),
-              softWrap: false,
-              textAlign: TextAlign.left,
-            ),
-          ),
-        );
-      // return ;
-      case 1:
-        return Container(
-          alignment: Alignment.centerLeft,
-          decoration: BoxDecoration(
-            border: Border.all(
-              color: Colors.black,
-            ),
-            // borderRadius: BorderRadius.circular(4.0),
-            color: (rowColor[studentId] == null)
-                ? isEven
-                    ? Color.fromARGB(124, 204, 93, 248)
-                    : textColor
+                ? Colors.green
                 : rowColor[studentId],
           ),
           height: MediaQuery.of(context).size.height,
           width: MediaQuery.of(context).size.width,
           child: Checkbox(
-            activeColor: Colors.green,
+            activeColor: Colors.blue,
             // checkColor: Color.fromARGB(255, 110, 255, 115),
             value: checkBoxVals[studentId],
             onChanged: (bool? selection) {
@@ -328,7 +270,7 @@ class _EditAttendanceState extends State<EditAttendance> {
                 checkBoxVals[studentId] = selection!;
               });
               if (selection == true) {
-                rowColor[studentId] = Color.fromARGB(255, 6, 158, 85);
+                rowColor[studentId] = Colors.green;
                 rowTextColor[studentId] = Colors.white;
                 // print('true');
                 if (_absentees.contains(studentId)) {
@@ -340,7 +282,7 @@ class _EditAttendanceState extends State<EditAttendance> {
                 }
               } else {
                 // print('false');
-                rowColor[studentId] = Color.fromARGB(255, 216, 37, 37);
+                rowColor[studentId] = Colors.red;
                 rowTextColor[studentId] = Colors.white;
 
                 if (!_absentees.contains(studentId)) {
@@ -380,7 +322,7 @@ class _EditAttendanceState extends State<EditAttendance> {
       height: MediaQuery.of(context).size.height,
       width: MediaQuery.of(context).size.width,
       child: const Text(
-        'Roll',
+        'Student',
         softWrap: false,
         style: TextStyle(
           fontWeight: FontWeight.bold,
@@ -397,28 +339,17 @@ class _EditAttendanceState extends State<EditAttendance> {
     return Center(
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 2.0),
-        decoration: BoxDecoration(
-          border: Border.all(),
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(
-              12.0,
-            ),
-            topRight: Radius.circular(
-              12.0,
-            ),
-          ),
-          // borderRadius: BorderRadius.circular(2.0),
-        ),
+       
         width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height * 0.6,
+        height: MediaQuery.of(context).size.height * 0.8,
         // padding: const EdgeInsets.fromLTRB(4.0, 4.0, 4.0, 4.0),
         child: StickyHeadersTable(
           cellDimensions: CellDimensions.variableColumnWidthAndRowHeight(
-            columnWidths: [260, 80],
+            columnWidths: [105],
             rowHeights:
-                List<double>.generate(studentList.length, (int index) => 50),
-            stickyLegendWidth: 60,
-            stickyLegendHeight: 50,
+                List<double>.generate(studentList.length, (int index) => 90),
+            stickyLegendWidth: 300,
+            stickyLegendHeight: 40,
           ),
           initialScrollOffsetX: 0.0,
           initialScrollOffsetY: 0.0,
@@ -511,74 +442,75 @@ class _EditAttendanceState extends State<EditAttendance> {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: (reset == 0)
-          ? SizedBox(
-              height: MediaQuery.of(context).size.height,
-              child: Column(
-                children: [
-                  Container(
-                    alignment: Alignment.center,
-                    width: MediaQuery.of(context).size.width,
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          countBoxWidget("T: ", totalStudent),
-                          countBoxWidget("P: ", totalPresent),
-                          countBoxWidget("A: ", totalAbsent),
-                        ],
+    return (reset == 0)
+        ? Container(
+          decoration: BoxDecoration(
+            // color: Colors.redAccent
+          ),
+            height: MediaQuery.of(context).size.height,
+            child: Column(
+              children: [
+                Container(
+                  alignment: Alignment.center,
+                  width: MediaQuery.of(context).size.width,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        countBoxWidget("T: ", totalStudent),
+                        countBoxWidget("P: ", totalPresent),
+                        countBoxWidget("A: ", totalAbsent),
+                      ],
+                    ),
+                  ),
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(
+                        12.0,
+                      ),
+                      topRight: Radius.circular(
+                        12.0,
                       ),
                     ),
                   ),
-                  Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(
-                          12.0,
-                        ),
-                        topRight: Radius.circular(
-                          12.0,
-                        ),
-                      ),
-                    ),
-                    width: MediaQuery.of(context).size.width,
-                    // decoration: const BoxDecoration(color: Colors.green),
-                    child: attendanceTableEdit(),
-                    height: MediaQuery.of(context).size.height * 0.50,
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      if (studentList.isNotEmpty) {
-                        var title = "Confirm Submit";
-                        var message =
-                            "Press Confirm to Submit\nUse Sync Data button in the dashboard sidebar to sync this to to server";
-                        var submissionDateUnformatted = DateTime.now().toUtc();
-                        DateFormat submissionFormat =
-                            DateFormat('yyyy-MM-dd HH:mm:ss');
+                  width: MediaQuery.of(context).size.width,
+                  // decoration: const BoxDecoration(color: Colors.green),
+                  child: attendanceTableEdit(),
+                  height: MediaQuery.of(context).size.height * 0.55,
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    if (studentList.isNotEmpty) {
+                      var title = "Confirm Submit";
+                      var message =
+                          "Press Confirm to Submit\nUse Sync Data button in the dashboard sidebar to sync this to to server";
+                      var submissionDateUnformatted = DateTime.now().toUtc();
+                      DateFormat submissionFormat =
+                          DateFormat('yyyy-MM-dd HH:mm:ss');
 
-                        var submissionDate =
-                            submissionFormat.format(submissionDateUnformatted);
-                        if (kDebugMode) {
-                          print('Submitting to local');
+                      var submissionDate =
+                          submissionFormat.format(submissionDateUnformatted);
+                      if (kDebugMode) {
+                        print('Submitting to local');
 
-                          print(submissionDate);
-                        }
-                        showAlertFinal(title, message, submissionDate);
-                      } else {
-                        var title = "No Records";
-                        var message =
-                            "There is no valid attendance taken.\nSubmitting will ignore it.";
-                        showAlert(title, message);
+                        print(submissionDate);
                       }
-                    },
-                    child: const Text('Submit'),
-                  ),
-                ],
-              ),
-            )
-          : const Text(''),
-    );
+                      showAlertFinal(title, message, submissionDate);
+                    } else {
+                      var title = "No Records";
+                      var message =
+                          "There is no valid attendance taken.\nSubmitting will ignore it.";
+                      showAlert(title, message);
+                    }
+                  },
+                  child: const Text('Submit'),
+                ),
+              ],
+            ),
+          )
+        : const Text('');
   }
 }
