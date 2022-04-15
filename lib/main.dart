@@ -55,9 +55,9 @@ class _MyAppState extends State<MyApp> {
           if (snapshot.hasData &&
               (snapshot.data == 1 || snapshot.data == "1")) {
             // print();
-            // return StickyAttendance();
-
-            return Dashboard();
+            return StickyAttendance();
+            // return Dashboard();
+            // return PaceAssessmentScreen();
             // return StickyPaceWidget();
           } else {
             return Login();
@@ -71,12 +71,12 @@ class _MyAppState extends State<MyApp> {
       title: 'School Erp',
       theme: ThemeData(
         primaryColor: Colors.purpleAccent,
-        fontFamily: 'Merriweather',
+        fontFamily: 'Roboto',
         backgroundColor: Colors.blue,
         textTheme: Theme.of(context).textTheme.apply(
               fontSizeFactor: 1.20,
               fontSizeDelta: 0.5,
-              fontFamily: 'Merriweather',
+              fontFamily: 'Roboto',
             ),
       ),
       initialRoute: '/',

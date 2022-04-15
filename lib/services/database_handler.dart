@@ -501,16 +501,20 @@ class DBProvider {
       // insert languages
 
       // insert grading
-      if (grading.isEmpty && grading != null && grading.length > 0) {
+      if (grading.isNotEmpty && grading != null && grading.length > 0) {
         await db.rawQuery('DELETE FROM pacegrade;');
         var tableName = 'pacegrade';
+        // if(kDebugMode){
+        //   print('inserting grades pace');
+        //   print(grading.toString());
+        // }
 
         for (var i = 0; i < grading.length; i++) {
           var grade = grading[i];
 
           var id = grade['id'];
           var fromMarks = grade['from_mark'];
-          var toMarks = grade['to_marks'];
+          var toMarks = grade['to_mark'];
           var result = grade['result'];
 
           Map<String, Object> data = {

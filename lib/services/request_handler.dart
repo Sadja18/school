@@ -151,6 +151,11 @@ void fetchPersistent() async {
       var assessments = jsonDecode(assessmentsResp.body);
       var qPaper = jsonDecode(qPaperResp.body);
       var grading = jsonDecode(gradingResp.body);
+      if (kDebugMode) {
+          print('persistent fetched');
+          print(grading.toString());
+          // assessments can be empty
+        }
 
       if (year['academic_year'] != null &&
           classes['classes'] != null &&
@@ -165,6 +170,7 @@ void fetchPersistent() async {
           assessments['assessments'] != null) {
         if (kDebugMode) {
           print('persistent fetched');
+          print(grading);
           // assessments can be empty
         }
 

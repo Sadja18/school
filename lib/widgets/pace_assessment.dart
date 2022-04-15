@@ -1,9 +1,8 @@
-// ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors
+// ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors, unused_import, unused_field, unused_local_variable, sized_box_for_whitespace
 
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
-import 'package:path/path.dart';
 
 import '../services/database_handler.dart';
 import './assessment_select.dart';
@@ -31,6 +30,11 @@ class _PaceAssessmentScreenState extends State<PaceAssessmentScreen> {
   int currentStudentIndex = 0;
 
   int totQues = 0;
+  List<double> zeroMarksList = [];
+  Map<int, List<double>> studentIdMarksMap = {};
+  Map<int, String> studentIdResultSheet = {};
+  Map<int, bool> studentIdCheckboxVal = {};
+
   void classSelector(selectedClass) {
     if (kDebugMode) {
       print('Selected Class: ' + selectedClass.runtimeType.toString());
@@ -43,27 +47,40 @@ class _PaceAssessmentScreenState extends State<PaceAssessmentScreen> {
     }
   }
 
+  void sheetMapsInitiator(int studentId) {
+    studentIdResultSheet[studentId] = '';
+    studentIdCheckboxVal[studentId] = false;
+    studentIdMarksMap[studentId] = zeroMarksList;
+  }
+
   void getAllStudents(List<dynamic> students) {
-    for (var index = 0; index < students.length; index++) {
-      students[index].remove('level');
-      // students[index]['notEvaluated'] = false;
-      students[index]['result'] = '';
-    }
-    setState(() {
-      studentList = students;
-      currentStudentId = studentList[0]['studentId'];
-    });
+    if (students.isNotEmpty) {
+      for (var index = 0; index < students.length; index++) {
+        students[index].remove('level');
+        students[index]['result'] = '';
+        var studentId = students[index]['studentId'];
+        sheetMapsInitiator(studentId);
+      }
+      setState(() {
+        studentList = students;
+        currentStudentId = studentList[0]['studentId'];
+      });
 
-    _getGradingSystem();
+      _getGradingSystem();
 
-    if (kDebugMode) {
-      print('student list gen');
-      print(studentList.runtimeType);
+      if (kDebugMode) {
+        print('student list gen');
+        print(studentList.runtimeType);
+      }
     }
   }
 
   Future<void> _getGradingSystem() async {
     var value = await DBProvider.db.getPaceGrading();
+    if (kDebugMode) {
+      print("fetch grades");
+      print(value.toString());
+    }
     if (value.isNotEmpty) {
       // print(value);
       setState(() {
@@ -95,6 +112,12 @@ class _PaceAssessmentScreenState extends State<PaceAssessmentScreen> {
         _selectedAssessment = map;
         totQues = int.parse(map['totques']);
       });
+
+      if (totQues > 0) {
+        for (var i = 0; i < totQues; i++) {
+          zeroMarksList.add(0.0);
+        }
+      }
     } catch (e) {
       if (kDebugMode) {
         print(e.toString());
@@ -238,6 +261,112 @@ class _PaceAssessmentScreenState extends State<PaceAssessmentScreen> {
     );
   }
 
+  Widget widgetSubmitButton() {
+    return Container(
+      alignment: Alignment.center,
+      decoration: BoxDecoration(),
+      child: ElevatedButton(
+          onPressed: () {
+            if (kDebugMode) {
+              print('submit Button clicked');
+              print(studentIdMarksMap.toString());
+              print(studentIdCheckboxVal.toString());
+              print(studentIdResultSheet.toString());
+            }
+          },
+          child: const Text("Submit")),
+    );
+  }
+
+  Future<void> showAlert(String title, String message) {
+    return showDialog(
+        context: context,
+        builder: (BuildContext ctx) => AlertDialog(
+              title: Text(title),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('Re-enter'),
+                ),
+              ],
+              content: Text(message),
+            ));
+  }
+
+  Widget textFormFieldForMarks(int index, String initialValue) {
+    var title = "";
+    var message = "";
+
+    return SizedBox(
+      width: MediaQuery.of(context).size.width * 0.10,
+      child: TextFormField(
+        // key: marksFieldKeys[index],
+        initialValue: initialValue,
+        // controller: TextEditingController(text: initialValue),
+        decoration: InputDecoration(hintText: 'Q${index + 1}'),
+        keyboardType: TextInputType.number,
+        onChanged: (value) {
+          if (kDebugMode) {
+            print(value.toString());
+          }
+          // initialValue = value.toString();
+
+          if (double.tryParse(value.toString()) != null) {
+            var mark = double.parse(value.toString());
+
+            if (mark >= 0) {
+              if (mark > _totmarks) {
+                title = "Invalid Marks";
+                message = "Marks can not be more than total marks";
+
+                showAlert(title, message);
+              } else {
+                setState(() {
+                  studentIdMarksMap[currentStudentId]![index] = mark;
+                });
+              }
+            } else {
+              title = "Invalid Marks";
+              message = "Marks cannot be less than zero";
+
+              showAlert(title, message);
+            }
+          }
+        },
+      ),
+    );
+  }
+
+  Widget markFields(int totalQuestions, BuildContext context) {
+    List<Widget> inputFieldList = [];
+    for (var i = 0; i < totalQuestions; i++) {
+      String initialValue = '0';
+      var marksList = studentIdMarksMap[currentStudentId];
+
+      if (marksList![i] != double.parse(initialValue) && marksList[i] > 0) {
+        initialValue = marksList[i].toString();
+      }
+      inputFieldList.add(
+        textFormFieldForMarks(i, initialValue),
+      );
+    }
+    // inputFieldList.add(textFormFieldForMarks(0, "0.0"));
+    return Container(
+      width: MediaQuery.of(context).size.width * 0.75,
+      margin: const EdgeInsets.only(left: 10.0),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: inputFieldList,
+        ),
+      ),
+    );
+  }
+
   String nameForamtter(studentName) {
     String formattedName = "";
 
@@ -253,242 +382,123 @@ class _PaceAssessmentScreenState extends State<PaceAssessmentScreen> {
     return formattedName;
   }
 
-  Widget studentEntryView(BuildContext context) {
-    return (studentList.isEmpty ||
-            _selectedAssessment.isEmpty ||
-            _selectedClass == "")
-        ? const Text("")
-        : Card(
-          // shape: ShapeBorder.lerp(ShapeBorder(),
-            elevation: 12.0,
-            child: Container(
-              alignment: Alignment.topCenter,
-              decoration: BoxDecoration(),
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height * 0.45,
-              margin: const EdgeInsets.only(
-                top: 20.0,
-                bottom: 4.0,
-              ),
-              padding: const EdgeInsets.symmetric(
-                horizontal: 8.0,
-              ),
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    tableContainer(
-                      "Roll No:",
-                      Container(
-                        key: ObjectKey(currentStudentIndex),
-                        width: MediaQuery.of(context).size.width,
-                        decoration: BoxDecoration(),
-                        alignment: Alignment.centerLeft,
-                        margin: const EdgeInsets.symmetric(
-                          horizontal: 8.0,
-                        ),
-                        child: Text(studentList[0]['rollNo'].toString()),
-                      ),
-                      context,
+  Widget tableContainerZero(
+      String cellName, Widget secondWidget, BuildContext context) {
+    return Container(
+      alignment: Alignment.centerLeft,
+      // width: MediaQuery.of(context).size.width * 0.80,
+      // height: MediaQuery.of(context).size.height * 0.05,
+      margin: const EdgeInsets.symmetric(
+        horizontal: 6.0,
+      ),
+      child: Table(
+        defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+        columnWidths: const <int, TableColumnWidth>{
+          0: FixedColumnWidth(30),
+          1: FixedColumnWidth(260),
+        },
+        border: TableBorder.symmetric(
+          outside: BorderSide.none,
+          inside: BorderSide.none,
+        ),
+        children: [
+          TableRow(
+            children: [
+              TableCell(
+                child: Container(
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(),
+                  width: MediaQuery.of(context).size.width * 0.80,
+                  height: MediaQuery.of(context).size.height * 0.06,
+                  child: Text(
+                    cellName,
+                    style: const TextStyle(
+                      fontSize: 18.0,
+                      fontWeight: FontWeight.bold,
                     ),
-                    tableContainer(
-                      "Name:",
-                      Container(
-                        key: ObjectKey(currentStudentIndex),
-                        width: MediaQuery.of(context).size.width*0.40,
-                        decoration: BoxDecoration(),
-                        alignment: Alignment.centerLeft,
-                        margin: const EdgeInsets.symmetric(
-                          horizontal: 8.0,
-                        ),
-                        child: SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Text(
-                            nameForamtter(
-                              studentList[0]['studentName'].toString(),
-                            ),
-                          ),
-                        ),
-                      ),
-                      context,
-                    ),
-                    tableContainer(
-                      "Not Evaluated:",
-                      Container(
-                          key: ObjectKey(currentStudentIndex),
-                          width: MediaQuery.of(context).size.width,
-                          decoration: BoxDecoration(),
-                          alignment: Alignment.centerLeft,
-                          margin: const EdgeInsets.symmetric(
-                            horizontal: 8.0,
-                          ),
-                          child: Checkbox(
-                            value: true,
-                            onChanged: (bool? newVal) {},
-                          )),
-                      context,
-                    ),
-                    tableContainer(
-                      "Marks Q1:",
-                      Container(
-                        key: ObjectKey(currentStudentIndex),
-                        width: MediaQuery.of(context).size.width,
-                        decoration: BoxDecoration(),
-                        alignment: Alignment.centerLeft,
-                        margin: const EdgeInsets.symmetric(
-                          horizontal: 8.0,
-                        ),
-                        child: TextField(
-                          keyboardType: TextInputType.number,
-                        ),
-                      ),
-                      context,
-                    ),
-                    tableContainer(
-                      "Total:",
-                      Container(
-                          key: ObjectKey(currentStudentIndex),
-                          width: MediaQuery.of(context).size.width,
-                          decoration: BoxDecoration(),
-                          alignment: Alignment.centerLeft,
-                          margin: const EdgeInsets.symmetric(
-                            horizontal: 8.0,
-                          ),
-                          child: Text(
-                            '0',
-                            style: TextStyle(
-                              fontSize: 16.0,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          )),
-                      context,
-                    ),
-                    tableContainer(
-                      "Result:",
-                      Container(
-                          key: ObjectKey(currentStudentIndex),
-                          width: MediaQuery.of(context).size.width,
-                          decoration: BoxDecoration(),
-                          alignment: Alignment.centerLeft,
-                          margin: const EdgeInsets.symmetric(
-                            horizontal: 8.0,
-                          ),
-                          child: Text(
-                            'Not Evaluated',
-                            style: TextStyle(
-                              fontSize: 16.0,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          )),
-                      context,
-                    ),
-                    Container(
-                      alignment: Alignment.centerRight,
-                      width: MediaQuery.of(context).size.width,
-                      decoration: BoxDecoration(),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          (currentStudentIndex <= 0)
-                              ? const Text("")
-                              : Container(
-                                  alignment: Alignment.center,
-                                  decoration: BoxDecoration(
-                                    color: Colors.purpleAccent,
-                                    border: Border.all(),
-                                  ),
-                                  margin: const EdgeInsets.symmetric(
-                                    horizontal: 10.0,
-                                  ),
-                                  child: TextButton(
-                                    onPressed: () {
-                                      if (kDebugMode) {
-                                        print('Enter for previous');
-                                      }
-                                      if (currentStudentIndex > 0 &&
-                                          currentStudentIndex <
-                                              studentList.length) {
-                                        setState(() {
-                                          currentStudentIndex =
-                                              currentStudentIndex - 1;
-                                          currentStudentId =
-                                              studentList[currentStudentIndex]
-                                                  ['studentId'];
-                                        });
-
-                                        if (kDebugMode) {
-                                          print(studentList[currentStudentIndex]
-                                              .toString());
-                                        }
-                                      }
-                                    },
-                                    child: Text(
-                                      "Prev",
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                          (currentStudentIndex >= studentList.length)
-                              ? const Text("")
-                              : Container(
-                                  alignment: Alignment.center,
-                                  decoration: BoxDecoration(
-                                    color: Colors.purpleAccent,
-                                    border: Border.all(),
-                                  ),
-                                  child: TextButton(
-                                    onPressed: () {
-                                      if (kDebugMode) {
-                                        print('Enter for next');
-                                      }
-                                      if (currentStudentIndex >= 0 &&
-                                          currentStudentIndex <
-                                              studentList.length - 1) {
-                                        setState(() {
-                                          currentStudentIndex =
-                                              currentStudentIndex + 1;
-                                          currentStudentId =
-                                              studentList[currentStudentIndex]
-                                                  ['studentId'];
-                                        });
-                                        if (kDebugMode) {
-                                          print(studentList[currentStudentIndex]
-                                              .toString());
-                                        }
-                                      }
-                                    },
-                                    child: Text(
-                                      "Next",
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                        ],
-                      ),
-                    )
-                  ],
+                  ),
                 ),
               ),
-            ),
-          );
+              TableCell(
+                child: secondWidget,
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
   }
 
-  Widget widgetSubmitButton() {
-    return Container(
-      alignment: Alignment.center,
-      decoration: BoxDecoration(),
-      child: ElevatedButton(
-          onPressed: () {
-            if (kDebugMode) {
-              print('submit Button clicked');
-            }
-          },
-          child: const Text("Submit")),
-    );
+  double calcPercentage(double total) {
+    return (total / _totmarks) * 100;
+  }
+
+  String calcGrade(percentage) {
+    if (kDebugMode) {
+      print(percentage.runtimeType);
+    }
+
+    var resultVal = "";
+    if (kDebugMode) {
+      print('grades');
+      print(_grading.toString());
+    }
+
+    for (int i = 0; i < _grading.length; i++) {
+      if (kDebugMode) {
+        print(_grading[i].toString());
+      }
+      var gradeEntry = _grading[i];
+      // print(gradeEntry['from_marks'].runtimeType);
+
+      if (gradeEntry['from_marks'] != null && gradeEntry['to_marks'] != null) {
+        var fromMarks = gradeEntry['from_marks'];
+        var toMarks = gradeEntry['to_marks'];
+
+        if (percentage >= fromMarks && percentage <= toMarks) {
+          resultVal = gradeEntry['result'];
+        }
+      }
+    }
+    return resultVal;
+  }
+
+  String totalCalculator() {
+    List<double> marks = studentIdMarksMap[currentStudentId]!;
+
+    if (studentIdCheckboxVal[currentStudentId] == false) {
+      double total = 0;
+      for (var mark in marks) {
+        total = total + mark;
+      }
+      String result = calcGrade(calcPercentage(total));
+
+      if (result == 'acc' || result == 'noacc') {
+        studentIdResultSheet[currentStudentId] = result;
+      }
+
+      if (kDebugMode) {
+        print('total marks for $currentStudentId is $total');
+        print('result for $currentStudentId is $result');
+      }
+      return total.toString();
+    } else {
+      return "0.0";
+    }
+  }
+
+  String resultFormatter() {
+    String resultVal = studentIdResultSheet[currentStudentId]!;
+
+    if (resultVal == 'noacc') {
+      return 'Not Achieved';
+    } else if (resultVal == 'acc') {
+      return 'Achieved';
+    } else if (resultVal == 'noeval') {
+      return 'Not Evaluated';
+    } else {
+      return '';
+    }
   }
 
   @override
@@ -532,8 +542,8 @@ class _PaceAssessmentScreenState extends State<PaceAssessmentScreen> {
         alignment: Alignment.topCenter,
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
-        decoration:  BoxDecoration(
-          color: Colors.grey.shade400,
+        decoration: BoxDecoration(
+          color: Colors.grey.shade300,
         ),
         child: SingleChildScrollView(
           child: Column(
@@ -542,34 +552,204 @@ class _PaceAssessmentScreenState extends State<PaceAssessmentScreen> {
             children: [
               // widgetSelectorFields(),
               widgetTop(context),
-              studentEntryView(context),
-              widgetSubmitButton(),
+              (_selectedClass!.isEmpty || _selectedAssessment.isEmpty)
+                  ? const Text("")
+                  : Container(
+                      margin: const EdgeInsets.symmetric(
+                        vertical: 12.0,
+                      ),
+                      width: MediaQuery.of(context).size.width * 0.90,
+                      height: MediaQuery.of(context).size.height * 0.40,
+                      child: Card(
+                        shadowColor: Colors.pink,
+                        elevation: 10.0,
+                        child: Container(
+                          alignment: Alignment.topCenter,
+                          width: MediaQuery.of(context).size.width * 0.90,
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.vertical,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                tableContainerZero(
+                                  studentList[currentStudentIndex]['rollNo'],
+                                  Container(
+                                    decoration: BoxDecoration(),
+                                    child: Text(
+                                      nameForamtter(
+                                          studentList[currentStudentIndex]
+                                              ['studentName']),
+                                      style: const TextStyle(
+                                        fontSize: 18.0,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                  context,
+                                ),
+                                tableContainer(
+                                  "Not Evaluated",
+                                  Container(
+                                    alignment: Alignment.centerLeft,
+                                    decoration: BoxDecoration(),
+                                    child: Checkbox(
+                                      value: studentIdCheckboxVal[
+                                          currentStudentId],
+                                      onChanged: (bool? newValue) {
+                                        var checkBoxValue =
+                                            studentIdCheckboxVal[
+                                                currentStudentId];
+                                        if (kDebugMode) {
+                                          setState(() {
+                                            studentIdCheckboxVal[
+                                                currentStudentId] = newValue!;
+                                            if (newValue == true) {
+                                              setState(() {
+                                                studentIdResultSheet[
+                                                        currentStudentId] =
+                                                    'noeval';
+                                              });
+                                            }
+                                          });
+                                          if (checkBoxValue == false) {
+                                            print(newValue.toString());
+                                            print(checkBoxValue.toString());
+                                          } else if (checkBoxValue == true) {
+                                            print(newValue.toString());
+                                            print(checkBoxValue.toString());
+                                          } else {
+                                            print("in else");
+                                          }
+                                        }
+                                        setState(() {
+                                          checkBoxValue = newValue as bool;
+                                        });
+                                        // widget.userActionHandler(newValue as bool);
+                                        // widget.userActionHandler();
+                                      },
+                                    ),
+                                  ),
+                                  context,
+                                ),
+                                (studentIdCheckboxVal[currentStudentId] ==
+                                        false)
+                                    ? tableContainer(
+                                        "Marks",
+                                        markFields(totQues, context),
+                                        context,
+                                      )
+                                    : const Text(""),
+                                (studentIdCheckboxVal[currentStudentId] ==
+                                        false)
+                                    ? tableContainer(
+                                        "Total",
+                                        Container(
+                                          decoration: BoxDecoration(),
+                                          alignment: Alignment.centerLeft,
+                                          child: Text(
+                                            totalCalculator(),
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 18.0,
+                                            ),
+                                          ),
+                                        ),
+                                        context,
+                                      )
+                                    : const Text(""),
+                                (studentIdCheckboxVal[currentStudentId] ==
+                                        false)
+                                    ? tableContainer(
+                                        "Result",
+                                        Container(
+                                          alignment: Alignment.centerLeft,
+                                          decoration: BoxDecoration(),
+                                          child: Text(
+                                            resultFormatter(),
+                                            style: const TextStyle(
+                                              fontSize: 18.0,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                        context)
+                                    : const Text(''),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+
+              (_selectedClass!.isEmpty || _selectedAssessment.isEmpty)
+                  ? const Text("")
+                  : Container(
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(),
+                      width: MediaQuery.of(context).size.width * 0.90,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          (currentStudentIndex > 0 &&
+                                  currentStudentIndex < studentList.length)
+                              ? Container(
+                                  decoration: BoxDecoration(),
+                                  child: TextButton(
+                                    onPressed: () {
+                                      if (currentStudentIndex > 0 &&
+                                          currentStudentIndex <
+                                              studentList.length) {
+                                        setState(() {
+                                          currentStudentIndex =
+                                              currentStudentIndex - 1;
+                                          currentStudentId =
+                                              studentList[currentStudentIndex]
+                                                  ['studentId'];
+                                        });
+                                      }
+                                    },
+                                    child: Icon(
+                                      Icons.arrow_back_outlined,
+                                      size: 40,
+                                    ),
+                                  ),
+                                )
+                              : const Text(""),
+                          (currentStudentIndex >= 0 &&
+                                  currentStudentIndex < studentList.length - 1)
+                              ? Container(
+                                  decoration: BoxDecoration(),
+                                  child: TextButton(
+                                    onPressed: () {
+                                      if (currentStudentIndex >= 0 &&
+                                          currentStudentIndex <
+                                              studentList.length - 1) {
+                                        setState(() {
+                                          currentStudentIndex =
+                                              currentStudentIndex + 1;
+                                          currentStudentId =
+                                              studentList[currentStudentIndex]
+                                                  ['studentId'];
+                                        });
+                                      }
+                                    },
+                                    child: Icon(
+                                      Icons.arrow_forward_outlined,
+                                      size: 40,
+                                    ),
+                                  ),
+                                )
+                              : const Text(""),
+                        ],
+                      ),
+                    ),
+              (_selectedClass!.isEmpty || _selectedAssessment.isEmpty)
+                  ? const Text("")
+                  : widgetSubmitButton(),
             ],
           ),
         ),
-      ),
-    );
-  }
-}
-
-class StudentCard extends StatefulWidget {
-  final Map<String, Object> studentData;
-  final int studentId;
-  final int rowIndex;
-  final Function(List? marks, double? total,String? result) selection;
-  const StudentCard({ Key? key, required this.studentData, required this.studentId, required this.rowIndex, required this.selection }) : super(key: key);
-
-  @override
-  State<StudentCard> createState() => _StudentCardState();
-}
-
-class _StudentCardState extends State<StudentCard> {
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      child: Container(
-        decoration: BoxDecoration(),
-        child: const Text('child card'),
       ),
     );
   }

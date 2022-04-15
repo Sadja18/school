@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
@@ -78,7 +80,7 @@ class _EditAttendanceState extends State<EditAttendance> {
   Widget countBoxWidget(String headerString, int value) {
     return Container(
       alignment: Alignment.center,
-      width: MediaQuery.of(context).size.width * 0.30,
+      width: MediaQuery.of(context).size.width * 0.15,
       height: MediaQuery.of(context).size.height * 0.05,
       margin: const EdgeInsets.symmetric(
         vertical: 2.0,
@@ -94,20 +96,25 @@ class _EditAttendanceState extends State<EditAttendance> {
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(
-            headerString,
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 17.0,
+          Center(
+            child: Text(
+              headerString,
+              style: const TextStyle(
+                fontSize: 16.0,
+                fontWeight: FontWeight.bold,
+              ),
+              maxLines: 1,
             ),
-            maxLines: 1,
           ),
-          Text(
-            '$value',
-            style: const TextStyle(
-              // fontWeight: FontWeight.bold,
-              fontSize: 17.0,
+          Center(
+            child: Text(
+              '$value',
+              style: const TextStyle(
+                  // fontWeight: FontWeight.bold,
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.bold),
             ),
           ),
         ],
@@ -124,61 +131,68 @@ class _EditAttendanceState extends State<EditAttendance> {
     );
   }
 
+  var columnTitleColor = Color.fromARGB(255, 156, 45, 175);
+  var textColor = Color.fromARGB(255, 230, 100, 253);
+
   Widget columnTitleBuilder(int index) {
     switch (index) {
       case 0:
         return Container(
-          // margin: const EdgeInsets.symmetric(horizontal: 2.0, vertical: 5.0),
-          // padding: const EdgeInsets.symmetric(horizontal: 0.60),
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            border: Border.all(
-              color: 1 == 2 ? Colors.lightBlueAccent : Colors.blueGrey,
-            ),
-            // borderRadius: BorderRadius.circular(4.0),
-            color: Colors.blue.shade400,
-          ),
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
-          child: const Text(
-            'Roll',
-            softWrap: false,
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 16.0,
-              color: Colors.white,
-            ),
-            overflow: TextOverflow.ellipsis,
-            textAlign: TextAlign.left,
-          ),
-        );
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: Colors.black,
+        ),
+        // borderRadius: BorderRadius.only(
+        //   topLeft: Radius.circular(
+        //     12.0,
+        //   ),
+        // ),
+        color: columnTitleColor,
+      ),
+      height: MediaQuery.of(context).size.height,
+      width: MediaQuery.of(context).size.width,
+      child: const Text(
+        'Name',
+        softWrap: false,
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+          fontSize: 18.0,
+          color: Colors.white,
+        ),
+        overflow: TextOverflow.ellipsis,
+        textAlign: TextAlign.left,
+      ),
+    );
 
       case 1:
         return Container(
-          // margin: const EdgeInsets.symmetric(horizontal: 2.0, vertical: 5.0),
-          // padding: const EdgeInsets.symmetric(horizontal: 0.60),
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            border: Border.all(
-              color: 1 == 2 ? Colors.lightBlueAccent : Colors.blueGrey,
-            ),
-            // borderRadius: BorderRadius.circular(4.0),
-            color: Colors.blue.shade400,
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: Colors.black,
+        ),
+        borderRadius: BorderRadius.only(
+          topRight: Radius.circular(
+            12.0,
           ),
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
-          child: const Text(
-            'Present',
-            softWrap: false,
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 16.0,
-              color: Colors.white,
-            ),
-            overflow: TextOverflow.ellipsis,
-            textAlign: TextAlign.left,
-          ),
-        );
+        ),
+        color: columnTitleColor,
+      ),
+      height: MediaQuery.of(context).size.height,
+      width: MediaQuery.of(context).size.width,
+      child: const Text(
+        'Present',
+        softWrap: false,
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+          fontSize: 18.0,
+          color: Colors.white,
+        ),
+        overflow: TextOverflow.ellipsis,
+        textAlign: TextAlign.left,
+      ),
+    );
 
       default:
         return const Text('');
@@ -187,6 +201,7 @@ class _EditAttendanceState extends State<EditAttendance> {
 
   Widget rowsTitleBuilder(int index) {
     var isEven = index % 2 == 0;
+    String studentId = studentList[index]['studentId'].toString();
 
     return Container(
       alignment: Alignment.center,
@@ -195,19 +210,23 @@ class _EditAttendanceState extends State<EditAttendance> {
           color: Colors.black,
         ),
         // borderRadius: BorderRadius.circular(4.0),
-        color: isEven
-            ? const Color.fromARGB(127, 120, 165, 255)
-            : const Color.fromARGB(255, 120, 165, 255),
+        color: (rowColor[studentId] == null)
+            ? isEven
+                ? Color.fromARGB(124, 204, 93, 248)
+                : textColor
+            : rowColor[studentId],
       ),
       height: MediaQuery.of(context).size.height,
       width: MediaQuery.of(context).size.width,
       child: Text(
         studentList[index]['rollNo'],
         overflow: TextOverflow.ellipsis,
-        style: const TextStyle(
+        style: TextStyle(
           fontWeight: FontWeight.bold,
-          fontSize: 15.0,
-          color: Colors.black,
+          fontSize: 18.0,
+          color: (rowTextColor[studentId] == null)
+              ? Colors.black
+              : rowTextColor[studentId],
         ),
         softWrap: false,
         textAlign: TextAlign.left,
@@ -230,6 +249,9 @@ class _EditAttendanceState extends State<EditAttendance> {
     return formattedName;
   }
 
+  Map<String, Color> rowColor = {};
+  Map<String, Color> rowTextColor = {};
+
   Widget cellWidget2(int columnIndex, int studentRowIndex) {
     // return const Text('data');
     var studentIdInt = studentList[studentRowIndex]['studentId'];
@@ -241,14 +263,19 @@ class _EditAttendanceState extends State<EditAttendance> {
           // margin: const EdgeInsets.symmetric(horizontal: 2.0, vertical: 5.0),
           // padding: const EdgeInsets.symmetric(horizontal: 0.60),
           alignment: Alignment.centerLeft,
+          padding: const EdgeInsets.only(
+            left: 2.0,
+          ),
           decoration: BoxDecoration(
             border: Border.all(
               color: Colors.black,
             ),
             // borderRadius: BorderRadius.circular(4.0),
-            color: isEven
-                ? const Color.fromARGB(127, 120, 165, 255)
-                : const Color.fromARGB(255, 120, 165, 255),
+            color: (rowColor[studentId] == null)
+                ? isEven
+                    ? Color.fromARGB(124, 204, 93, 248)
+                    : textColor
+                : rowColor[studentId],
           ),
           height: MediaQuery.of(context).size.height,
           width: MediaQuery.of(context).size.width,
@@ -259,10 +286,12 @@ class _EditAttendanceState extends State<EditAttendance> {
                 studentList[studentRowIndex]['studentName'],
               ),
               overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
+              style: TextStyle(
                 fontWeight: FontWeight.bold,
-                fontSize: 15.0,
-                color: Colors.black,
+                fontSize: 18.0,
+                color: (rowColor[studentId] == null)
+                    ? Colors.black
+                    : rowTextColor[studentId],
               ),
               softWrap: false,
               textAlign: TextAlign.left,
@@ -278,9 +307,11 @@ class _EditAttendanceState extends State<EditAttendance> {
               color: Colors.black,
             ),
             // borderRadius: BorderRadius.circular(4.0),
-            color: isEven
-                ? const Color.fromARGB(127, 120, 165, 255)
-                : const Color.fromARGB(255, 120, 165, 255),
+            color: (rowColor[studentId] == null)
+                ? isEven
+                    ? Color.fromARGB(124, 204, 93, 248)
+                    : textColor
+                : rowColor[studentId],
           ),
           height: MediaQuery.of(context).size.height,
           width: MediaQuery.of(context).size.width,
@@ -297,6 +328,8 @@ class _EditAttendanceState extends State<EditAttendance> {
                 checkBoxVals[studentId] = selection!;
               });
               if (selection == true) {
+                rowColor[studentId] = Color.fromARGB(255, 6, 158, 85);
+                rowTextColor[studentId] = Colors.white;
                 // print('true');
                 if (_absentees.contains(studentId)) {
                   _absentees.removeWhere((item) => item == studentId);
@@ -307,6 +340,9 @@ class _EditAttendanceState extends State<EditAttendance> {
                 }
               } else {
                 // print('false');
+                rowColor[studentId] = Color.fromARGB(255, 216, 37, 37);
+                rowTextColor[studentId] = Colors.white;
+
                 if (!_absentees.contains(studentId)) {
                   _absentees.add(studentId);
                   setState(() {
@@ -334,8 +370,12 @@ class _EditAttendanceState extends State<EditAttendance> {
         border: Border.all(
           color: Colors.black,
         ),
-        // borderRadius: BorderRadius.circular(4.0),
-        color: Colors.blue.shade400,
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(
+            12.0,
+          ),
+        ),
+        color: columnTitleColor,
       ),
       height: MediaQuery.of(context).size.height,
       width: MediaQuery.of(context).size.width,
@@ -344,7 +384,7 @@ class _EditAttendanceState extends State<EditAttendance> {
         softWrap: false,
         style: TextStyle(
           fontWeight: FontWeight.bold,
-          fontSize: 16.0,
+          fontSize: 18.0,
           color: Colors.white,
         ),
         overflow: TextOverflow.ellipsis,
@@ -358,7 +398,15 @@ class _EditAttendanceState extends State<EditAttendance> {
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 2.0),
         decoration: BoxDecoration(
-          border: Border.all(color: Colors.red),
+          border: Border.all(),
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(
+              12.0,
+            ),
+            topRight: Radius.circular(
+              12.0,
+            ),
+          ),
           // borderRadius: BorderRadius.circular(2.0),
         ),
         width: MediaQuery.of(context).size.width,
@@ -368,9 +416,9 @@ class _EditAttendanceState extends State<EditAttendance> {
           cellDimensions: CellDimensions.variableColumnWidthAndRowHeight(
             columnWidths: [260, 80],
             rowHeights:
-                List<double>.generate(studentList.length, (int index) => 35),
+                List<double>.generate(studentList.length, (int index) => 50),
             stickyLegendWidth: 60,
-            stickyLegendHeight: 35,
+            stickyLegendHeight: 50,
           ),
           initialScrollOffsetX: 0.0,
           initialScrollOffsetY: 0.0,
@@ -477,14 +525,24 @@ class _EditAttendanceState extends State<EditAttendance> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          countBoxWidget("Total: ", totalStudent),
-                          countBoxWidget("Present: ", totalPresent),
-                          countBoxWidget("Absent: ", totalAbsent),
+                          countBoxWidget("T: ", totalStudent),
+                          countBoxWidget("P: ", totalPresent),
+                          countBoxWidget("A: ", totalAbsent),
                         ],
                       ),
                     ),
                   ),
-                  SizedBox(
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(
+                          12.0,
+                        ),
+                        topRight: Radius.circular(
+                          12.0,
+                        ),
+                      ),
+                    ),
                     width: MediaQuery.of(context).size.width,
                     // decoration: const BoxDecoration(color: Colors.green),
                     child: attendanceTableEdit(),

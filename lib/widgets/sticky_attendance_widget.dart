@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_literals_to_create_immutables, unused_element, unused_field, unused_import
+// ignore_for_file: prefer_const_literals_to_create_immutables, unused_element, unused_field, unused_import, prefer_const_constructors
 
 import 'dart:convert';
 
@@ -222,8 +222,11 @@ class _StickyAttendanceState extends State<StickyAttendance> {
           physics: const NeverScrollableScrollPhysics(),
           children: [
             Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+              ),
               alignment: Alignment.topCenter,
-              margin: const EdgeInsets.symmetric(
+              padding: const EdgeInsets.symmetric(
                 horizontal: 8.0,
               ),
               width: MediaQuery.of(context).size.width,
@@ -238,7 +241,7 @@ class _StickyAttendanceState extends State<StickyAttendance> {
                       Container(
                         width: MediaQuery.of(context).size.width * 0.75,
                         decoration: BoxDecoration(
-                          border: Border.all(),
+                          // border: Border.all(),
                         ),
                         margin: const EdgeInsets.symmetric(
                           vertical: 4.0,
