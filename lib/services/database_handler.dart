@@ -60,6 +60,7 @@ class DBProvider {
         "student_id INTEGER PRIMARY KEY,"
         "student_roll_no TEXT,"
         "student_name TEXT,"
+        "profile_pic TEXT,"
         "class_id INTEGER NOT NULL,"
         "class_name TEXT NOT NULL);";
   }
@@ -453,13 +454,15 @@ class DBProvider {
 
             var classId = student['standard_id'][0];
             var className = student['standard_id'][1];
+            var studentPhoto = student['photo'].toString();
 
             Map<String, Object> data = {
               "student_id": studentId,
               "student_name": studentName,
               "student_roll_no": rollNo.toString(),
               "class_id": classId,
-              "class_name": className.toString()
+              "class_name": className.toString(),
+              "profile_pic": studentPhoto
             };
 
             var res = await db.insert(tableName, data,

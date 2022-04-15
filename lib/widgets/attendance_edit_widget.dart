@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +9,7 @@ import 'package:intl/intl.dart';
 import 'package:school/services/database_handler.dart';
 import 'package:table_sticky_headers/table_sticky_headers.dart';
 import 'package:intl/intl.dart' show toBeginningOfSentenceCase;
+import './assist/image_assist.dart';
 
 class EditAttendance extends StatefulWidget {
   final List<dynamic> absentees;
@@ -91,10 +93,10 @@ class _EditAttendanceState extends State<EditAttendance> {
       //   horizontal: 1.0,
       // ),
       decoration: BoxDecoration(
-        // border: Border.all(),
+          // border: Border.all(),
 
-        color: boxColor,
-      ),
+          // color: boxColor,
+          ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
@@ -102,10 +104,10 @@ class _EditAttendanceState extends State<EditAttendance> {
           Center(
             child: Text(
               headerString,
-              style: const TextStyle(
-                fontSize: 16.0,
+              style: TextStyle(
+                fontSize: 17.0,
                 fontWeight: FontWeight.bold,
-                color: Colors.white,
+                color: boxColor,
               ),
               maxLines: 1,
             ),
@@ -113,11 +115,11 @@ class _EditAttendanceState extends State<EditAttendance> {
           Center(
             child: Text(
               '$value',
-              style: const TextStyle(
+              style: TextStyle(
                 // fontWeight: FontWeight.bold,
-                fontSize: 16.0,
+                fontSize: 17.0,
                 fontWeight: FontWeight.bold,
-                color: Colors.white,
+                color: boxColor,
               ),
             ),
           ),
@@ -202,32 +204,61 @@ class _EditAttendanceState extends State<EditAttendance> {
         ),
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Row(
           children: [
-            Text(
-              studentList[index]['rollNo'],
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 18.0,
-                color: Colors.black,
+            AvatarGeneratorNew(base64Code: studentList[index]['profilePic']),
+            Padding(
+              padding: const EdgeInsets.only(left:10.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    decoration: BoxDecoration(),
+                    width: MediaQuery.of(context).size.width*0.60,
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Text(
+                        nameForamtter(studentList[index]['studentName']),
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          // fontWeight: FontWeight.bold,
+                          fontSize: 18.0,
+                          color: Colors.black,
+                        ),
+                        maxLines: 2,
+                        softWrap: false,
+                        textAlign: TextAlign.left,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    alignment: Alignment.bottomLeft,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Roll: ",
+                          style: TextStyle(
+                            fontSize: 18.0,
+                          ),
+                        ),
+                        Text(
+                          studentList[index]['rollNo'],
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            // fontWeight: FontWeight.bold,
+                            fontSize: 18.0,
+                            color: Colors.black,
+                          ),
+                          softWrap: false,
+                          textAlign: TextAlign.left,
+                        ),
+                      ],
+                    ),
+                  )
+                ],
               ),
-              softWrap: false,
-              textAlign: TextAlign.left,
-            ),
-            Text(
-              nameForamtter(studentList[index]['studentName']),
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 18.0,
-                color: Colors.black,
-              ),
-              maxLines: 2,
-              softWrap: false,
-              textAlign: TextAlign.left,
             ),
           ],
         ),
@@ -276,13 +307,18 @@ class _EditAttendanceState extends State<EditAttendance> {
               borderRadius: BorderRadius.circular(
                 8.0,
               ),
-              color: rowColor[studentId] == null
+              color: (rowColor[studentId] == null)
                   ? Color.fromARGB(255, 46, 122, 116)
-                  : rowColor[studentId]!,
+                  : Colors.red,
             ),
             child: TextButton(
               onPressed: () {
-                if (checkBoxVals[studentId] == true) {
+                if (kDebugMode) {
+                  // log(studentList[studentRowIndex].toString());
+                  log(_absentees.toString());
+                  log(_absentees.contains(studentId).toString());
+                }
+                if (checkBoxVals[studentId] == true || _absentees.contains(studentId)==false) {
                   // if student was marked present previously
                   // mark him/her absent
                   rowColor[studentId] = Colors.red;
@@ -302,6 +338,10 @@ class _EditAttendanceState extends State<EditAttendance> {
                 } else {
                   // if student was marked absent previously
                   // mark him/her present
+
+                  if(_absentees.contains(studentId)){
+
+                  }
                   _absentees.removeWhere((item) => item == studentId);
                   setState(() {
                     totalAbsent = totalAbsent - 1;
@@ -547,7 +587,7 @@ class _EditAttendanceState extends State<EditAttendance> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         countBoxWidget("Total: ", totalStudent,
-                            Color.fromARGB(239, 248, 52, 232)),
+                            Color.fromARGB(238, 95, 61, 247)),
                         countBoxWidget("Present: ", totalPresent,
                             Color.fromARGB(255, 46, 122, 116)),
                         countBoxWidget("Absent: ", totalAbsent, Colors.red),
@@ -566,9 +606,9 @@ class _EditAttendanceState extends State<EditAttendance> {
                   child: ElevatedButton(
                     onPressed: () {
                       if (studentList.isNotEmpty) {
-                        var title = "Confirm Submit";
-                        var message =
-                            "Press Confirm to Submit\nUse Sync Data button in the dashboard sidebar to sync this to to server";
+                        var title = "";
+                        var message = "Press Confirm to Submit";
+                        // \nUse Sync Data button in the dashboard sidebar to sync this to server";
                         var submissionDateUnformatted = DateTime.now().toUtc();
                         DateFormat submissionFormat =
                             DateFormat('yyyy-MM-dd HH:mm:ss');

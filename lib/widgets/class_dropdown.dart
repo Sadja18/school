@@ -45,13 +45,14 @@ class _ClassDropDownState extends State<ClassDropDown> {
               classNames.add(classRecord['class_name']);
             }
             return Container(
+              alignment: Alignment.center,
               width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height*0.06,
-             
+              height: MediaQuery.of(context).size.height * 0.06,
               decoration: BoxDecoration(
                 color: Colors.deepPurpleAccent,
               ),
               child: DropdownButton<String>(
+                dropdownColor: Colors.deepPurpleAccent,
                 hint: const Text(
                   'Select Class',
                   style: TextStyle(
@@ -67,12 +68,15 @@ class _ClassDropDownState extends State<ClassDropDown> {
                   (String element) {
                     return DropdownMenuItem<String>(
                       child: Container(
-                        decoration: const BoxDecoration(color: Colors.white),
+                        decoration: const BoxDecoration(
+                          // color: Colors.white,
+                        ),
                         child: Text(
                           element,
                           style: const TextStyle(
                             fontSize: 18.0,
                             fontWeight: FontWeight.bold,
+                            color: Colors.white,
                           ),
                         ),
                       ),
@@ -97,6 +101,7 @@ class _ClassDropDownState extends State<ClassDropDown> {
                           'studentId': value[index]['student_id'],
                           'studentName': value[index]['student_name'],
                           'rollNo': value[index]['student_roll_no'],
+                          'profilePic': value[index]['profile_pic'],
                           'notEvaluated': false,
                           'level': '0',
                           'result': ''

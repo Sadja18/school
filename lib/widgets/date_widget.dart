@@ -39,14 +39,12 @@ class _DateShowState extends State<DateShow> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(),
+      alignment: Alignment.center,
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.height * 0.06,
-
-      // margin: const EdgeInsets.symmetric(
-      //   vertical: 0.0,
-      //   horizontal: 8.0,
-      // ),
+      decoration: BoxDecoration(
+        color: Colors.deepPurpleAccent,
+      ),
       child: TextButton(
         style: TextButton.styleFrom(
           alignment: Alignment.center,
