@@ -1,4 +1,4 @@
-// ignore_for_file: unused_import, duplicate_ignore
+// ignore_for_file: unused_import, duplicate_ignore, prefer_const_constructors
 
 import 'package:flutter/material.dart';
 import '../services/helper_db.dart';
@@ -86,6 +86,8 @@ class _DashboardState extends State<Dashboard> {
       ),
       endDrawer: Container(
         padding: EdgeInsets.only(top: statusBarHeight + appBarHeight + 1),
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
         child: Drawer(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -102,27 +104,53 @@ class _DashboardState extends State<Dashboard> {
                     border: Border.all(),
                     borderRadius: BorderRadius.circular(10.0)),
                 child: ListTile(
-                  title: Center(child: Text(userName!)),
+                  title: Center(
+                    child: Text(
+                      userName!,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18.0,
+                      ),
+                    ),
+                  ),
                   tileColor: Colors.transparent,
                 ),
               ),
-              ListTile(
-                title: Center(
+              Container(
+                width: MediaQuery.of(context).size.width,
+                decoration: BoxDecoration(),
+                alignment: Alignment.center,
+                child: Center(
                   child: OutlinedButton(
                     onPressed: () {
                       wrapper();
                     },
-                    child: const Text('Sync Data'),
+                    child: const Text(
+                      'Sync Data',
+                      style: TextStyle(
+                        fontSize: 20.0,
+                      ),
+                    ),
                   ),
                 ),
               ),
-              ListTile(
-                title: Center(
+              Container(
+                width: MediaQuery.of(context).size.width,
+                decoration: BoxDecoration(),
+                alignment: Alignment.center,
+                child: Center(
                   child: OutlinedButton(
                     onPressed: () {
                       _onLogout();
                     },
-                    child: const Text('Logout'),
+                    child: const Text(
+                      'Logout',
+                      style: TextStyle(
+                        // fontWeight: FontWeight.bold,
+                        fontSize: 20.0,
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -144,20 +172,29 @@ class _DashboardState extends State<Dashboard> {
       ),
       body: Container(
         alignment: Alignment.center,
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
         decoration: const BoxDecoration(
           image: DecorationImage(
             image: AssetImage('assets/background/img1.jpg'),
             fit: BoxFit.fill,
           ),
+          color: Colors.white,
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             Container(
               decoration: BoxDecoration(
-                border: Border.all(),
+                border: Border.all(
+                  width: 4.0,
+                ),
+                borderRadius: BorderRadius.circular(
+                  10.0,
+                ),
               ),
-              width: MediaQuery.of(context).size.width * 0.40,
+              width: MediaQuery.of(context).size.width * 0.60,
+              height: MediaQuery.of(context).size.height * 0.30,
               child: TextButton(
                 onPressed: () {
                   Navigator.of(context).pushNamed(StickyAttendance.routeName);
@@ -181,9 +218,15 @@ class _DashboardState extends State<Dashboard> {
             ),
             Container(
               decoration: BoxDecoration(
-                border: Border.all(),
+                border: Border.all(
+                  width: 4.0,
+                ),
+                borderRadius: BorderRadius.circular(
+                  10.0,
+                ),
               ),
-              width: MediaQuery.of(context).size.width * 0.40,
+              width: MediaQuery.of(context).size.width * 0.60,
+              height: MediaQuery.of(context).size.height * 0.30,
               child: TextButton(
                 onPressed: () {
                   // ignore: avoid_print

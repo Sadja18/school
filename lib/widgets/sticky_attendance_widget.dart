@@ -159,14 +159,8 @@ class _StickyAttendanceState extends State<StickyAttendance> {
       height: MediaQuery.of(context).size.height * 0.05,
       child: Table(
         border: TableBorder.symmetric(
-          inside: BorderSide(
-            color: Colors.black,
-            width: 2.0,
-          ),
-          outside: BorderSide(
-            color: Colors.black,
-            width: 2.0,
-          ),
+          inside: BorderSide.none,
+          outside: BorderSide.none,
         ),
         columnWidths: <int, TableColumnWidth>{
           0: FractionColumnWidth(0.50),

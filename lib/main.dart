@@ -55,8 +55,8 @@ class _MyAppState extends State<MyApp> {
           if (snapshot.hasData &&
               (snapshot.data == 1 || snapshot.data == "1")) {
             // print();
-            return StickyAttendance();
-            // return Dashboard();
+            // return StickyAttendance();
+            return Dashboard();
             // return PaceAssessmentScreen();
             // return StickyPaceWidget();
           } else {

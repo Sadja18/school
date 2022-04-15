@@ -136,34 +136,34 @@ class _EditAttendanceState extends State<EditAttendance> {
 
   Widget columnTitleBuilder(int index) {
     switch (index) {
-      case 0:
-        return Container(
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            border: Border.all(
-              color: Colors.black,
-            ),
-            borderRadius: BorderRadius.only(
-              topRight: Radius.circular(
-                12.0,
-              ),
-            ),
-            color: columnTitleColor,
-          ),
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
-          child: const Text(
-            'Present',
-            softWrap: false,
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 18.0,
-              color: Colors.white,
-            ),
-            overflow: TextOverflow.ellipsis,
-            textAlign: TextAlign.left,
-          ),
-        );
+      // case 0:
+      //   return Container(
+      //     alignment: Alignment.center,
+      //     decoration: BoxDecoration(
+      //       border: Border.all(
+      //         color: Colors.black,
+      //       ),
+      //       borderRadius: BorderRadius.only(
+      //         topRight: Radius.circular(
+      //           12.0,
+      //         ),
+      //       ),
+      //       color: columnTitleColor,
+      //     ),
+      //     height: MediaQuery.of(context).size.height,
+      //     width: MediaQuery.of(context).size.width,
+      //     child: const Text(
+      //       'Present',
+      //       softWrap: false,
+      //       style: TextStyle(
+      //         fontWeight: FontWeight.bold,
+      //         fontSize: 18.0,
+      //         color: Colors.white,
+      //       ),
+      //       overflow: TextOverflow.ellipsis,
+      //       textAlign: TextAlign.left,
+      //     ),
+      //   );
 
       default:
         return const Text('');
@@ -359,7 +359,7 @@ class _EditAttendanceState extends State<EditAttendance> {
           columnsTitleBuilder: (i) => columnTitleBuilder(i),
           rowsTitleBuilder: (i) => rowsTitleBuilder(i),
           contentCellBuilder: (i, j) => cellWidget2(i, j),
-          legendCell: legendCellBuilder(),
+          legendCell: const Text(''),
         ),
       ),
     );
