@@ -86,7 +86,7 @@ class _DashboardState extends State<Dashboard> {
       ),
       endDrawer: Container(
         padding: EdgeInsets.only(top: statusBarHeight + appBarHeight + 1),
-        width: MediaQuery.of(context).size.width,
+        width: MediaQuery.of(context).size.width*0.80,
         height: MediaQuery.of(context).size.height,
         child: Drawer(
           child: Column(

@@ -41,6 +41,8 @@ class _DateShowState extends State<DateShow> {
     return Container(
       decoration: BoxDecoration(),
       width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.height * 0.06,
+
       // margin: const EdgeInsets.symmetric(
       //   vertical: 0.0,
       //   horizontal: 8.0,

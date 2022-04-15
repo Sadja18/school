@@ -150,13 +150,9 @@ class _StickyAttendanceState extends State<StickyAttendance> {
 
   Widget topRow(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-          // color: Color.fromARGB(255, 171, 45, 202),
-
-          ),
-      
+      decoration: BoxDecoration(),
       width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height * 0.05,
+      height: MediaQuery.of(context).size.height * 0.06,
       child: Table(
         border: TableBorder.symmetric(
           inside: BorderSide.none,
@@ -235,34 +231,42 @@ class _StickyAttendanceState extends State<StickyAttendance> {
               ),
             ),
           ),
-          bottom: const TabBar(
+          bottom: TabBar(
             tabs: [
               Tab(
-                icon: Icon(
-                  Icons.create_outlined,
-                  semanticLabel: 'Mark Attendance',
-                  size: 40,
-                ),
-                child: Text(
-                  'Mark New',
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15,
-                      letterSpacing: 1.8),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.create_outlined,
+                      semanticLabel: 'Mark Attendance',
+                      size: 40,
+                    ),
+                    Text(
+                      'Mark New',
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15,
+                          letterSpacing: 1.8),
+                    ),
+                  ],
                 ),
               ),
               Tab(
-                icon: Icon(
-                  Icons.view_list_outlined,
-                  semanticLabel: 'View Attendance',
-                  size: 40,
-                ),
-                child: Text(
-                  'View Marked',
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15,
-                      letterSpacing: 1.8),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.view_list_outlined,
+                      semanticLabel: 'View Attendance',
+                      size: 40,
+                    ),
+                    Text(
+                      'View Marked',
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15,
+                          letterSpacing: 1.8),
+                    ),
+                  ],
                 ),
               ),
             ],
@@ -273,10 +277,9 @@ class _StickyAttendanceState extends State<StickyAttendance> {
           children: [
             Container(
               decoration: BoxDecoration(
-                color: Colors.white,
-              ),
+                  // color: Colors.blue,
+                  ),
               alignment: Alignment.topCenter,
-            
               width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.height,
               child: Column(
@@ -285,7 +288,7 @@ class _StickyAttendanceState extends State<StickyAttendance> {
                 children: [
                   Container(
                     width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height*0.05,
+                    height: MediaQuery.of(context).size.height * 0.05,
                     decoration: BoxDecoration(
                         // border: Border.all(),
                         ),
@@ -293,19 +296,31 @@ class _StickyAttendanceState extends State<StickyAttendance> {
                       context,
                     ),
                   ),
-                  (studentList.isEmpty)
-                      ? const Text('')
-                      : Container(
-                        alignment: Alignment.topCenter,
-                          // margin: const EdgeInsets.only(
-                          //   top: 25.0,
-                          // ),
-                          decoration: BoxDecoration(
-                            color: Colors.amber.shade100,
-                          ),
-                          height: MediaQuery.of(context).size.height * 0.73,
-                          width: MediaQuery.of(context).size.width,
-                          child: createOrEdit()),
+                  // Text('${MediaQuery.of(context).size.height}'),
+
+                  SingleChildScrollView(
+                    scrollDirection: Axis.vertical,
+                    child: Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.height * 0.76,
+                      // decoration: BoxDecoration(color: Colors.amber),
+                      child: (studentList.isEmpty)
+                          ? const Text('')
+                          : createOrEdit(),
+                    ),
+                  )
+                  // Container(
+                  //         alignment: Alignment.topCenter,
+                  //         margin: const EdgeInsets.only(
+                  //           top: 6.0,
+                  //         ),
+                  //         decoration: BoxDecoration(
+                  //             // color: Colors.amber.shade100,
+                  //             ),
+                  //         height: MediaQuery.of(context).size.height * 0.76,
+                  //         width: MediaQuery.of(context).size.width,
+                  //         child: createOrEdit(),
+                  //       ),
                 ],
               ),
             ),

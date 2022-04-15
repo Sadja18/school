@@ -77,10 +77,10 @@ class _EditAttendanceState extends State<EditAttendance> {
     }
   }
 
-  Widget countBoxWidget(String headerString, int value) {
+  Widget countBoxWidget(String headerString, int value, boxColor) {
     return Container(
       alignment: Alignment.center,
-      width: MediaQuery.of(context).size.width * 0.15,
+      width: MediaQuery.of(context).size.width * 0.30,
       height: MediaQuery.of(context).size.height * 0.05,
       margin: const EdgeInsets.symmetric(
         vertical: 2.0,
@@ -91,8 +91,9 @@ class _EditAttendanceState extends State<EditAttendance> {
       //   horizontal: 1.0,
       // ),
       decoration: BoxDecoration(
-        border: Border.all(),
-        // color: Colors.red,
+        // border: Border.all(),
+
+        color: boxColor,
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -104,6 +105,7 @@ class _EditAttendanceState extends State<EditAttendance> {
               style: const TextStyle(
                 fontSize: 16.0,
                 fontWeight: FontWeight.bold,
+                color: Colors.white,
               ),
               maxLines: 1,
             ),
@@ -112,9 +114,11 @@ class _EditAttendanceState extends State<EditAttendance> {
             child: Text(
               '$value',
               style: const TextStyle(
-                  // fontWeight: FontWeight.bold,
-                  fontSize: 16.0,
-                  fontWeight: FontWeight.bold),
+                // fontWeight: FontWeight.bold,
+                fontSize: 16.0,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
             ),
           ),
         ],
@@ -174,14 +178,24 @@ class _EditAttendanceState extends State<EditAttendance> {
     var isEven = index % 2 == 0;
     String studentId = studentList[index]['studentId'].toString();
 
-    return Container(
+    return Card(
+      color: Colors.transparent,
+      shadowColor: Colors.purple.shade200,
+      elevation: 8.0,
+      child: Container(
         alignment: Alignment.centerLeft,
         decoration: BoxDecoration(
           border: Border.all(
-            color: Colors.black,
+            color: Colors.transparent,
+          ),
+          borderRadius: BorderRadius.circular(
+            8.0,
           ),
           // borderRadius: BorderRadius.circular(4.0),
           color: Colors.white,
+        ),
+        margin: const EdgeInsets.symmetric(
+          vertical: 2.5,
         ),
         padding: const EdgeInsets.only(
           left: 8.0,
@@ -193,16 +207,16 @@ class _EditAttendanceState extends State<EditAttendance> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-                  studentList[index]['rollNo'],
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18.0,
-                    color: Colors.black,
-                  ),
-                  softWrap: false,
-                  textAlign: TextAlign.left,
-                ),
+              studentList[index]['rollNo'],
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 18.0,
+                color: Colors.black,
+              ),
+              softWrap: false,
+              textAlign: TextAlign.left,
+            ),
             Text(
               nameForamtter(studentList[index]['studentName']),
               overflow: TextOverflow.ellipsis,
@@ -211,12 +225,14 @@ class _EditAttendanceState extends State<EditAttendance> {
                 fontSize: 18.0,
                 color: Colors.black,
               ),
-              maxLines: 3,
+              maxLines: 2,
               softWrap: false,
               textAlign: TextAlign.left,
             ),
           ],
-        ));
+        ),
+      ),
+    );
   }
 
   String nameForamtter(studentName) {
@@ -241,15 +257,85 @@ class _EditAttendanceState extends State<EditAttendance> {
     // return const Text('data');
     var studentIdInt = studentList[studentRowIndex]['studentId'];
     var studentId = studentIdInt.toString();
-    var isEven = studentRowIndex % 2 == 0;
+    // var isEven = studentRowIndex % 2 == 0;
     switch (columnIndex) {
       case 0:
+        return Card(
+          color: Colors.transparent,
+          elevation: 8.0,
+          shadowColor: Colors.purple.shade200,
+          child: Container(
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
+            alignment: Alignment.center,
+            margin: const EdgeInsets.symmetric(
+              vertical: 2.5,
+            ),
+            decoration: BoxDecoration(
+              // border: Border.all(),
+              borderRadius: BorderRadius.circular(
+                8.0,
+              ),
+              color: rowColor[studentId] == null
+                  ? Color.fromARGB(255, 46, 122, 116)
+                  : rowColor[studentId]!,
+            ),
+            child: TextButton(
+              onPressed: () {
+                if (checkBoxVals[studentId] == true) {
+                  // if student was marked present previously
+                  // mark him/her absent
+                  rowColor[studentId] = Colors.red;
+                  rowTextColor[studentId] = Colors.white;
+
+                  if (!_absentees.contains(studentId)) {
+                    _absentees.add(studentId);
+                    setState(() {
+                      totalAbsent = totalAbsent + 1;
+                      totalPresent = totalPresent - 1;
+                    });
+                  }
+                  setState(() {
+                    rowColor[studentId] = Colors.red;
+                    checkBoxVals[studentId] = false;
+                  });
+                } else {
+                  // if student was marked absent previously
+                  // mark him/her present
+                  _absentees.removeWhere((item) => item == studentId);
+                  setState(() {
+                    totalAbsent = totalAbsent - 1;
+                    totalPresent = totalPresent + 1;
+                  });
+                  setState(() {
+                    rowColor[studentId] = Color.fromARGB(255, 46, 122, 116);
+                    checkBoxVals[studentId] = true;
+                  });
+                }
+              },
+              child: Text(
+                checkBoxVals[studentId] == true ? 'P' : 'A',
+                style: TextStyle(
+                  fontSize: 18.0,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+        );
+      case 1:
         return Container(
           alignment: Alignment.center,
+          margin: const EdgeInsets.symmetric(
+            vertical: 8.0,
+          ),
           decoration: BoxDecoration(
             border: Border.all(
-              color: Colors.black,
+              color: Colors.transparent,
             ),
+            // borderRadius: BorderRadius.circular(
+            //   8.0,
+            // ),
             // borderRadius: BorderRadius.circular(4.0),
             color: (rowColor[studentId] == null)
                 ? Colors.green
@@ -336,31 +422,28 @@ class _EditAttendanceState extends State<EditAttendance> {
   }
 
   Widget attendanceTableEdit() {
-    return Center(
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 2.0),
-       
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height * 0.8,
-        // padding: const EdgeInsets.fromLTRB(4.0, 4.0, 4.0, 4.0),
-        child: StickyHeadersTable(
-          cellDimensions: CellDimensions.variableColumnWidthAndRowHeight(
-            columnWidths: [105],
-            rowHeights:
-                List<double>.generate(studentList.length, (int index) => 90),
-            stickyLegendWidth: 300,
-            stickyLegendHeight: 40,
-          ),
-          initialScrollOffsetX: 0.0,
-          initialScrollOffsetY: 0.0,
-          scrollControllers: scrollControllers(),
-          columnsLength: columnsLengthCalculator(),
-          rowsLength: rowsLengthCalculator(),
-          columnsTitleBuilder: (i) => columnTitleBuilder(i),
-          rowsTitleBuilder: (i) => rowsTitleBuilder(i),
-          contentCellBuilder: (i, j) => cellWidget2(i, j),
-          legendCell: const Text(''),
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 2.0),
+      height: MediaQuery.of(context).size.height * 0.635,
+      width: MediaQuery.of(context).size.width,
+      // padding: const EdgeInsets.fromLTRB(4.0, 4.0, 4.0, 4.0),
+      child: StickyHeadersTable(
+        cellDimensions: CellDimensions.variableColumnWidthAndRowHeight(
+          columnWidths: [50],
+          rowHeights:
+              List<double>.generate(studentList.length, (int index) => 75),
+          stickyLegendWidth: 360,
+          stickyLegendHeight: 0,
         ),
+        initialScrollOffsetX: 0.0,
+        initialScrollOffsetY: 0.0,
+        scrollControllers: scrollControllers(),
+        columnsLength: columnsLengthCalculator(),
+        rowsLength: rowsLengthCalculator(),
+        columnsTitleBuilder: (i) => columnTitleBuilder(i),
+        rowsTitleBuilder: (i) => rowsTitleBuilder(i),
+        contentCellBuilder: (i, j) => cellWidget2(i, j),
+        legendCell: const Text(''),
       ),
     );
   }
@@ -444,69 +527,69 @@ class _EditAttendanceState extends State<EditAttendance> {
   Widget build(BuildContext context) {
     return (reset == 0)
         ? Container(
-          decoration: BoxDecoration(
-            // color: Colors.redAccent
-          ),
-            height: MediaQuery.of(context).size.height,
+            decoration: BoxDecoration(
+                // color: Colors.redAccent
+                ),
+            margin: const EdgeInsets.only(
+              top: 8.0,
+            ),
+            height: MediaQuery.of(context).size.height * 0.95,
             child: Column(
               children: [
+                // Text('${ MediaQuery.of(context).size.height }'),
                 Container(
                   alignment: Alignment.center,
                   width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height * 0.05,
                   child: SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        countBoxWidget("T: ", totalStudent),
-                        countBoxWidget("P: ", totalPresent),
-                        countBoxWidget("A: ", totalAbsent),
+                        countBoxWidget("Total: ", totalStudent,
+                            Color.fromARGB(239, 248, 52, 232)),
+                        countBoxWidget("Present: ", totalPresent,
+                            Color.fromARGB(255, 46, 122, 116)),
+                        countBoxWidget("Absent: ", totalAbsent, Colors.red),
                       ],
                     ),
                   ),
                 ),
+                attendanceTableEdit(),
                 Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(
-                        12.0,
-                      ),
-                      topRight: Radius.circular(
-                        12.0,
-                      ),
-                    ),
+                  margin: const EdgeInsets.only(
+                    top: 8.0,
+                    bottom: 0.0,
                   ),
-                  width: MediaQuery.of(context).size.width,
-                  // decoration: const BoxDecoration(color: Colors.green),
-                  child: attendanceTableEdit(),
-                  height: MediaQuery.of(context).size.height * 0.55,
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    if (studentList.isNotEmpty) {
-                      var title = "Confirm Submit";
-                      var message =
-                          "Press Confirm to Submit\nUse Sync Data button in the dashboard sidebar to sync this to to server";
-                      var submissionDateUnformatted = DateTime.now().toUtc();
-                      DateFormat submissionFormat =
-                          DateFormat('yyyy-MM-dd HH:mm:ss');
+                  width: MediaQuery.of(context).size.width * 0.30,
+                  height: MediaQuery.of(context).size.height * 0.05,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      if (studentList.isNotEmpty) {
+                        var title = "Confirm Submit";
+                        var message =
+                            "Press Confirm to Submit\nUse Sync Data button in the dashboard sidebar to sync this to to server";
+                        var submissionDateUnformatted = DateTime.now().toUtc();
+                        DateFormat submissionFormat =
+                            DateFormat('yyyy-MM-dd HH:mm:ss');
 
-                      var submissionDate =
-                          submissionFormat.format(submissionDateUnformatted);
-                      if (kDebugMode) {
-                        print('Submitting to local');
+                        var submissionDate =
+                            submissionFormat.format(submissionDateUnformatted);
+                        if (kDebugMode) {
+                          print('Submitting to local');
 
-                        print(submissionDate);
+                          print(submissionDate);
+                        }
+                        showAlertFinal(title, message, submissionDate);
+                      } else {
+                        var title = "No Records";
+                        var message =
+                            "There is no valid attendance taken.\nSubmitting will ignore it.";
+                        showAlert(title, message);
                       }
-                      showAlertFinal(title, message, submissionDate);
-                    } else {
-                      var title = "No Records";
-                      var message =
-                          "There is no valid attendance taken.\nSubmitting will ignore it.";
-                      showAlert(title, message);
-                    }
-                  },
-                  child: const Text('Submit'),
+                    },
+                    child: const Text('Submit'),
+                  ),
                 ),
               ],
             ),
