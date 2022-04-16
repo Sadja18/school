@@ -194,7 +194,7 @@ class _DashboardState extends State<Dashboard> {
                 ),
               ),
               width: MediaQuery.of(context).size.width * 0.60,
-              height: MediaQuery.of(context).size.height * 0.30,
+              height: MediaQuery.of(context).size.height * 0.25,
               child: TextButton(
                 onPressed: () {
                   Navigator.of(context).pushNamed(StickyAttendance.routeName);
@@ -226,7 +226,7 @@ class _DashboardState extends State<Dashboard> {
                 ),
               ),
               width: MediaQuery.of(context).size.width * 0.60,
-              height: MediaQuery.of(context).size.height * 0.30,
+              height: MediaQuery.of(context).size.height * 0.25,
               child: TextButton(
                 onPressed: () {
                   // ignore: avoid_print

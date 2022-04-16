@@ -82,11 +82,11 @@ class _EditAttendanceState extends State<EditAttendance> {
   Widget countBoxWidget(String headerString, int value, boxColor) {
     return Container(
       alignment: Alignment.center,
-      width: MediaQuery.of(context).size.width * 0.30,
+      width: MediaQuery.of(context).size.width * 0.25,
       height: MediaQuery.of(context).size.height * 0.05,
       margin: const EdgeInsets.symmetric(
         vertical: 2.0,
-        horizontal: 2.5,
+        horizontal: 0.0,
       ),
       // padding: const EdgeInsets.symmetric(
       //   vertical: 1.0,
@@ -185,7 +185,7 @@ class _EditAttendanceState extends State<EditAttendance> {
       shadowColor: Colors.purple.shade200,
       elevation: 8.0,
       child: Container(
-        alignment: Alignment.centerLeft,
+        // alignment: Alignment.centerLeft,
         decoration: BoxDecoration(
           border: Border.all(
             color: Colors.transparent,
@@ -204,62 +204,70 @@ class _EditAttendanceState extends State<EditAttendance> {
         ),
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
-        child: Row(
+        child: Table(
+          columnWidths: const <int, TableColumnWidth>{
+            0: FixedColumnWidth(3),
+            1: FixedColumnWidth(200),
+          },
           children: [
-            AvatarGeneratorNew(base64Code: studentList[index]['profilePic']),
-            Padding(
-              padding: const EdgeInsets.only(left:10.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    decoration: BoxDecoration(),
-                    width: MediaQuery.of(context).size.width*0.60,
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Text(
-                        nameForamtter(studentList[index]['studentName']),
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          // fontWeight: FontWeight.bold,
-                          fontSize: 18.0,
-                          color: Colors.black,
-                        ),
-                        maxLines: 2,
-                        softWrap: false,
-                        textAlign: TextAlign.left,
-                      ),
-                    ),
-                  ),
-                  Container(
-                    alignment: Alignment.bottomLeft,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Roll: ",
-                          style: TextStyle(
-                            fontSize: 18.0,
-                          ),
-                        ),
-                        Text(
-                          studentList[index]['rollNo'],
+            TableRow(children: [
+              TableCell(
+                child: AvatarGeneratorNew(
+                    base64Code: studentList[index]['profilePic']),
+              ),
+              TableCell(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 10.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(),
+                        width: MediaQuery.of(context).size.width * 0.60,
+                        child: Text(
+                          nameForamtter(studentList[index]['studentName']),
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                             // fontWeight: FontWeight.bold,
-                            fontSize: 18.0,
+                            fontSize: 15.0,
                             color: Colors.black,
                           ),
+                          maxLines: 1,
                           softWrap: false,
                           textAlign: TextAlign.left,
                         ),
-                      ],
-                    ),
-                  )
-                ],
+                      ),
+                      Container(
+                        alignment: Alignment.bottomRight,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Roll: ",
+                              style: TextStyle(
+                                fontSize: 15.0,
+                              ),
+                            ),
+                            Text(
+                              studentList[index]['rollNo'],
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                // fontWeight: FontWeight.bold,
+                                fontSize: 15.0,
+                                color: Colors.black,
+                              ),
+                              softWrap: false,
+                              textAlign: TextAlign.left,
+                            ),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                ),
               ),
-            ),
+            ]),
           ],
         ),
       ),
@@ -309,24 +317,26 @@ class _EditAttendanceState extends State<EditAttendance> {
               ),
               color: (rowColor[studentId] == null)
                   ? Color.fromARGB(255, 46, 122, 116)
-                  : Colors.red,
+                  : rowColor[studentId]!,
             ),
             child: TextButton(
               onPressed: () {
-                if (kDebugMode) {
-                  // log(studentList[studentRowIndex].toString());
-                  log(_absentees.toString());
-                  log(_absentees.contains(studentId).toString());
-                }
-                if (checkBoxVals[studentId] == true || _absentees.contains(studentId)==false) {
+                // if (kDebugMode) {
+                //   // log(studentList[studentRowIndex].toString());
+                //   log(_absentees.toString());
+                //   log(_absentees.contains(studentId).toString());
+                // }
+                if (checkBoxVals[studentId] == true ||
+                    _absentees.contains(studentId) == false) {
                   // if student was marked present previously
                   // mark him/her absent
                   rowColor[studentId] = Colors.red;
                   rowTextColor[studentId] = Colors.white;
 
                   if (!_absentees.contains(studentId)) {
-                    _absentees.add(studentId);
                     setState(() {
+                      _absentees.add(studentId);
+                      _absentees.sort();
                       totalAbsent = totalAbsent + 1;
                       totalPresent = totalPresent - 1;
                     });
@@ -339,11 +349,10 @@ class _EditAttendanceState extends State<EditAttendance> {
                   // if student was marked absent previously
                   // mark him/her present
 
-                  if(_absentees.contains(studentId)){
-
-                  }
-                  _absentees.removeWhere((item) => item == studentId);
+                  if (_absentees.contains(studentId)) {}
                   setState(() {
+                    _absentees.removeWhere((item) => item == studentId);
+                    _absentees.sort();
                     totalAbsent = totalAbsent - 1;
                     totalPresent = totalPresent + 1;
                   });
@@ -363,69 +372,7 @@ class _EditAttendanceState extends State<EditAttendance> {
             ),
           ),
         );
-      case 1:
-        return Container(
-          alignment: Alignment.center,
-          margin: const EdgeInsets.symmetric(
-            vertical: 8.0,
-          ),
-          decoration: BoxDecoration(
-            border: Border.all(
-              color: Colors.transparent,
-            ),
-            // borderRadius: BorderRadius.circular(
-            //   8.0,
-            // ),
-            // borderRadius: BorderRadius.circular(4.0),
-            color: (rowColor[studentId] == null)
-                ? Colors.green
-                : rowColor[studentId],
-          ),
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
-          child: Checkbox(
-            activeColor: Colors.blue,
-            // checkColor: Color.fromARGB(255, 110, 255, 115),
-            value: checkBoxVals[studentId],
-            onChanged: (bool? selection) {
-              if (kDebugMode) {
-                print('in checkbox onchange');
-                print(selection.toString());
-              }
-              setState(() {
-                checkBoxVals[studentId] = selection!;
-              });
-              if (selection == true) {
-                rowColor[studentId] = Colors.green;
-                rowTextColor[studentId] = Colors.white;
-                // print('true');
-                if (_absentees.contains(studentId)) {
-                  _absentees.removeWhere((item) => item == studentId);
-                  setState(() {
-                    totalAbsent = totalAbsent - 1;
-                    totalPresent = totalPresent + 1;
-                  });
-                }
-              } else {
-                // print('false');
-                rowColor[studentId] = Colors.red;
-                rowTextColor[studentId] = Colors.white;
-
-                if (!_absentees.contains(studentId)) {
-                  _absentees.add(studentId);
-                  setState(() {
-                    totalAbsent = totalAbsent + 1;
-                    totalPresent = totalPresent - 1;
-                  });
-                }
-              }
-              if (kDebugMode) {
-                print(_absentees);
-                print(checkBoxVals);
-              }
-            },
-          ),
-        );
+      
       default:
         return const Text('');
     }
@@ -548,10 +495,239 @@ class _EditAttendanceState extends State<EditAttendance> {
     );
   }
 
+  void absentMarkerOneGo(List<String> csvNames) {
+    if (kDebugMode) {
+      print(csvNames);
+    }
+
+    for (var rollNo in csvNames) {
+      for (var student in studentList) {
+        if (student['rollNo'].toString() == rollNo) {
+          var studentId = student['studentId'].toString();
+          if (_absentees.contains(studentId) == false) {
+            setState(() {
+              _absentees.add(studentId);
+              _absentees.sort();
+              rowColor[studentId] = Colors.red;
+              checkBoxVals[studentId] = false;
+            });
+          }
+        }
+      }
+    }
+  }
+
+  void shortCutDataProcessor(String value) {
+    var rolls = value.split(",");
+    if (kDebugMode) {
+      print(rolls.toString());
+    }
+    absentMarkerOneGo(rolls);
+  }
+
+  Future<void> _displayAbsentMarkShortMode() async {
+    return showDialog(
+        context: context,
+        builder: (ctx) {
+          return AlertDialog(
+            title: Text(
+              'Enter Absent student roll no\n(use comma to enter multiple)',
+              style: TextStyle(
+                fontSize: 15.0,
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text(
+                  'Close',
+                  style: TextStyle(
+                    fontSize: 15.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
+            content: TextField(
+              keyboardType: TextInputType.number,
+              style: TextStyle(
+                fontSize: 15.0,
+              ),
+              onChanged: (value) {
+                if (kDebugMode) {
+                  print(value.toString());
+                }
+              },
+              onEditingComplete: () {
+                if (kDebugMode) {
+                  print('Editing complete');
+                }
+                // Navigator.of(ctx).pop();
+              },
+              onSubmitted: (value) {
+                if (kDebugMode) {
+                  print('Submitted');
+                  print(value.toString());
+                }
+                shortCutDataProcessor(value.toString());
+                // Navigator.of(ctx).pop();
+              },
+            ),
+          );
+        });
+  }
+
+  int showAbsenteeTableFlag = 0;
+  void showAbsenteeTableOnClick() {
+    if (showAbsenteeTableFlag == 0) {
+      setState(() {
+        showAbsenteeTableFlag = 1;
+      });
+    } else {
+      showAbsenteeTableFlag = 0;
+    }
+  }
+
+  Map<String, String> dataReturner(index) {
+    var details = {"studentName": "", "studentRoll": "", "studentPhoto": ""};
+    for (var student in studentList) {
+      if (student['studentId'] == _absentees[index]) {
+        details['studentName'] = student['studentName'];
+        details['studentPhoto'] = student['profilePic'];
+        details['studentRoll'] = student['rollNo'];
+      }
+    }
+    return details;
+  }
+
+  Widget absenteeRowTitleBuilder(index) {
+    String studentPhoto = '';
+    String studentName = '';
+    String studentRoll = '';
+
+    var details = dataReturner(index);
+    if (details.isNotEmpty &&
+        details['studentPhoto'] != null &&
+        details['studentName'] != null &&
+        details['studentRoll'] != null) {
+      studentPhoto = details['studentPhoto']!;
+      studentName = details['studentName']!;
+      studentRoll = details['studentRoll']!;
+    }
+    return Card(
+      elevation: 8.0,
+      child: Container(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        alignment: Alignment.centerLeft,
+        child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              (studentPhoto != "")
+                  ? AvatarGeneratorNew(base64Code: studentPhoto)
+                  : const Text(""),
+              Container(
+                decoration: BoxDecoration(),
+                alignment: Alignment.topLeft,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(),
+                      alignment: Alignment.centerRight,
+                      child: Text(
+                        nameForamtter(studentName),
+                        style: const TextStyle(
+                          fontSize: 15.0,
+                        ),
+                      ),
+                    ),
+                    Container(
+                      decoration: BoxDecoration(),
+                      alignment: Alignment.bottomLeft,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(),
+                            child: Text(
+                              'Roll: ',
+                              style: const TextStyle(
+                                fontSize: 15.0,
+                              ),
+                            ),
+                          ),
+                          Container(
+                            decoration: BoxDecoration(),
+                            child: Text(
+                              studentRoll,
+                              style: const TextStyle(
+                                fontSize: 15.0,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget cellWidget() {
+    return Card(
+      elevation: 8.0,
+      child: Container(
+        alignment: Alignment.center,
+        // decoration: ,
+
+        child: const Text(
+          'A',
+          style: TextStyle(
+            fontSize: 15.0,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget absenteeStickyTable() {
+    return Container(
+      decoration: BoxDecoration(),
+      child: StickyHeadersTable(
+        columnsLength: 1,
+        scrollControllers: scrollControllers(),
+        rowsLength: _absentees.length,
+        initialScrollOffsetX: 0.0,
+        initialScrollOffsetY: 0.0,
+        rowsTitleBuilder: (i) => absenteeRowTitleBuilder(i),
+        columnsTitleBuilder: (i) => const Text(""),
+        contentCellBuilder: (i, j) => cellWidget(),
+      ),
+    );
+  }
+
   @override
   void initState() {
+    for (var studentId in widget.absentees) {
+      rowColor[studentId] = Colors.red;
+      checkBoxVals[studentId] = false;
+    }
     setState(() {
       _absentees = widget.absentees;
+      _absentees.sort();
       studentList = widget.studentList;
       _selectedDate = widget.selectedDate;
     });
@@ -581,16 +757,45 @@ class _EditAttendanceState extends State<EditAttendance> {
                   alignment: Alignment.center,
                   width: MediaQuery.of(context).size.width,
                   height: MediaQuery.of(context).size.height * 0.05,
+                  margin: const EdgeInsets.symmetric(
+                    horizontal: 1.0,
+                  ),
+                  decoration: BoxDecoration(
+                      // color: Colors.grey,
+                      ),
                   child: SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         countBoxWidget("Total: ", totalStudent,
                             Color.fromARGB(238, 95, 61, 247)),
                         countBoxWidget("Present: ", totalPresent,
                             Color.fromARGB(255, 46, 122, 116)),
                         countBoxWidget("Absent: ", totalAbsent, Colors.red),
+                        Container(
+                          decoration: BoxDecoration(
+                            // color: Colors.deepPurpleAccent,
+                            color: Colors.transparent,
+                          ),
+                          alignment: Alignment.center,
+                          margin: const EdgeInsets.only(
+                            top: 2.0,
+                          ),
+                          child: TextButton(
+                            // hoverColor: Colors.blue,
+                            // iconSize: 35,
+                            onPressed: () {
+                              _displayAbsentMarkShortMode();
+                            },
+                            child: Image.asset(
+                              'assets/icons/search_icon.jpeg',
+                              fit: BoxFit.fill,
+                              height: 50,
+                              width: 35,
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   ),

@@ -53,8 +53,7 @@ flutter:
     - assets/background/img1.jpg
     - assets/background/img2.jpg
     - assets/icons/logo.png
-
-
+    - assets/icons/search_icon.jpeg
 
   fonts:
     - family: Merriweather

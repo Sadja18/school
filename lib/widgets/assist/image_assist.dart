@@ -19,12 +19,20 @@ class _AvatarGeneratorNewState extends State<AvatarGeneratorNew> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        border: Border.all()
+        // shape: BoxShape.circle,
+        // border: Border.all()
+        // color: Colors.blue,
       ),
+      alignment: Alignment.center,
+      // width: MediaQuery.of(context).size.width*0.0001,
+      height: MediaQuery.of(context).size.height*0.067,
       child: ClipOval(
         child: Image(
           image: Image.memory(Base64Decoder().convert(widget.base64Code)).image,
+          fit: BoxFit.fill,
+          width: MediaQuery.of(context).size.width*00002,
+          height: MediaQuery.of(context).size.height*0001,
+
         ),
       ),
     );

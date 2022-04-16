@@ -289,46 +289,33 @@ class _StickyAttendanceState extends State<StickyAttendance> {
               alignment: Alignment.topCenter,
               width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.height,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height * 0.05,
-                    decoration: BoxDecoration(
-                        // border: Border.all(),
-                        ),
-                    child: topRow(
-                      context,
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.height * 0.05,
+                      decoration: BoxDecoration(
+                          // border: Border.all(),
+                          ),
+                      child: topRow(
+                        context,
+                      ),
                     ),
-                  ),
-                  // Text('${MediaQuery.of(context).size.height}'),
-
-                  SingleChildScrollView(
-                    scrollDirection: Axis.vertical,
-                    child: Container(
+                    // Text('${MediaQuery.of(context).size.height}'),
+              
+                    Container(
                       width: MediaQuery.of(context).size.width,
                       height: MediaQuery.of(context).size.height * 0.76,
                       // decoration: BoxDecoration(color: Colors.amber),
                       child: (studentList.isEmpty)
                           ? const Text('')
                           : createOrEdit(),
-                    ),
-                  )
-                  // Container(
-                  //         alignment: Alignment.topCenter,
-                  //         margin: const EdgeInsets.only(
-                  //           top: 6.0,
-                  //         ),
-                  //         decoration: BoxDecoration(
-                  //             // color: Colors.amber.shade100,
-                  //             ),
-                  //         height: MediaQuery.of(context).size.height * 0.76,
-                  //         width: MediaQuery.of(context).size.width,
-                  //         child: createOrEdit(),
-                  //       ),
-                ],
+                    )
+                  ],
+                ),
               ),
             ),
             ViewTakenAttendance(),
