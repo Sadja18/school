@@ -42,27 +42,34 @@ class _AssessmentsDropDownState extends State<AssessmentsDropDown> {
             // return Text(assessmentOptions.toString());
             // print(_selectedAssessment.toString());
             return DropdownButton(
-                hint: const Text('Select Assessment',
-                    style: TextStyle(
-                      fontSize: 18.0,
-                      fontWeight: FontWeight.bold,
-                    )),
-                underline: Container(
-                  height: 2,
-                  color: Colors.transparent,
+                hint: const Text(
+                  'Select Assessment',
+                  style: TextStyle(
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                  maxLines: 2,
                 ),
-                elevation: 16,
+                dropdownColor: Colors.deepPurpleAccent,
+                // elevation: 16,
                 style: const TextStyle(color: Colors.deepPurpleAccent),
                 value: _selectedAssessment!.isNotEmpty
                     ? _selectedAssessment
                     : null,
                 items: assessmentOptions.map((element) {
                   return DropdownMenuItem(
-                      child: Text(
-                        element['name'],
-                        style: const TextStyle(
-                          fontSize: 16.0,
-                          fontWeight: FontWeight.bold,
+                      child: Container(
+                        alignment: Alignment.center,
+                        color: Colors.transparent,
+                        child: Text(
+                          element['name'],
+                          style: const TextStyle(
+                            fontSize: 18.0,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                          maxLines: 2,
                         ),
                       ),
                       value: element['name']);

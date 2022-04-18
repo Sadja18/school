@@ -176,86 +176,186 @@ class _PaceAssessmentScreenState extends State<PaceAssessmentScreen> {
     );
   }
 
+  Widget topRow(context) {
+    return Container(
+      decoration: const BoxDecoration(),
+      width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.height * 0.06,
+      child: Table(
+        border: TableBorder.symmetric(
+          inside: BorderSide(
+            width: 3.0,
+            color: Color.fromARGB(255, 204, 204, 204),
+          ),
+          outside: BorderSide.none,
+        ),
+        columnWidths: const <int, TableColumnWidth>{
+          0: FractionColumnWidth(0.50),
+          1: FractionColumnWidth(0.50),
+        },
+        children: [
+          TableRow(
+            children: [
+              TableCell(
+                verticalAlignment: TableCellVerticalAlignment.middle,
+                child: Container(
+                  height: MediaQuery.of(context).size.height * 0.06,
+                  decoration: const BoxDecoration(),
+                  margin: const EdgeInsets.symmetric(
+                    horizontal: 0.0,
+                    vertical: 0.0,
+                  ),
+                  child: ClassDropDown(
+                    getAllStudents: getAllStudents,
+                    selectClass: classSelector,
+                  ),
+                ),
+              ),
+              (_selectedClass != "")
+                  ? TableCell(
+                      verticalAlignment: TableCellVerticalAlignment.middle,
+                      child: Container(
+                        // width: MediaQuery.of(context).size.width * 0.20,
+                        decoration: const BoxDecoration(
+                          color: Colors.deepPurpleAccent,
+                        ),
+                        margin: const EdgeInsets.symmetric(
+                          horizontal: 0.0,
+                          vertical: 0.0,
+                        ),
+                        height: MediaQuery.of(context).size.height * 0.06,
+
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: AssessmentsDropDown(
+                            selectClass: _selectedClass,
+                            selectAssessment: assessmentSelector,
+                          ),
+                        ),
+                      ),
+                    )
+                  : TableCell(
+                      verticalAlignment: TableCellVerticalAlignment.middle,
+                      child: Container(
+                        // width: MediaQuery.of(context).size.width * 0.20,
+                        decoration: const BoxDecoration(
+                          color: Colors.deepPurpleAccent,
+                        ),
+                        margin: const EdgeInsets.symmetric(
+                          horizontal: 0.0,
+                          vertical: 0.0,
+                        ),
+                        height: MediaQuery.of(context).size.height * 0.06,
+
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: const Text(""),
+                        ),
+                      ),
+                    ),
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget secondRow() {
+    return (_selectedAssessment.isNotEmpty)
+        ? Container(
+            decoration: BoxDecoration(
+              color: Colors.deepPurpleAccent,
+            ),
+            width: MediaQuery.of(context).size.width,
+            child: Table(
+              border: TableBorder.symmetric(
+                inside: BorderSide(
+                  width: 3.0,
+                  color: Color.fromARGB(255, 204, 204, 204),
+                ),
+                outside: BorderSide.none,
+              ),
+              columnWidths: const <int, TableColumnWidth>{
+                0: FractionColumnWidth(0.30),
+                1: FractionColumnWidth(0.30),
+                2: FractionColumnWidth(0.30),
+              },
+              children: [
+                TableRow(
+                  children: [
+                    TableCell(
+                      child: Container(
+                        alignment: Alignment.center,
+                        // width: MediaQuery.of(context).size.width * 0.80,
+                        // height: MediaQuery.of(context).size.height * 0.06,
+                        decoration: BoxDecoration(),
+                        child: Text(
+                          displayDate(_selectedAssessment['date'].toString()),
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                          maxLines: 2,
+                        ),
+                      ),
+                    ),
+                    TableCell(
+                      child: Container(
+                        alignment: Alignment.center,
+                        // width: MediaQuery.of(context).size.width * 0.80,
+                        // height: MediaQuery.of(context).size.height * 0.06,
+                        decoration: BoxDecoration(),
+                        child: Text(
+                          _selectedAssessment['subject_name'].toString(),
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                          maxLines: 2,
+                        ),
+                      ),
+                    ),
+                    TableCell(
+                      child: Container(
+                        alignment: Alignment.center,
+                        width: MediaQuery.of(context).size.width,
+                        // height: MediaQuery.of(context).size.height * 0.06,
+                        decoration: BoxDecoration(),
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Text(
+                            _selectedAssessment['qp_code_name'].toString(),
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                            maxLines: 1,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          )
+        : const Text("");
+  }
+
   Widget widgetTop(context) {
     return Container(
       alignment: Alignment.center,
+      width: MediaQuery.of(context).size.width,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          tableContainer(
-            "Class",
-            ClassDropDown(
-              getAllStudents: getAllStudents,
-              selectClass: classSelector,
-            ),
-            context,
-          ),
-          (_selectedClass == "")
-              ? const Text("")
-              : tableContainer(
-                  "Assessment",
-                  AssessmentsDropDown(
-                      selectClass: _selectedClass,
-                      selectAssessment: assessmentSelector),
-                  context,
-                ),
+          topRow(context),
           (_selectedClass == "" || _selectedAssessment.isEmpty)
               ? const Text("")
-              : tableContainer(
-                  "Assessment Date",
-                  Container(
-                    alignment: Alignment.centerLeft,
-                    width: MediaQuery.of(context).size.width * 0.80,
-                    height: MediaQuery.of(context).size.height * 0.06,
-                    decoration: BoxDecoration(),
-                    child: Text(
-                      displayDate(_selectedAssessment['date'].toString()),
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  context,
-                ),
-          (_selectedClass == "" || _selectedAssessment.isEmpty)
-              ? const Text("")
-              : tableContainer(
-                  "Subject",
-                  Container(
-                    alignment: Alignment.centerLeft,
-                    width: MediaQuery.of(context).size.width * 0.80,
-                    height: MediaQuery.of(context).size.height * 0.06,
-                    decoration: BoxDecoration(),
-                    child: Text(
-                      _selectedAssessment['subject_name'].toString(),
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  context,
-                ),
-          (_selectedClass == "" || _selectedAssessment.isEmpty)
-              ? const Text("")
-              : tableContainer(
-                  "Question Paper",
-                  Container(
-                    alignment: Alignment.centerLeft,
-                    width: MediaQuery.of(context).size.width * 0.80,
-                    height: MediaQuery.of(context).size.height * 0.06,
-                    decoration: BoxDecoration(),
-                    child: Text(
-                      _selectedAssessment['qp_code_name'].toString(),
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  context,
-                ),
+              : secondRow(),
         ],
       ),
     );
@@ -650,7 +750,7 @@ class _PaceAssessmentScreenState extends State<PaceAssessmentScreen> {
                                           child: Text(
                                             totalCalculator(),
                                             style: const TextStyle(
-                                              fontWeight: FontWeight.bold,
+                                              // fontWeight: FontWeight.bold,
                                               fontSize: 18.0,
                                             ),
                                           ),
@@ -669,7 +769,7 @@ class _PaceAssessmentScreenState extends State<PaceAssessmentScreen> {
                                             resultFormatter(),
                                             style: const TextStyle(
                                               fontSize: 18.0,
-                                              fontWeight: FontWeight.bold,
+                                              // fontWeight: FontWeight.bold,
                                             ),
                                           ),
                                         ),

@@ -5,13 +5,15 @@ class LevelDropDown extends StatefulWidget {
   final Function(String, int) updateLevel;
   // ignore: prefer_typing_uninitialized_variables
   final int index;
+  final dynamic bgColor;
 
   final List<String> levelNames;
   const LevelDropDown(
       {Key? key,
       required this.index,
       required this.updateLevel,
-      required this.levelNames})
+      required this.levelNames,
+      this.bgColor})
       : super(key: key);
 
   @override
@@ -35,20 +37,27 @@ class _LevelDropDownState extends State<LevelDropDown> {
   @override
   Widget build(BuildContext context) {
     return DropdownButton(
+      dropdownColor: widget.bgColor,
       items: widget.levelNames.map<DropdownMenuItem<String>>(
         (String element) {
           return DropdownMenuItem<String>(
             child: Container(
               alignment: Alignment.center,
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: Colors.black,
-                ),
-                color: Colors.white,
-              ),
+              // decoration: BoxDecoration(
+              //   border: Border.all(
+              //       // color: Colors.black,
+              //       ),
+              //   // color: Colors.black,
+              // ),
               margin: const EdgeInsets.all(4.0),
               padding: const EdgeInsets.all(4.0),
-              child: Text(element),
+              child: Center(
+                  child: Text(
+                element,
+                style: const TextStyle(
+                  color: Colors.white,
+                ),
+              )),
             ),
             value: element,
           );

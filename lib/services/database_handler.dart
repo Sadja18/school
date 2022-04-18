@@ -977,7 +977,7 @@ class DBProvider {
   Future<dynamic> getNumericLevels(className) async {
     final db = await initDB();
     return await db.rawQuery(
-        "SELECT levelId, name from numericLevels where standard_id = (SELECT standard_id from classes where class_name = ?);",
+        "SELECT levelId, name from numericLevels where standard_id = (SELECT standard_id from classes where class_name = ?) ORDER By name;",
         [className]);
   }
 

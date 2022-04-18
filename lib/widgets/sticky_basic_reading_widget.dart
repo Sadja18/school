@@ -1,5 +1,7 @@
 // ignore_for_file: unused_import
 
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
@@ -14,6 +16,7 @@ import '../screens/login.dart';
 import './date_widget.dart';
 import './language_widget.dart';
 import './row_handler.dart';
+import './assist/image_assist.dart';
 
 class StickyBasicReading extends StatefulWidget {
   static const routeName = '/basic-new';
@@ -73,16 +76,39 @@ class _StickyBasicReadingState extends State<StickyBasicReading> {
           .then((records) {
         if (records.isNotEmpty) {
           var levelRecords = records.toList();
+          if (kDebugMode) {
+            log(levelRecords.toString());
+          }
           List<String> levelName = [];
           for (var levelRecord in levelRecords) {
             levelName.add(levelRecord['name']);
           }
           setState(() {
             levelNames = levelName;
-            levelNames.insert(0, '0');
+            levelNames.insert(0, 'NE');
           });
         }
       });
+    }
+  }
+
+  dynamic getBgColor(int studentRowIndex) {
+    var studentIdInt = studentList[studentRowIndex]['studentId'];
+    var studentId = studentIdInt.toString();
+    var bgColor = Colors.transparent;
+    switch (resultSheet[studentId]) {
+      case 'NE':
+        return bgColor = Colors.blue;
+      // break;
+      case 'Not Achieved':
+        return bgColor = Colors.red;
+      // break;
+      case 'Achieved':
+        return bgColor = Colors.green;
+      // break;
+      default:
+        return bgColor = Colors.blue;
+// break;
     }
   }
 
@@ -97,10 +123,10 @@ class _StickyBasicReadingState extends State<StickyBasicReading> {
     var studentId = studentIdInt.toString();
 
     var levelString = "";
-    if (levelVal != '' && levelVal != '0') {
+    if (levelVal != '' && levelVal != '0' && levelVal != 'NE') {
       levelString = 'Achieved';
     } else {
-      levelString = 'Not Achieved';
+      levelString = 'NE';
     }
     setState(() {
       studentList[index]['level'] = levelVal;
@@ -109,8 +135,8 @@ class _StickyBasicReadingState extends State<StickyBasicReading> {
         studentList[index]['result'] = 'Achieved';
         resultSheet[studentId] = 'Achieved';
       } else {
-        studentList[index]['result'] = 'Not Achieved';
-        resultSheet[studentId] = 'Not Achieved';
+        studentList[index]['result'] = 'NE';
+        resultSheet[studentId] = 'NE';
       }
       levelSheet[studentId] = levelString;
     });
@@ -124,7 +150,7 @@ class _StickyBasicReadingState extends State<StickyBasicReading> {
   }
 
   int columnsLengthCalculator() {
-    return 2;
+    return 1;
   }
 
   int rowsLengthCalculator() {
@@ -151,10 +177,10 @@ class _StickyBasicReadingState extends State<StickyBasicReading> {
         // borderRadius: BorderRadius.circular(4.0),
         color: Colors.blue.shade400,
       ),
-      child: Text(
-        headers[index],
+      child: const Text(
+        "",
         softWrap: false,
-        style: const TextStyle(
+        style: TextStyle(
           fontWeight: FontWeight.bold,
           fontSize: 16,
           color: Colors.white,
@@ -184,31 +210,98 @@ class _StickyBasicReadingState extends State<StickyBasicReading> {
   Widget rowsTitleBuilder(int index) {
     var isEven = index % 2 == 0;
 
-    return Container(
-      alignment: Alignment.centerLeft,
-      decoration: BoxDecoration(
-        border: Border.all(
-          color: Colors.black,
-        ),
-        // borderRadius: BorderRadius.circular(4.0),
-        color: isEven
-            ? const Color.fromARGB(127, 120, 165, 255)
-            : const Color.fromARGB(255, 120, 165, 255),
-      ),
-      height: MediaQuery.of(context).size.height,
-      width: MediaQuery.of(context).size.width,
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Text(
-          nameForamtter(studentList[index]['studentName']),
-          overflow: TextOverflow.ellipsis,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 15.0,
-            color: Colors.black,
+    return Card(
+      color: Colors.transparent,
+      shadowColor: Colors.purple.shade200,
+      elevation: 8.0,
+      child: Container(
+        // alignment: Alignment.centerLeft,
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: Colors.transparent,
           ),
-          softWrap: false,
-          textAlign: TextAlign.left,
+          borderRadius: BorderRadius.circular(
+            8.0,
+          ),
+          // borderRadius: BorderRadius.circular(4.0),
+          color: Colors.white,
+        ),
+        margin: const EdgeInsets.symmetric(
+          vertical: 2.5,
+        ),
+        padding: const EdgeInsets.only(
+          left: 8.0,
+        ),
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
+        child: Table(
+          columnWidths: const <int, TableColumnWidth>{
+            0: FixedColumnWidth(3),
+            1: FixedColumnWidth(200),
+          },
+          children: [
+            TableRow(children: [
+              TableCell(
+                child: AvatarGeneratorNew(
+                    base64Code: studentList[index]['profilePic']),
+              ),
+              TableCell(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 10.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        decoration: const BoxDecoration(),
+                        width: MediaQuery.of(context).size.width * 0.60,
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Text(
+                            nameForamtter(studentList[index]['studentName']),
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              // fontWeight: FontWeight.bold,
+                              fontSize: 15.0,
+                              color: Colors.black,
+                            ),
+                            maxLines: 1,
+                            softWrap: false,
+                            textAlign: TextAlign.left,
+                          ),
+                        ),
+                      ),
+                      Container(
+                        alignment: Alignment.bottomRight,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            const Text(
+                              "Roll: ",
+                              style: TextStyle(
+                                fontSize: 15.0,
+                              ),
+                            ),
+                            Text(
+                              studentList[index]['rollNo'],
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                // fontWeight: FontWeight.bold,
+                                fontSize: 15.0,
+                                color: Colors.black,
+                              ),
+                              softWrap: false,
+                              textAlign: TextAlign.left,
+                            ),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ]),
+          ],
         ),
       ),
     );
@@ -227,7 +320,7 @@ class _StickyBasicReadingState extends State<StickyBasicReading> {
       height: MediaQuery.of(context).size.height,
       width: MediaQuery.of(context).size.width,
       child: const Text(
-        'Name',
+        '',
         softWrap: true,
         style: TextStyle(
           fontWeight: FontWeight.bold,
@@ -243,6 +336,7 @@ class _StickyBasicReadingState extends State<StickyBasicReading> {
       index: studentRowIndex,
       updateLevel: updateLevel,
       levelNames: levelNames,
+      bgColor: getBgColor(studentRowIndex),
     );
   }
 
@@ -266,20 +360,24 @@ class _StickyBasicReadingState extends State<StickyBasicReading> {
 
     switch (columnIndex) {
       case 0:
-        return Container(
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            border: Border.all(
-              color: Colors.black,
+        return Card(
+          elevation: 8.0,
+          child: Container(
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: Colors.black,
+              ),
+              borderRadius: BorderRadius.circular(
+                8.0,
+              ),
+              color: getBgColor(studentRowIndex),
             ),
-            color: isEven
-                ? const Color.fromARGB(127, 120, 165, 255)
-                : const Color.fromARGB(255, 120, 165, 255),
-          ),
-          width: MediaQuery.of(context).size.width,
-          child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Center(child: studentDropDown(studentRowIndex)),
+            width: MediaQuery.of(context).size.width,
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Center(child: studentDropDown(studentRowIndex)),
+            ),
           ),
         );
       case 1:
@@ -326,17 +424,70 @@ class _StickyBasicReadingState extends State<StickyBasicReading> {
     }
   }
 
+  Widget topRow(BuildContext context) {
+    return Container(
+      decoration: const BoxDecoration(),
+      width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.height * 0.06,
+      child: Table(
+        border: TableBorder.symmetric(
+          inside: BorderSide.none,
+          outside: BorderSide.none,
+        ),
+        columnWidths: const <int, TableColumnWidth>{
+          0: FractionColumnWidth(0.50),
+          1: FractionColumnWidth(0.50),
+        },
+        children: [
+          TableRow(
+            children: [
+              TableCell(
+                verticalAlignment: TableCellVerticalAlignment.middle,
+                child: Container(
+                  decoration: const BoxDecoration(),
+                  margin: const EdgeInsets.symmetric(
+                    horizontal: 0.0,
+                    vertical: 0.0,
+                  ),
+                  child: DateShow(
+                    selectedDate: selectedDate,
+                  ),
+                ),
+              ),
+              TableCell(
+                verticalAlignment: TableCellVerticalAlignment.middle,
+                child: Container(
+                  // width: MediaQuery.of(context).size.width * 0.20,
+                  decoration: const BoxDecoration(),
+                  margin: const EdgeInsets.symmetric(
+                    horizontal: 0.0,
+                    vertical: 0.0,
+                  ),
+
+                  child: ClassDropDown(
+                    selectClass: selectClass,
+                    getAllStudents: getAllStudents,
+                  ),
+                ),
+              ),
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
   Widget assessmentTable() {
     return Center(
       child: Container(
         decoration: const BoxDecoration(),
         child: StickyHeadersTable(
           cellDimensions: CellDimensions.variableColumnWidthAndRowHeight(
-              columnWidths: [50, 120],
+              columnWidths: [70],
               rowHeights:
-                  List<double>.generate(studentList.length, (int index) => 43),
-              stickyLegendWidth: 260,
-              stickyLegendHeight: 40),
+                  List<double>.generate(studentList.length, (int index) => 68),
+              stickyLegendWidth: 300,
+              stickyLegendHeight: 0),
           initialScrollOffsetX: 0.0,
           initialScrollOffsetY: 0.0,
           scrollControllers: scrollControllers(),
@@ -447,43 +598,7 @@ class _StickyBasicReadingState extends State<StickyBasicReading> {
                 decoration: BoxDecoration(
                   border: Border.all(),
                 ),
-                margin: const EdgeInsets.symmetric(
-                  vertical: 4.0,
-                  horizontal: 8.0,
-                ),
-                padding: const EdgeInsets.symmetric(
-                  vertical: 4.0,
-                  horizontal: 10.0,
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      alignment: Alignment.center,
-                      margin: const EdgeInsets.only(right: 28.0),
-
-                      child: const Text(
-                        'Class:',
-                        softWrap: true,
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ),
-                    ClassDropDown(
-                        selectClass: selectClass,
-                        getAllStudents: getAllStudents),
-                  ],
-                ),
-              ),
-              Container(
-                margin: const EdgeInsets.symmetric(
-                  vertical: 2.0,
-                  // horizontal: 8.0,
-                ),
-                child: DateShow(selectedDate: selectedDate),
+                child: topRow(context),
               ),
               (studentList.isEmpty)
                   ? const Text('')
@@ -509,9 +624,9 @@ class _StickyBasicReadingState extends State<StickyBasicReading> {
                       padding: const EdgeInsets.symmetric(horizontal: 12.0),
                       child: Container(
                         decoration: BoxDecoration(
-                          border: Border.all(),
-                        ),
-                        height: MediaQuery.of(context).size.height * 0.58,
+                            // border: Border.all(),
+                            ),
+                        height: MediaQuery.of(context).size.height * 0.67,
                         width: MediaQuery.of(context).size.width,
                         child: assessmentTable(),
                       ),
