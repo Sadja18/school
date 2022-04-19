@@ -155,7 +155,6 @@ class _EditAttendanceState extends State<EditAttendance> {
 
   Widget columnTitleBuilder(int index) {
     switch (index) {
-    
       default:
         return const Text('');
     }
@@ -398,10 +397,10 @@ class _EditAttendanceState extends State<EditAttendance> {
       // padding: const EdgeInsets.fromLTRB(4.0, 4.0, 4.0, 4.0),
       child: StickyHeadersTable(
         cellDimensions: CellDimensions.variableColumnWidthAndRowHeight(
-          columnWidths: [MediaQuery.of(context).size.width*0.12],
+          columnWidths: [MediaQuery.of(context).size.width * 0.12],
           rowHeights:
               List<double>.generate(studentList.length, (int index) => 75),
-          stickyLegendWidth: MediaQuery.of(context).size.width*0.85,
+          stickyLegendWidth: MediaQuery.of(context).size.width * 0.85,
           stickyLegendHeight: 0,
         ),
         initialScrollOffsetX: 0.0,
@@ -739,6 +738,10 @@ class _EditAttendanceState extends State<EditAttendance> {
     return Container(
       // alignment: ,
       decoration: BoxDecoration(),
+      height: MediaQuery.of(context).size.height*0.05,
+      margin: const EdgeInsets.symmetric(
+        vertical: 2.0,
+      ),
       child: Table(
         columnWidths: const {
           0: FractionColumnWidth(0.10),
@@ -761,12 +764,13 @@ class _EditAttendanceState extends State<EditAttendance> {
                   alignment: Alignment.center,
                   child: Text(
                     rollNo.toString(),
+                    overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
                       color: Colors.black,
                       fontSize: 16.0,
                       fontWeight: FontWeight.bold,
                     ),
-                    maxLines: 2,
+                    maxLines: 1,
                   ),
                 ),
               ),
@@ -784,12 +788,13 @@ class _EditAttendanceState extends State<EditAttendance> {
                   alignment: Alignment.centerLeft,
                   child: Text(
                     nameForamtter(studentName),
+                    overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
                       color: Colors.black,
                       fontSize: 16.0,
                       fontWeight: FontWeight.bold,
                     ),
-                    maxLines: 2,
+                    maxLines: 1,
                   ),
                 ),
               ),
@@ -827,25 +832,16 @@ class _EditAttendanceState extends State<EditAttendance> {
             ),
             contentPadding: const EdgeInsets.all(0),
             titlePadding: const EdgeInsets.all(0),
-            content: Flexible(
-              flex: 5,
-              child: Container(
-                constraints: BoxConstraints(
-                  minWidth: MediaQuery.of(context).size.width * 0.20,
-                  // maxWidth: MediaQuery.of(context).size.width * 0.80,
-                  minHeight: MediaQuery.of(context).size.height * 0.05,
-                  maxHeight: MediaQuery.of(context).size.height * 0.40,
-                ),
-                // width: MediaQuery.of(context).size.width * 0.80,
-                height: MediaQuery.of(context).size.height * 0.20,
-                alignment: Alignment.topCenter,
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: List.generate(_absentees.length, (index) {
-                      return studentData(_absentees[index]);
-                    }),
-                  ),
+            content: Container(
+              // width: MediaQuery.of(context).size.width * 0.80,
+              height: MediaQuery.of(context).size.height * 0.20,
+              alignment: Alignment.topCenter,
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: List.generate(_absentees.length, (index) {
+                    return studentData(_absentees[index]);
+                  }),
                 ),
               ),
             ),

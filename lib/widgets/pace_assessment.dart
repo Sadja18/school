@@ -761,11 +761,11 @@ class _PaceAssessmentScreenState extends State<PaceAssessmentScreen> {
           ),
           cellDimensions: CellDimensions.variableColumnWidthAndRowHeight(
               columnWidths: [
-                MediaQuery.of(context).size.width*0.12,
+                MediaQuery.of(context).size.width * 0.12,
               ],
               rowHeights:
                   List<double>.generate(studentList.length, (int index) => 68),
-              stickyLegendWidth: MediaQuery.of(context).size.width*0.85,
+              stickyLegendWidth: MediaQuery.of(context).size.width * 0.85,
               stickyLegendHeight: 0),
           columnsLength: 1,
           rowsLength: studentList.length,
@@ -1045,10 +1045,23 @@ class _UserInputWidgetState extends State<UserInputWidget> {
                         var title = "Value Error";
                         var message = "Marks should not be less than zero";
                         showAlert(title, message);
+                      } else {
+                        double totaltmp = 0.0;
+                        for(var i=0; i<totalQuestions; i++){
+                          if(i!=index){
+                            totaltmp=totaltmp+obtainedMarks[i];
+                          }
+                        }
+
+                        if (totaltmp+nMark > totMarks) {
+                          showAlert("Error",
+                              "Student Marks total is more than maximum marks");
+                        } else {
+                          setState(() {
+                            obtainedMarks[index] = nMark;
+                          });
+                        }
                       }
-                      setState(() {
-                        obtainedMarks[index] = nMark;
-                      });
                     }
                   },
                   onEditingComplete: () {
@@ -1293,7 +1306,7 @@ class _UserInputWidgetState extends State<UserInputWidget> {
                       },
                       child: Container(
                         alignment: Alignment.center,
-                        width: MediaQuery.of(context).size.width*0.20,
+                        width: MediaQuery.of(context).size.width * 0.20,
                         height: MediaQuery.of(context).size.height,
                         decoration: BoxDecoration(
                           gradient: LinearGradient(

@@ -1,5 +1,6 @@
 // ignore_for_file: unused_import, duplicate_ignore, prefer_const_constructors
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import '../services/helper_db.dart';
 // import 'package:school/screens/dummy.dart';
@@ -124,6 +125,9 @@ class _DashboardState extends State<Dashboard> {
                 child: Center(
                   child: OutlinedButton(
                     onPressed: () {
+                      if(kDebugMode){
+                        print('clicked');
+                      }
                       wrapper();
                     },
                     child: const Text(
