@@ -1,5 +1,6 @@
-// ignore_for_file: avoid_print
+// ignore_for_file: avoid_print, prefer_const_constructors
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import '../services/database_handler.dart';
 
@@ -19,15 +20,16 @@ class _AssessmentsDropDownState extends State<AssessmentsDropDown> {
   String? _selectedAssessment = '';
 
   Future<dynamic> _getAllPaceAssessments() async {
-    return DBProvider.db.getAllPace(widget.selectClass).then((value) {
-      if (value.isNotEmpty) {
-        setState(() {
-          assessmentOptions = value.toList();
-        });
-        return value.toList();
-      }
+    var value = await DBProvider.db.getAllPace(widget.selectClass);
+    // if (kDebugMode) {
+    //   print('assessments in getallpace');
+    //   print(value.toString());
+    // }
+    var valueList = value.toList();
+    setState(() {
+      assessmentOptions = valueList;
     });
-    // return assessmentOptions;
+    return valueList;
   }
 
   @override
@@ -36,20 +38,26 @@ class _AssessmentsDropDownState extends State<AssessmentsDropDown> {
       future: _getAllPaceAssessments(),
       builder: (BuildContext ctx, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
+          
           if (snapshot.data == null) {
             return const Text('Fetching Scheduled Assessments');
           } else {
             // return Text(assessmentOptions.toString());
             // print(_selectedAssessment.toString());
             return DropdownButton(
-                hint: const Text(
-                  'Select Assessment',
-                  style: TextStyle(
-                    fontSize: 18.0,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                hint: Container(
+                  alignment: Alignment.center,
+                  child: Center(
+                    child: const Text(
+                      'Select Assessment',
+                      style: TextStyle(
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                      maxLines: 2,
+                    ),
                   ),
-                  maxLines: 2,
                 ),
                 dropdownColor: Colors.deepPurpleAccent,
                 // elevation: 16,

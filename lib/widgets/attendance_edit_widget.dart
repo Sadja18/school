@@ -80,50 +80,62 @@ class _EditAttendanceState extends State<EditAttendance> {
   }
 
   Widget countBoxWidget(String headerString, int value, boxColor) {
-    return Container(
-      alignment: Alignment.center,
-      width: MediaQuery.of(context).size.width * 0.25,
-      height: MediaQuery.of(context).size.height * 0.05,
-      margin: const EdgeInsets.symmetric(
-        vertical: 2.0,
-        horizontal: 0.0,
-      ),
-      // padding: const EdgeInsets.symmetric(
-      //   vertical: 1.0,
-      //   horizontal: 1.0,
-      // ),
-      decoration: BoxDecoration(
-          // border: Border.all(),
+    return InkWell(
+      onTap: () {
+        if (_absentees.isNotEmpty) {
+          if (kDebugMode) {
+            print(_absentees[0].runtimeType);
+          }
+          if (headerString == "Absent: ") {
+            showAbsentStudentsPreview();
+          }
+        }
+      },
+      child: Container(
+        alignment: Alignment.center,
+        width: MediaQuery.of(context).size.width * 0.25,
+        height: MediaQuery.of(context).size.height * 0.05,
+        margin: const EdgeInsets.symmetric(
+          vertical: 2.0,
+          horizontal: 0.0,
+        ),
+        // padding: const EdgeInsets.symmetric(
+        //   vertical: 1.0,
+        //   horizontal: 1.0,
+        // ),
+        decoration: BoxDecoration(
+            // border: Border.all(),
 
-          // color: boxColor,
-          ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Center(
-            child: Text(
-              headerString,
-              style: TextStyle(
-                fontSize: 17.0,
-                fontWeight: FontWeight.bold,
-                color: boxColor,
-              ),
-              maxLines: 1,
+            // color: boxColor,
             ),
-          ),
-          Center(
-            child: Text(
-              '$value',
-              style: TextStyle(
-                // fontWeight: FontWeight.bold,
-                fontSize: 17.0,
-                fontWeight: FontWeight.bold,
-                color: boxColor,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Center(
+              child: Text(
+                headerString,
+                style: TextStyle(
+                  fontSize: 17.0,
+                  fontWeight: FontWeight.bold,
+                  color: boxColor,
+                ),
+                maxLines: 1,
               ),
             ),
-          ),
-        ],
+            Center(
+              child: Text(
+                '$value',
+                style: TextStyle(
+                  // fontWeight: FontWeight.bold,
+                  fontSize: 17.0,
+                  fontWeight: FontWeight.bold,
+                  color: boxColor,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -372,7 +384,7 @@ class _EditAttendanceState extends State<EditAttendance> {
             ),
           ),
         );
-      
+
       default:
         return const Text('');
     }
@@ -737,6 +749,90 @@ class _EditAttendanceState extends State<EditAttendance> {
       countInitializer();
     }
     super.initState();
+  }
+
+  List<TableRow> tableRowsOfAbsentStudents() {
+    List<TableRow> absentStudentTableRows = [];
+
+    for (var student in studentList) {
+      var studentId = student['studentId'].toString();
+      if (_absentees.contains(studentId)) {
+        absentStudentTableRows.add(
+          TableRow(
+            children: [
+              TableCell(
+                child: Container(
+                  width: MediaQuery.of(context).size.width * 0.20,
+                  decoration: BoxDecoration(border: Border.all()),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 2.0,
+                  ),
+                  child: Text(
+                    nameForamtter(student['studentName']),
+                    maxLines: 2,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      }
+    }
+
+    return absentStudentTableRows;
+  }
+
+  Future<void> showAbsentStudentsPreview() async {
+    return showDialog(
+        context: context,
+        builder: (BuildContext ctx) {
+          return AlertDialog(
+            title: const Text('Absent Students'),
+            content: Container(
+              width: MediaQuery.of(context).size.width * 0.80,
+              height: MediaQuery.of(context).size.height * 0.50,
+              alignment: Alignment.topCenter,
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: 
+                  List.generate(_absentees.length, (index){
+                    return Container();
+                  })
+                    // Table(
+                    //   defaultVerticalAlignment: TableCellVerticalAlignment.top,
+                    //   columnWidths: const <int, TableColumnWidth>{
+                    //     0: FractionColumnWidth(10),
+                    //     1: FractionColumnWidth(40),
+                    //   },
+                    //   children: List.generate(_absentees.length, (index) {
+                    //     var absentStudenId = _absentees[index];
+                    //     var studentName = [];
+                    //     for (var student in studentList) {
+                    //       if (student['studentId'].toString() == absentStudenId) {
+                    //         studentName.add(student['studentName']);
+                    //       }
+                    //     }
+                    //     return TableRow(
+                    //       children: [
+                    //         TableCell(
+                    //           child: Text(
+                    //             nameForamtter(
+                    //               studentName[index],
+                    //             ),
+                    //             maxLines: 2,
+                    //           ),
+                    //         ),
+                    //       ],
+                    //     );
+                    //   }),
+                    // ),
+                  // ],
+                ),
+              ),
+            ),
+          );
+        });
   }
 
   @override

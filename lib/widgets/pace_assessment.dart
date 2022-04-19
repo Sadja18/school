@@ -1,5 +1,7 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors, unused_import, unused_field, unused_local_variable, sized_box_for_whitespace, avoid_unnecessary_containers
 
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
@@ -39,10 +41,10 @@ class _PaceAssessmentScreenState extends State<PaceAssessmentScreen> {
   Map<int, bool> studentIdCheckboxVal = {};
 
   void classSelector(selectedClass) {
-    if (kDebugMode) {
-      print('Selected Class: ' + selectedClass.runtimeType.toString());
-      print('Selected Class: ' + selectedClass.toString());
-    }
+    // if (kDebugMode) {
+    //   print('Selected Class: ' + selectedClass.runtimeType.toString());
+    //   print('Selected Class: ' + selectedClass.toString());
+    // }
     if (selectedClass != "" && selectedClass != null) {
       setState(() {
         _selectedClass = selectedClass;
@@ -51,12 +53,20 @@ class _PaceAssessmentScreenState extends State<PaceAssessmentScreen> {
   }
 
   void sheetMapsInitiator(int studentId) {
+    if (totQues > 0) {
+      zeroMarksList = List.generate(totQues, (index) => 0.0);
+    }
+
     setState(() {
-      studentIdResultSheet[studentId] = '';
+      studentIdResultSheet[studentId] = 'NE';
       studentIdCheckboxVal[studentId] = false;
-      studentIdMarksMap[studentId] = zeroMarksList;
+      studentIdMarksMap[studentId] = List.generate(totQues, (index) => 0.0);
       studentIdTotalSheet[studentId] = "0.0";
     });
+    if (kDebugMode) {
+      print('in sheet map in');
+      // print(studentIdMarksMap.toString());
+    }
   }
 
   void getAllStudents(List<dynamic> students) {
@@ -65,7 +75,6 @@ class _PaceAssessmentScreenState extends State<PaceAssessmentScreen> {
         students[index].remove('level');
         students[index]['result'] = '';
         var studentId = students[index]['studentId'];
-        sheetMapsInitiator(studentId);
       }
       setState(() {
         studentList = students;
@@ -73,11 +82,6 @@ class _PaceAssessmentScreenState extends State<PaceAssessmentScreen> {
       });
 
       _getGradingSystem();
-
-      if (kDebugMode) {
-        print('student list gen');
-        print(studentList.runtimeType);
-      }
     }
   }
 
@@ -85,17 +89,17 @@ class _PaceAssessmentScreenState extends State<PaceAssessmentScreen> {
     var value = await DBProvider.db.getPaceGrading();
     if (kDebugMode) {
       print("fetch grades");
-      print(value.toString());
+      // print(value.toString());
     }
     if (value.isNotEmpty) {
       // print(value);
       setState(() {
         _grading = value.toList();
       });
-      if (kDebugMode) {
-        print(value.runtimeType);
-        // print(_grading.runtimeType());
-      }
+      // if (kDebugMode) {
+      //   print(value.runtimeType);
+      //   // print(_grading.runtimeType());
+      // }
     }
     // print(value);
   }
@@ -105,7 +109,7 @@ class _PaceAssessmentScreenState extends State<PaceAssessmentScreen> {
       var map = {};
       value.forEach((k, v) => map[k] = v);
       if (kDebugMode) {
-        print('assessment select gen');
+        // print('assessment select gen');
         // print(map.runtimeType);
       }
       // print(value.toString());
@@ -119,14 +123,9 @@ class _PaceAssessmentScreenState extends State<PaceAssessmentScreen> {
         totQues = int.parse(map['totques']);
       });
 
-      if (totQues > 0) {
-        for (var i = 0; i < totQues; i++) {
-          zeroMarksList.add(0.0);
-        }
-
-        // for(var student in studentList){
-        //  var studentId =  student['studentId'];
-        // }
+      for (var index = 0; index < studentList.length; index++) {
+        var studentId = studentList[index]['studentId'];
+        sheetMapsInitiator(studentId);
       }
     } catch (e) {
       if (kDebugMode) {
@@ -257,9 +256,15 @@ class _PaceAssessmentScreenState extends State<PaceAssessmentScreen> {
                         ),
                         height: MediaQuery.of(context).size.height * 0.06,
 
-                        child: SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: const Text(""),
+                        child: Center(
+                          child: const Text(
+                            "Select Assessment",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18.0,
+                            ),
+                          ),
                         ),
                       ),
                     ),
@@ -405,96 +410,6 @@ class _PaceAssessmentScreenState extends State<PaceAssessmentScreen> {
             ));
   }
 
-  Widget textFormFieldForMarks(int index, String initialValue, studentId) {
-    var title = "";
-    var message = "";
-
-    return Container(
-      margin: const EdgeInsets.symmetric(
-        vertical: 8.0,
-        horizontal: 8.0,
-      ),
-      width: MediaQuery.of(context).size.width * 0.10,
-      child: Column(
-        children: [
-          Text(
-            'Q${index + 1}',
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 16.0,
-            ),
-          ),
-          TextFormField(
-            // key: marksFieldKeys[index],
-            initialValue: initialValue,
-            // controller: TextEditingController(text: initialValue),
-            decoration: InputDecoration(hintText: 'Q${index + 1}'),
-            keyboardType: TextInputType.number,
-            onChanged: (value) {
-              if (kDebugMode) {
-                // print(value.toString());
-                // print(_totmarks.toString());
-                print("bera");
-                // print(studentIdResultSheet.toString());
-                // print("currentStudentId");
-                // print(currentStudentId);
-                // print(studentIdMarksMap.toString());
-              }
-              // initialValue = value.toString();
-
-              if (double.tryParse(value.toString()) != null) {
-                var mark = double.parse(value.toString());
-
-                if (mark >= 0) {
-                  if (mark > _totmarks) {
-                    title = "Invalid Marks";
-                    message = "Marks can not be more than total marks";
-
-                    showAlert(title, message);
-                  } else {
-                    setState(() {
-                      studentIdMarksMap[studentId]![index] = mark;
-                    });
-
-                    if (kDebugMode) {
-                      print('noo=n zerp');
-                    }
-                  }
-                } else {
-                  title = "Invalid Marks";
-                  message = "Marks cannot be less than zero";
-
-                  showAlert(title, message);
-                }
-              }
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
-  List<Widget> marksFieldList(studentId) {
-    int totalQuestions = totQues;
-    List<Widget> inputFieldList = [];
-    for (var i = 0; i < totalQuestions; i++) {
-      String initialValue = '0';
-      var marksList = studentIdMarksMap[studentId];
-
-      if (kDebugMode) {
-        print(marksList);
-      }
-
-      if (marksList![i] != double.parse(initialValue) && marksList[i] > 0) {
-        initialValue = marksList[i].toString();
-      }
-      inputFieldList.add(
-        textFormFieldForMarks(i, initialValue, studentId),
-      );
-    }
-    return inputFieldList;
-  }
-
   String nameForamtter(studentName) {
     String formattedName = "";
 
@@ -557,86 +472,6 @@ class _PaceAssessmentScreenState extends State<PaceAssessmentScreen> {
     );
   }
 
-  double calcPercentage(double total) {
-    return (total / _totmarks) * 100;
-  }
-
-  String calcGrade(percentage) {
-    if (kDebugMode) {
-      print(percentage.runtimeType);
-    }
-
-    var resultVal = "";
-    if (kDebugMode) {
-      print('grades');
-      print(_grading.toString());
-    }
-
-    for (int i = 0; i < _grading.length; i++) {
-      if (kDebugMode) {
-        print(_grading[i].toString());
-      }
-      var gradeEntry = _grading[i];
-      // print(gradeEntry['from_marks'].runtimeType);
-
-      if (gradeEntry['from_marks'] != null && gradeEntry['to_marks'] != null) {
-        var fromMarks = gradeEntry['from_marks'];
-        var toMarks = gradeEntry['to_marks'];
-
-        if (percentage >= fromMarks && percentage <= toMarks) {
-          resultVal = gradeEntry['result'];
-        }
-      }
-    }
-    return resultVal;
-  }
-
-  void totalCalculator(studentId) {
-    List<double> marks = studentIdMarksMap[studentId]!;
-
-    if (studentIdCheckboxVal[studentId] == false) {
-      double total = 0;
-      for (var mark in marks) {
-        total = total + mark;
-      }
-      setState(() {
-        studentIdTotalSheet[studentId] = total.toString();
-      });
-      String result = calcGrade(calcPercentage(total));
-
-      if (result == 'acc' || result == 'noacc') {
-        setState(() {
-          studentIdResultSheet[studentId] = result;
-        });
-      }
-
-      if (kDebugMode) {
-        print('total marks for $studentId is $total');
-        print('result for $studentId is $result');
-      }
-      // return total.toString();
-    } else {
-      // return "0.0";
-      setState(() {
-        studentIdTotalSheet[studentId] = "0.0";
-      });
-    }
-  }
-
-  String resultFormatter(studentId) {
-    String resultVal = studentIdResultSheet[studentId]!;
-
-    if (resultVal == 'noacc') {
-      return 'Not Achieved';
-    } else if (resultVal == 'acc') {
-      return 'Achieved';
-    } else if (resultVal == 'noeval') {
-      return 'Not Evaluated';
-    } else {
-      return '';
-    }
-  }
-
   ScrollController verticalBodyController =
       ScrollController(initialScrollOffset: 0.0);
   ScrollController verticalTitleController =
@@ -654,14 +489,24 @@ class _PaceAssessmentScreenState extends State<PaceAssessmentScreen> {
       print(result);
       print(totalMarksOfStudent);
     }
+
+    setState(() {
+      studentIdResultSheet[studentId] = resultName(result);
+      studentIdMarksMap[studentId] = marksOfStudentId;
+      studentIdTotalSheet[studentId] = totalMarksOfStudent;
+    });
   }
 
   Future<void> showUserInputWidget(studentRowIndex) {
     var studentId = studentList[studentRowIndex]['studentId'];
+    var totMarks = _totmarks;
     return showDialog(
         context: context,
+        barrierDismissible: true,
         builder: (BuildContext ctx) {
           return AlertDialog(
+            // backgroundColor: Colors.deepPurpleAccent,
+            titlePadding: const EdgeInsets.all(0),
             title: Container(
               height: 0,
               decoration: BoxDecoration(
@@ -673,18 +518,28 @@ class _PaceAssessmentScreenState extends State<PaceAssessmentScreen> {
                 ),
               ),
             ),
+
+            contentPadding: const EdgeInsets.only(
+              left: 0,
+              right: 0,
+              top: 0.0,
+            ),
             content: UserInputWidget(
-                studentId: studentId,
-                maximumMarks: _totmarks,
-                totalQuestions: totQues,
-                userInputHandler: userInputHandler,
-                studentTotalMarks: 0.0,
-                formatterStudentName:
-                    nameForamtter(studentList[studentRowIndex]['studentName']!),
-                profilePic: studentList[studentRowIndex]['profilePic']!,
-                rollNo: studentList[studentRowIndex]['rollNo']!,
-                obtainedMarksList: studentIdMarksMap[
-                    studentList[studentRowIndex]['studentId']]),
+              studentId: studentId,
+              maximumMarks: totMarks,
+              totalQuestions: totQues,
+              userInputHandler: userInputHandler,
+              studentTotalMarks: 0.0,
+              formatterStudentName:
+                  nameForamtter(studentList[studentRowIndex]['studentName']!),
+              profilePic: studentList[studentRowIndex]['profilePic']!,
+              rollNo: studentList[studentRowIndex]['rollNo']!,
+              obtainedMarksList:
+                  studentIdMarksMap[studentList[studentRowIndex]['studentId']]!,
+              studentGrading: _grading,
+              isEvaluated: studentIdCheckboxVal[studentList[studentRowIndex]
+                  ['studentId']]!,
+            ),
             actions: [
               TextButton(
                 onPressed: () {
@@ -713,20 +568,19 @@ class _PaceAssessmentScreenState extends State<PaceAssessmentScreen> {
         elevation: 8.0,
         child: InkWell(
           onTap: () {
-            if (kDebugMode) {
-              print('this student');
-              print(studentList[studentRowIndex]['studentName'].toString());
-            }
+            // if (kDebugMode) {
+            //   print('this student');
+            //   print(studentList[studentRowIndex]['studentName'].toString());
+            // }
             var studentId = studentList[studentRowIndex]['studentId'];
             // setState(() {
             //   currentStudentId = studentId;
             // });
             if (kDebugMode) {
               print('this student');
-              // print(currentStudentId.toString());
-              // print(studentIdResultSheet.toString());
-              // print(studentIdMarksMap.toString());
+              // print(_totmarks);
             }
+
             showUserInputWidget(studentRowIndex);
           },
           child: Container(
@@ -856,23 +710,35 @@ class _PaceAssessmentScreenState extends State<PaceAssessmentScreen> {
       child: Container(
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          border: Border.all(),
+          // border: Border.all(),
           borderRadius: BorderRadius.circular(
             8.0,
           ),
+          color:
+              studentIdResultSheet[studentList[studentRowIndex]['studentId']] ==
+                      'NE'
+                  ? Colors.blue
+                  : studentIdResultSheet[studentList[studentRowIndex]
+                              ['studentId']] ==
+                          'Not Achieved'
+                      ? Colors.red
+                      : Colors.green,
         ),
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
         child: Center(
           child: Text(
-            (studentIdResultSheet[studentList[studentRowIndex]['studentId']] !=
-                        null &&
-                    studentIdResultSheet[studentList[studentRowIndex]
-                            ['studentId']] !=
-                        "")
-                ? resultName(studentIdResultSheet[studentList[studentRowIndex]
-                    ['studentId']]!)
-                : 'NE',
+            studentIdResultSheet[studentList[studentRowIndex]['studentId']] ==
+                    'NE'
+                ? studentIdResultSheet[studentList[studentRowIndex]
+                        ['studentId']]!
+                    .toString()
+                : studentIdTotalSheet[studentList[studentRowIndex]
+                        ['studentId']]!
+                    .toString(),
+            style: const TextStyle(
+              color: Colors.white,
+            ),
           ),
         ),
       ),
@@ -915,7 +781,7 @@ class _PaceAssessmentScreenState extends State<PaceAssessmentScreen> {
       appBar: AppBar(
         centerTitle: true,
         title: const Text(
-          'Pace Assessment',
+          'PACE',
           overflow: TextOverflow.ellipsis,
           maxLines: 2,
         ),
@@ -991,7 +857,9 @@ class UserInputWidget extends StatefulWidget {
   final String rollNo;
   final String formatterStudentName;
   final List<double>? obtainedMarksList;
+  final bool isEvaluated;
   final Function(int, List<double>, String, String) userInputHandler;
+  final dynamic studentGrading;
   const UserInputWidget(
       {Key? key,
       required this.studentId,
@@ -1002,7 +870,9 @@ class UserInputWidget extends StatefulWidget {
       required this.profilePic,
       required this.rollNo,
       required this.formatterStudentName,
-      required this.obtainedMarksList})
+      required this.obtainedMarksList,
+      required this.studentGrading,
+      required this.isEvaluated})
       : super(key: key);
 
   @override
@@ -1010,29 +880,110 @@ class UserInputWidget extends StatefulWidget {
 }
 
 class _UserInputWidgetState extends State<UserInputWidget> {
-  double studentTotalMarks = 0.0;
+  late double studentTotalMarks;
   late int studentId;
   late int totalQuestions;
   late double totMarks;
   late String rollNo;
   late String studentName;
   late String profilePic;
+  List _grading = [];
   String studentResult = 'NE';
-  List<double>? obtainedMarks = [];
+  List<double> obtainedMarks = [];
 
-  bool notEvaluated = false;
+  bool isEvaluated = false;
+
+  double calcPercentage(double total) {
+    return (total / totMarks) * 100;
+  }
+
+  String calcGrade(percentage) {
+    if (kDebugMode) {
+      print(percentage.runtimeType);
+    }
+
+    var resultVal = "";
+    if (kDebugMode) {
+      print('grades');
+      print(_grading.toString());
+    }
+
+    for (int i = 0; i < _grading.length; i++) {
+      if (kDebugMode) {
+        print(_grading[i].toString());
+      }
+      var gradeEntry = _grading[i];
+      // print(gradeEntry['from_marks'].runtimeType);
+
+      if (gradeEntry['from_marks'] != null && gradeEntry['to_marks'] != null) {
+        var fromMarks = gradeEntry['from_marks'];
+        var toMarks = gradeEntry['to_marks'];
+
+        if (percentage >= fromMarks && percentage <= toMarks) {
+          resultVal = gradeEntry['result'];
+        }
+      }
+    }
+    return resultVal;
+  }
+
+  void resultCalculator() {
+    var percentage = calcPercentage(studentTotalMarks);
+    var grade = calcGrade(percentage);
+
+    if (kDebugMode) {
+      print(grade);
+      print(percentage);
+      print(studentId);
+    }
+
+    setState(() {
+      studentResult = grade;
+    });
+  }
 
   void totalCalculator() {
     double totalTmp = 0.0;
-    if (obtainedMarks!.isNotEmpty) {
-      for (var mark in obtainedMarks!) {
+    if (kDebugMode) {
+      print('total calculation called');
+      print(studentTotalMarks.toString());
+    }
+    if (obtainedMarks.isNotEmpty) {
+      for (var mark in obtainedMarks) {
         totalTmp = totalTmp + mark;
       }
+    }
+
+    if (studentTotalMarks > totMarks) {
+      // show alert of marks greater than tot;
+      showAlert("Error", "Student Marks total is more than maximum marks");
     }
 
     setState(() {
       studentTotalMarks = totalTmp;
     });
+
+    if (kDebugMode) {
+      print('total calculation');
+      print(studentTotalMarks.toString());
+    }
+  }
+
+  Future<void> showAlert(String title, String message) {
+    return showDialog(
+        context: context,
+        builder: (BuildContext ctx) => AlertDialog(
+              title: Text(title),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('Re-enter'),
+                ),
+              ],
+              content: Text(message),
+            ));
   }
 
   Widget textFields() {
@@ -1054,19 +1005,63 @@ class _UserInputWidgetState extends State<UserInputWidget> {
               Container(
                 decoration: BoxDecoration(border: Border.all()),
                 child: TextFormField(
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(hintText: ''),
-                    onChanged: (value) {
-                      if (kDebugMode) {
-                        print('Question ${index + 1}');
-                        print(value);
-                      }
+                  // initialValue: obtainedMarks[index].toString(),
+                  textAlignVertical: TextAlignVertical.top,
+                  textAlign: TextAlign.center,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    hintText: '',
+                    focusColor: Colors.blue,
+                    contentPadding: EdgeInsets.zero,
+                  ),
+                  // controller: TextEditingController(),
+                  onChanged: (value) {
+                    if (kDebugMode) {
+                      print('onchange ${index + 1}');
+                      // print(obtainedMarks);
+                      print(
+                          "Obtained marks here ${obtainedMarks[index].toString()} ");
+                      print('tot');
+                      print(totMarks);
+                    }
+
+                    if (double.tryParse(value) != null) {
                       var nMark = double.parse(value);
 
+                      if (nMark < 0) {
+                        // show error marks cannot be ;less than zero
+                        var title = "Value Error";
+                        var message = "Marks should not be less than zero";
+                        showAlert(title, message);
+                      }
                       setState(() {
-                        obtainedMarks!.insert(index, nMark);
+                        obtainedMarks[index] = nMark;
                       });
-                    }),
+                    }
+
+                    // totalCalculator();
+                  },
+                  onEditingComplete: () {
+                    if (kDebugMode) {
+                      print('values');
+                    }
+                  },
+                  onFieldSubmitted: (value) {
+                    var nMark = double.parse(value);
+
+                    if (nMark < 0) {
+                      // show error marks cannot be ;less than zero
+                      var title = "Value Error";
+                      var message = "Marks should not be less than zero";
+                      showAlert(title, message);
+                    }
+                    setState(() {
+                      obtainedMarks[index] = nMark;
+                    });
+                    // totalCalculator();
+                  },
+                  // onSubmi
+                ),
               ),
             ],
           ),
@@ -1082,24 +1077,40 @@ class _UserInputWidgetState extends State<UserInputWidget> {
   @override
   void initState() {
     setState(() {
+      // studentTotalMarks = 0.0;
       studentId = widget.studentId;
       totalQuestions = widget.totalQuestions;
       totMarks = widget.maximumMarks;
-      totMarks = widget.studentTotalMarks;
+      studentTotalMarks = widget.studentTotalMarks;
       rollNo = widget.rollNo;
       studentName = widget.formatterStudentName;
       profilePic = widget.profilePic;
-      obtainedMarks = widget.obtainedMarksList;
+      obtainedMarks = widget.obtainedMarksList!;
+      _grading = widget.studentGrading;
+      isEvaluated = widget.isEvaluated;
     });
+
+    // if(kDebugMode){
+    //   print(tot)
+    // }
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: MediaQuery.of(context).size.width * 0.80,
-      height: MediaQuery.of(context).size.height * 0.40,
-      decoration: BoxDecoration(),
+      width: MediaQuery.of(context).size.width,
+      height: (isEvaluated == true)
+          ? MediaQuery.of(context).size.height * 0.20
+          : MediaQuery.of(context).size.height * 0.40,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: <Color>[
+            Color(0xfff21bce),
+            Color(0xff826cf0),
+          ],
+        ),
+      ),
       alignment: Alignment.center,
       child: SingleChildScrollView(
         child: Column(
@@ -1114,15 +1125,10 @@ class _UserInputWidgetState extends State<UserInputWidget> {
                   8.0,
                 ),
                 // borderRadius: BorderRadius.circular(4.0),
-                gradient: LinearGradient(
-                  colors: <Color>[
-                    Color(0xfff21bce),
-                    Color(0xff826cf0),
-                  ],
-                ),
               ),
-              margin: const EdgeInsets.symmetric(
-                vertical: 2.5,
+              margin: const EdgeInsets.only(
+                bottom: 2.5,
+                top: 1.0,
               ),
               padding: const EdgeInsets.only(
                 left: 8.0,
@@ -1138,7 +1144,7 @@ class _UserInputWidgetState extends State<UserInputWidget> {
                   TableRow(
                     children: [
                       TableCell(
-                        child: AvatarGeneratorNew(base64Code: profilePic),
+                        child: AvatarGeneratorNewTwo(base64Code: profilePic),
                       ),
                       TableCell(
                         child: Padding(
@@ -1154,11 +1160,11 @@ class _UserInputWidgetState extends State<UserInputWidget> {
                                   studentName,
                                   overflow: TextOverflow.ellipsis,
                                   style: const TextStyle(
-                                    // fontWeight: FontWeight.bold,
-                                    fontSize: 15.0,
-                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18.0,
+                                    color: Colors.white,
                                   ),
-                                  maxLines: 1,
+                                  maxLines: 2,
                                   softWrap: false,
                                   textAlign: TextAlign.left,
                                 ),
@@ -1171,7 +1177,8 @@ class _UserInputWidgetState extends State<UserInputWidget> {
                                     const Text(
                                       "Roll: ",
                                       style: TextStyle(
-                                        fontSize: 15.0,
+                                        fontSize: 16.0,
+                                        color: Colors.white,
                                       ),
                                     ),
                                     Text(
@@ -1179,8 +1186,8 @@ class _UserInputWidgetState extends State<UserInputWidget> {
                                       overflow: TextOverflow.ellipsis,
                                       style: const TextStyle(
                                         // fontWeight: FontWeight.bold,
-                                        fontSize: 15.0,
-                                        color: Colors.black,
+                                        fontSize: 16.0,
+                                        color: Colors.white,
                                       ),
                                       softWrap: false,
                                       textAlign: TextAlign.left,
@@ -1197,59 +1204,103 @@ class _UserInputWidgetState extends State<UserInputWidget> {
                 ],
               ),
             ),
-            marksField(),
             Container(
-              child: Table(
-                columnWidths: <int, TableColumnWidth>{
-                  0: FractionColumnWidth(10),
-                  1: FractionColumnWidth(80),
-                },
+              width: MediaQuery.of(context).size.width,
+              decoration: BoxDecoration(
+                color: Colors.white,
+              ),
+              alignment: Alignment.center,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  TableRow(children: [
-                    TableCell(
-                      child: const Text("Total:"),
-                    ),
-                    TableCell(
-                      child: Text(
-                        studentTotalMarks.toString(),
-                        style: const TextStyle(
-                            fontWeight: FontWeight.normal, fontSize: 16.0),
-                      ),
-                    ),
-                  ]),
-                  TableRow(children: [
-                    TableCell(
-                      child: const Text(
-                        "Result:",
-                      ),
-                    ),
-                    TableCell(
-                      child: Text(
-                        studentResult,
-                        style: const TextStyle(
-                            fontWeight: FontWeight.normal, fontSize: 16.0),
-                      ),
-                    ),
-                  ]),
+                  Container(
+                    decoration: BoxDecoration(),
+                    child: const Text("Absent/NE"),
+                  ),
+                  Checkbox(
+                      value: isEvaluated,
+                      onChanged: (value) {
+                        setState(() {
+                          isEvaluated = !isEvaluated;
+                        });
+                      }),
                 ],
               ),
             ),
-            Container(
-              decoration: BoxDecoration(),
-              child: TextButton(
-                onPressed: () {
-                  if (kDebugMode) {
-                    print(obtainedMarks.toString());
-                  }
+            (isEvaluated == true)
+                ? Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                    ),
+                    child: const Text(""),
+                  )
+                : Container(
+                    width: MediaQuery.of(context).size.width,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                    ),
+                    alignment: Alignment.center,
+                    child: marksField(),
+                  ),
+            isEvaluated == true
+                ? Container(
+                    decoration: BoxDecoration(color: Colors.white),
+                    child: const Text(""),
+                    height: MediaQuery.of(context).size.height * 0.10,
+                    width: MediaQuery.of(context).size.width * 0.10,
+                  )
+                : Container(
+                    width: MediaQuery.of(context).size.width,
+                    // height: MediaQuery.of(context).size.height * 0.10,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                    ),
+                    child: TextButton(
+                      onPressed: () {
+                        if (kDebugMode) {
+                          // print(obtainedMarks.toString());
+                        }
 
-                  widget.userInputHandler(studentId, obtainedMarks!,
-                      studentResult, studentTotalMarks.toString());
-                },
-                child: Icon(
-                  Icons.forward,
-                ),
-              ),
-            ),
+                        totalCalculator();
+                        resultCalculator();
+
+                        // if (kDebugMode) {
+                        //   log(studentResult.toString());
+                        //   log(obtainedMarks.toString());
+                        //   log(studentTotalMarks.toString());
+                        // }
+
+                        if (isEvaluated == true) {
+                          widget.userInputHandler(
+                              studentId, obtainedMarks, 'NE', "0.0");
+                        } else {
+                          widget.userInputHandler(studentId, obtainedMarks,
+                              studentResult, studentTotalMarks.toString());
+                        }
+                      },
+                      child: Container(
+                        alignment: Alignment.center,
+                        width: MediaQuery.of(context).size.width * 0.20,
+                        height: MediaQuery.of(context).size.height * 0.05,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: <Color>[
+                              Color(0xfff21bce),
+                              Color(0xff826cf0),
+                            ],
+                          ),
+                        ),
+                        child: Text(
+                          "Save",
+                          style: TextStyle(
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
           ],
         ),
       ),

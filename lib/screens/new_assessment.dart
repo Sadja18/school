@@ -68,7 +68,7 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
             fit: BoxFit.fill,
           ),
         ),
-        margin: const EdgeInsets.all(10),
+        // margin: const EdgeInsets.all(10),
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
         child: Center(
