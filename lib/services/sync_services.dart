@@ -102,10 +102,10 @@ void wrapper() {
   if(kDebugMode){
     print('Fetch Persistent place here');
   }
-  fetchPersistent();
+  // fetchPersistent();
 
-  syncAttendance();
-  syncBasic();
-  syncNumeric();
-  syncPace();
+  // syncAttendance();
+  // syncBasic();
+  // syncNumeric();
+  // syncPace();
 }

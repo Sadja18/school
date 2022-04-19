@@ -10,7 +10,6 @@ import './screens/dashboard.dart';
 import './screens/login.dart';
 import './services/sync_services.dart';
 // import './screens/dummy.dart';
-import './widgets/sticky_pace_widget.dart';
 import './widgets/sticky_basic_reading_widget.dart';
 import './widgets/sticky_numeric_ability_widget.dart';
 import './widgets/sticky_attendance_widget.dart';
@@ -89,8 +88,6 @@ class _MyAppState extends State<MyApp> {
         Dashboard.routeName: (ctx) => Dashboard(),
         Login.routeName: (ctx) => Login(),
         AssessmentScreen.routeName: (ctx) => AssessmentScreen(),
-        // Dummy.routeName: (ctx) => Dummy(),
-        StickyPaceWidget.routeName: (ctx) => StickyPaceWidget(),
         StickyBasicReading.routeName: (ctx) => StickyBasicReading(),
         StickyNumericAbility.routeName: (ctx) => StickyNumericAbility(),
         StickyAttendance.routeName: (ctx) => StickyAttendance(),

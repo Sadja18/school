@@ -38,30 +38,3 @@ class _AvatarGeneratorNewState extends State<AvatarGeneratorNew> {
   }
 }
 
-class AvatarGeneratorDialog extends StatefulWidget {
-  final String base64Code;
-
-  const AvatarGeneratorDialog({Key? key, required this.base64Code})
-      : super(key: key);
-
-  @override
-  State<AvatarGeneratorDialog> createState() => _AvatarGeneratorDialogState();
-}
-
-class _AvatarGeneratorDialogState extends State<AvatarGeneratorDialog> {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      alignment: Alignment.center,
-      height: MediaQuery.of(context).size.height * 0.067,
-      child: ClipOval(
-        child: Image(
-          image: Image.memory(Base64Decoder().convert(widget.base64Code)).image,
-          fit: BoxFit.fill,
-          width: MediaQuery.of(context).size.width ,
-          height: MediaQuery.of(context).size.height,
-        ),
-      ),
-    );
-  }
-}

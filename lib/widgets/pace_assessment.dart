@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors, unused_import, unused_field, unused_local_variable, sized_box_for_whitespace
+// ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors, unused_import, unused_field, unused_local_variable, sized_box_for_whitespace, avoid_unnecessary_containers
 
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
@@ -35,6 +35,7 @@ class _PaceAssessmentScreenState extends State<PaceAssessmentScreen> {
   List<double> zeroMarksList = [];
   Map<int, List<double>> studentIdMarksMap = {};
   Map<int, String> studentIdResultSheet = {};
+  Map<int, String> studentIdTotalSheet = {};
   Map<int, bool> studentIdCheckboxVal = {};
 
   void classSelector(selectedClass) {
@@ -54,6 +55,7 @@ class _PaceAssessmentScreenState extends State<PaceAssessmentScreen> {
       studentIdResultSheet[studentId] = '';
       studentIdCheckboxVal[studentId] = false;
       studentIdMarksMap[studentId] = zeroMarksList;
+      studentIdTotalSheet[studentId] = "0.0";
     });
   }
 
@@ -403,7 +405,7 @@ class _PaceAssessmentScreenState extends State<PaceAssessmentScreen> {
             ));
   }
 
-  Widget textFormFieldForMarks(int index, String initialValue) {
+  Widget textFormFieldForMarks(int index, String initialValue, studentId) {
     var title = "";
     var message = "";
 
@@ -430,11 +432,13 @@ class _PaceAssessmentScreenState extends State<PaceAssessmentScreen> {
             keyboardType: TextInputType.number,
             onChanged: (value) {
               if (kDebugMode) {
-                print(value.toString());
-                print(_totmarks.toString());
-                
-                print(studentIdResultSheet.toString());
-                print(studentIdMarksMap.toString());
+                // print(value.toString());
+                // print(_totmarks.toString());
+                print("bera");
+                // print(studentIdResultSheet.toString());
+                // print("currentStudentId");
+                // print(currentStudentId);
+                // print(studentIdMarksMap.toString());
               }
               // initialValue = value.toString();
 
@@ -449,8 +453,12 @@ class _PaceAssessmentScreenState extends State<PaceAssessmentScreen> {
                     showAlert(title, message);
                   } else {
                     setState(() {
-                      studentIdMarksMap[currentStudentId]![index] = mark;
+                      studentIdMarksMap[studentId]![index] = mark;
                     });
+
+                    if (kDebugMode) {
+                      print('noo=n zerp');
+                    }
                   }
                 } else {
                   title = "Invalid Marks";
@@ -466,40 +474,12 @@ class _PaceAssessmentScreenState extends State<PaceAssessmentScreen> {
     );
   }
 
-  Widget markFields(int totalQuestions, BuildContext context) {
-    List<Widget> inputFieldList = [];
-    for (var i = 0; i < totalQuestions; i++) {
-      String initialValue = '0';
-      var marksList = studentIdMarksMap[currentStudentId];
-
-      if (marksList![i] != double.parse(initialValue) && marksList[i] > 0) {
-        initialValue = marksList[i].toString();
-      }
-      inputFieldList.add(
-        textFormFieldForMarks(i, initialValue),
-      );
-    }
-    // inputFieldList.add(textFormFieldForMarks(0, "0.0"));
-    return Container(
-      width: MediaQuery.of(context).size.width * 0.75,
-      margin: const EdgeInsets.only(left: 10.0),
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: inputFieldList,
-        ),
-      ),
-    );
-  }
-
-  List<Widget> marksFieldList() {
+  List<Widget> marksFieldList(studentId) {
     int totalQuestions = totQues;
     List<Widget> inputFieldList = [];
     for (var i = 0; i < totalQuestions; i++) {
       String initialValue = '0';
-      var marksList = studentIdMarksMap[currentStudentId];
+      var marksList = studentIdMarksMap[studentId];
 
       if (kDebugMode) {
         print(marksList);
@@ -509,7 +489,7 @@ class _PaceAssessmentScreenState extends State<PaceAssessmentScreen> {
         initialValue = marksList[i].toString();
       }
       inputFieldList.add(
-        textFormFieldForMarks(i, initialValue),
+        textFormFieldForMarks(i, initialValue, studentId),
       );
     }
     return inputFieldList;
@@ -611,32 +591,40 @@ class _PaceAssessmentScreenState extends State<PaceAssessmentScreen> {
     return resultVal;
   }
 
-  String totalCalculator() {
-    List<double> marks = studentIdMarksMap[currentStudentId]!;
+  void totalCalculator(studentId) {
+    List<double> marks = studentIdMarksMap[studentId]!;
 
-    if (studentIdCheckboxVal[currentStudentId] == false) {
+    if (studentIdCheckboxVal[studentId] == false) {
       double total = 0;
       for (var mark in marks) {
         total = total + mark;
       }
+      setState(() {
+        studentIdTotalSheet[studentId] = total.toString();
+      });
       String result = calcGrade(calcPercentage(total));
 
       if (result == 'acc' || result == 'noacc') {
-        studentIdResultSheet[currentStudentId] = result;
+        setState(() {
+          studentIdResultSheet[studentId] = result;
+        });
       }
 
       if (kDebugMode) {
-        print('total marks for $currentStudentId is $total');
-        print('result for $currentStudentId is $result');
+        print('total marks for $studentId is $total');
+        print('result for $studentId is $result');
       }
-      return total.toString();
+      // return total.toString();
     } else {
-      return "0.0";
+      // return "0.0";
+      setState(() {
+        studentIdTotalSheet[studentId] = "0.0";
+      });
     }
   }
 
-  String resultFormatter() {
-    String resultVal = studentIdResultSheet[currentStudentId]!;
+  String resultFormatter(studentId) {
+    String resultVal = studentIdResultSheet[studentId]!;
 
     if (resultVal == 'noacc') {
       return 'Not Achieved';
@@ -658,157 +646,14 @@ class _PaceAssessmentScreenState extends State<PaceAssessmentScreen> {
   ScrollController horizontalBodyController =
       ScrollController(initialScrollOffset: 0.0);
 
-  Widget userInputWidget(studentId, int studentRowIndex) {
-    return Container(
-      // decoration: BoxDecoration(
-      //   color: Colors.blue,
-      // ),
-      width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height * 0.60,
-      child: SingleChildScrollView(
-        scrollDirection: Axis.vertical,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: Colors.transparent,
-                ),
-                borderRadius: BorderRadius.circular(
-                  8.0,
-                ),
-                color: Colors.white,
-              ),
-              height: MediaQuery.of(context).size.height * 0.15,
-              width: MediaQuery.of(context).size.width,
-              child: Table(
-                columnWidths: const <int, TableColumnWidth>{
-                  0: FixedColumnWidth(3),
-                  1: FixedColumnWidth(200),
-                },
-                children: [
-                  TableRow(
-                    children: [
-                      TableCell(
-                        child: AvatarGeneratorNew(
-                            base64Code: studentList[studentRowIndex]
-                                ['profilePic']),
-                      ),
-                      TableCell(
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 10.0),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                decoration: const BoxDecoration(),
-                                width: MediaQuery.of(context).size.width,
-                                child: Text(
-                                  nameForamtter(studentList[studentRowIndex]
-                                      ['studentName']),
-                                  overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(
-                                    // fontWeight: FontWeight.bold,
-                                    fontSize: 15.0,
-                                    color: Colors.black,
-                                  ),
-                                  maxLines: 2,
-                                  softWrap: false,
-                                  textAlign: TextAlign.left,
-                                ),
-                              ),
-                              Container(
-                                alignment: Alignment.bottomRight,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    const Text(
-                                      "Roll: ",
-                                      style: TextStyle(
-                                        fontSize: 15.0,
-                                      ),
-                                    ),
-                                    Text(
-                                      studentList[studentRowIndex]['rollNo'],
-                                      overflow: TextOverflow.ellipsis,
-                                      style: const TextStyle(
-                                        // fontWeight: FontWeight.bold,
-                                        fontSize: 15.0,
-                                        color: Colors.black,
-                                      ),
-                                      softWrap: false,
-                                      textAlign: TextAlign.left,
-                                    ),
-                                  ],
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              width: MediaQuery.of(context).size.width,
-              child: Wrap(
-                alignment: WrapAlignment.center,
-                direction: Axis.horizontal,
-                children: marksFieldList(),
-              ),
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.10,
-              child: Column(
-                children: [
-                  Text(
-                    'Total',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Text(
-                    totalCalculator(),
-                    style: TextStyle(
-                      fontSize: 16,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height * 0.10,
-              child: SizedBox(
-                child: Column(
-                  children: [
-                    Text(
-                      'Result',
-                      style: TextStyle(
-                        fontSize: 16,
-                      fontWeight: FontWeight.bold,
-
-                      ),
-                    ),
-                    Text(
-                      resultFormatter(),
-                      style: TextStyle(
-                        fontSize: 16,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
+  void userInputHandler(int studentId, List<double> marksOfStudentId,
+      String result, String totalMarksOfStudent) {
+    if (kDebugMode) {
+      print("For student $studentId");
+      print(marksOfStudentId.toString());
+      print(result);
+      print(totalMarksOfStudent);
+    }
   }
 
   Future<void> showUserInputWidget(studentRowIndex) {
@@ -819,8 +664,27 @@ class _PaceAssessmentScreenState extends State<PaceAssessmentScreen> {
           return AlertDialog(
             title: Container(
               height: 0,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: <Color>[
+                    Color(0xfff21bce),
+                    Color(0xff826cf0),
+                  ],
+                ),
+              ),
             ),
-            content: userInputWidget(studentId, studentRowIndex),
+            content: UserInputWidget(
+                studentId: studentId,
+                maximumMarks: _totmarks,
+                totalQuestions: totQues,
+                userInputHandler: userInputHandler,
+                studentTotalMarks: 0.0,
+                formatterStudentName:
+                    nameForamtter(studentList[studentRowIndex]['studentName']!),
+                profilePic: studentList[studentRowIndex]['profilePic']!,
+                rollNo: studentList[studentRowIndex]['rollNo']!,
+                obtainedMarksList: studentIdMarksMap[
+                    studentList[studentRowIndex]['studentId']]),
             actions: [
               TextButton(
                 onPressed: () {
@@ -854,14 +718,14 @@ class _PaceAssessmentScreenState extends State<PaceAssessmentScreen> {
               print(studentList[studentRowIndex]['studentName'].toString());
             }
             var studentId = studentList[studentRowIndex]['studentId'];
-            setState(() {
-              currentStudentId = studentId;
-            });
+            // setState(() {
+            //   currentStudentId = studentId;
+            // });
             if (kDebugMode) {
               print('this student');
-              print(currentStudentId.toString());
-              print(studentIdResultSheet.toString());
-              print(studentIdMarksMap.toString());
+              // print(currentStudentId.toString());
+              // print(studentIdResultSheet.toString());
+              // print(studentIdMarksMap.toString());
             }
             showUserInputWidget(studentRowIndex);
           },
@@ -963,7 +827,7 @@ class _PaceAssessmentScreenState extends State<PaceAssessmentScreen> {
 
   String resultName(studentResultVal) {
     String result = '';
-    if(kDebugMode){
+    if (kDebugMode) {
       print(_totmarks);
       print(studentResultVal);
     }
@@ -1105,195 +969,288 @@ class _PaceAssessmentScreenState extends State<PaceAssessmentScreen> {
                       width: MediaQuery.of(context).size.width,
                       height: MediaQuery.of(context).size.height * 0.68,
                       child: assessmentTable(),
-                      // Card(
-                      //   shadowColor: Colors.pink,
-                      //   elevation: 10.0,
-                      //   child: Container(
-                      //     alignment: Alignment.topCenter,
-                      //     width: MediaQuery.of(context).size.width * 0.90,
-                      //     child: SingleChildScrollView(
-                      //       scrollDirection: Axis.vertical,
-                      //       child: Column(
-                      //         mainAxisAlignment: MainAxisAlignment.start,
-                      //         crossAxisAlignment: CrossAxisAlignment.start,
-                      //         children: [
-                      //           tableContainerZero(
-                      //             studentList[currentStudentIndex]['rollNo'],
-                      //             Container(
-                      //               decoration: BoxDecoration(),
-                      //               child: Text(
-                      //                 nameForamtter(
-                      //                     studentList[currentStudentIndex]
-                      //                         ['studentName']),
-                      //                 style: const TextStyle(
-                      //                   fontSize: 18.0,
-                      //                   fontWeight: FontWeight.bold,
-                      //                 ),
-                      //               ),
-                      //             ),
-                      //             context,
-                      //           ),
-                      //           tableContainer(
-                      //             "Not Evaluated",
-                      //             Container(
-                      //               alignment: Alignment.centerLeft,
-                      //               decoration: BoxDecoration(),
-                      //               child: Checkbox(
-                      //                 value: studentIdCheckboxVal[
-                      //                     currentStudentId],
-                      //                 onChanged: (bool? newValue) {
-                      //                   var checkBoxValue =
-                      //                       studentIdCheckboxVal[
-                      //                           currentStudentId];
-                      //                   if (kDebugMode) {
-                      //                     setState(() {
-                      //                       studentIdCheckboxVal[
-                      //                           currentStudentId] = newValue!;
-                      //                       if (newValue == true) {
-                      //                         setState(() {
-                      //                           studentIdResultSheet[
-                      //                                   currentStudentId] =
-                      //                               'noeval';
-                      //                         });
-                      //                       }
-                      //                     });
-                      //                     if (checkBoxValue == false) {
-                      //                       print(newValue.toString());
-                      //                       print(checkBoxValue.toString());
-                      //                     } else if (checkBoxValue == true) {
-                      //                       print(newValue.toString());
-                      //                       print(checkBoxValue.toString());
-                      //                     } else {
-                      //                       print("in else");
-                      //                     }
-                      //                   }
-                      //                   setState(() {
-                      //                     checkBoxValue = newValue as bool;
-                      //                   });
-                      //                   // widget.userActionHandler(newValue as bool);
-                      //                   // widget.userActionHandler();
-                      //                 },
-                      //               ),
-                      //             ),
-                      //             context,
-                      //           ),
-                      //           (studentIdCheckboxVal[currentStudentId] ==
-                      //                   false)
-                      //               ? tableContainer(
-                      //                   "Marks",
-                      //                   markFields(totQues, context),
-                      //                   context,
-                      //                 )
-                      //               : const Text(""),
-                      //           (studentIdCheckboxVal[currentStudentId] ==
-                      //                   false)
-                      //               ? tableContainer(
-                      //                   "Total",
-                      //                   Container(
-                      //                     decoration: BoxDecoration(),
-                      //                     alignment: Alignment.centerLeft,
-                      //                     child: Text(
-                      //                       totalCalculator(),
-                      //                       style: const TextStyle(
-                      //                         // fontWeight: FontWeight.bold,
-                      //                         fontSize: 18.0,
-                      //                       ),
-                      //                     ),
-                      //                   ),
-                      //                   context,
-                      //                 )
-                      //               : const Text(""),
-                      //           (studentIdCheckboxVal[currentStudentId] ==
-                      //                   false)
-                      //               ? tableContainer(
-                      //                   "Result",
-                      //                   Container(
-                      //                     alignment: Alignment.centerLeft,
-                      //                     decoration: BoxDecoration(),
-                      //                     child: Text(
-                      //                       resultFormatter(),
-                      //                       style: const TextStyle(
-                      //                         fontSize: 18.0,
-                      //                         // fontWeight: FontWeight.bold,
-                      //                       ),
-                      //                     ),
-                      //                   ),
-                      //                   context)
-                      //               : const Text(''),
-                      //         ],
-                      //       ),
-                      //     ),
-                      //   ),
-                      // ),
                     ),
 
-              // (_selectedClass!.isEmpty || _selectedAssessment.isEmpty)
-              //     ? const Text("")
-              //     : Container(
-              //         alignment: Alignment.center,
-              //         decoration: BoxDecoration(),
-              //         width: MediaQuery.of(context).size.width * 0.90,
-              //         child: Row(
-              //           mainAxisAlignment: MainAxisAlignment.center,
-              //           children: [
-              //             (currentStudentIndex > 0 &&
-              //                     currentStudentIndex < studentList.length)
-              //                 ? Container(
-              //                     decoration: BoxDecoration(),
-              //                     child: TextButton(
-              //                       onPressed: () {
-              //                         if (currentStudentIndex > 0 &&
-              //                             currentStudentIndex <
-              //                                 studentList.length) {
-              //                           setState(() {
-              //                             currentStudentIndex =
-              //                                 currentStudentIndex - 1;
-              //                             currentStudentId =
-              //                                 studentList[currentStudentIndex]
-              //                                     ['studentId'];
-              //                           });
-              //                         }
-              //                       },
-              //                       child: Icon(
-              //                         Icons.arrow_back_outlined,
-              //                         size: 40,
-              //                       ),
-              //                     ),
-              //                   )
-              //                 : const Text(""),
-              //             (currentStudentIndex >= 0 &&
-              //                     currentStudentIndex < studentList.length - 1)
-              //                 ? Container(
-              //                     decoration: BoxDecoration(),
-              //                     child: TextButton(
-              //                       onPressed: () {
-              //                         if (currentStudentIndex >= 0 &&
-              //                             currentStudentIndex <
-              //                                 studentList.length - 1) {
-              //                           setState(() {
-              //                             currentStudentIndex =
-              //                                 currentStudentIndex + 1;
-              //                             currentStudentId =
-              //                                 studentList[currentStudentIndex]
-              //                                     ['studentId'];
-              //                           });
-              //                         }
-              //                       },
-              //                       child: Icon(
-              //                         Icons.arrow_forward_outlined,
-              //                         size: 40,
-              //                       ),
-              //                     ),
-              //                   )
-              //                 : const Text(""),
-              //           ],
-              //         ),
-              //       ),
               (_selectedClass!.isEmpty || _selectedAssessment.isEmpty)
                   ? const Text("")
                   : widgetSubmitButton(),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class UserInputWidget extends StatefulWidget {
+  final int studentId;
+  final double maximumMarks;
+  final int totalQuestions;
+  final double studentTotalMarks;
+  final String profilePic;
+  final String rollNo;
+  final String formatterStudentName;
+  final List<double>? obtainedMarksList;
+  final Function(int, List<double>, String, String) userInputHandler;
+  const UserInputWidget(
+      {Key? key,
+      required this.studentId,
+      required this.maximumMarks,
+      required this.totalQuestions,
+      required this.userInputHandler,
+      required this.studentTotalMarks,
+      required this.profilePic,
+      required this.rollNo,
+      required this.formatterStudentName,
+      required this.obtainedMarksList})
+      : super(key: key);
+
+  @override
+  State<UserInputWidget> createState() => _UserInputWidgetState();
+}
+
+class _UserInputWidgetState extends State<UserInputWidget> {
+  double studentTotalMarks = 0.0;
+  late int studentId;
+  late int totalQuestions;
+  late double totMarks;
+  late String rollNo;
+  late String studentName;
+  late String profilePic;
+  String studentResult = 'NE';
+  List<double>? obtainedMarks = [];
+
+  bool notEvaluated = false;
+
+  void totalCalculator() {
+    double totalTmp = 0.0;
+    if (obtainedMarks!.isNotEmpty) {
+      for (var mark in obtainedMarks!) {
+        totalTmp = totalTmp + mark;
+      }
+    }
+
+    setState(() {
+      studentTotalMarks = totalTmp;
+    });
+  }
+
+  Widget textFields() {
+    return Wrap(
+      alignment: WrapAlignment.start,
+      direction: Axis.horizontal,
+      crossAxisAlignment: WrapCrossAlignment.start,
+      children: List.generate(totalQuestions, (index) {
+        return Container(
+          width: MediaQuery.of(context).size.width * 0.10,
+          height: MediaQuery.of(context).size.height * 0.112,
+          margin: const EdgeInsets.symmetric(
+            horizontal: 8.0,
+            // vertical: 5.0,
+          ),
+          child: Column(
+            children: [
+              Text('Q${index + 1}'),
+              Container(
+                decoration: BoxDecoration(border: Border.all()),
+                child: TextFormField(
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(hintText: ''),
+                    onChanged: (value) {
+                      if (kDebugMode) {
+                        print('Question ${index + 1}');
+                        print(value);
+                      }
+                      var nMark = double.parse(value);
+
+                      setState(() {
+                        obtainedMarks!.insert(index, nMark);
+                      });
+                    }),
+              ),
+            ],
+          ),
+        );
+      }),
+    );
+  }
+
+  Widget marksField() {
+    return textFields();
+  }
+
+  @override
+  void initState() {
+    setState(() {
+      studentId = widget.studentId;
+      totalQuestions = widget.totalQuestions;
+      totMarks = widget.maximumMarks;
+      totMarks = widget.studentTotalMarks;
+      rollNo = widget.rollNo;
+      studentName = widget.formatterStudentName;
+      profilePic = widget.profilePic;
+      obtainedMarks = widget.obtainedMarksList;
+    });
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: MediaQuery.of(context).size.width * 0.80,
+      height: MediaQuery.of(context).size.height * 0.40,
+      decoration: BoxDecoration(),
+      alignment: Alignment.center,
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: Colors.transparent,
+                ),
+                borderRadius: BorderRadius.circular(
+                  8.0,
+                ),
+                // borderRadius: BorderRadius.circular(4.0),
+                gradient: LinearGradient(
+                  colors: <Color>[
+                    Color(0xfff21bce),
+                    Color(0xff826cf0),
+                  ],
+                ),
+              ),
+              margin: const EdgeInsets.symmetric(
+                vertical: 2.5,
+              ),
+              padding: const EdgeInsets.only(
+                left: 8.0,
+              ),
+              width: MediaQuery.of(context).size.width * 0.80,
+              height: MediaQuery.of(context).size.height * 0.10,
+              child: Table(
+                columnWidths: const <int, TableColumnWidth>{
+                  0: FixedColumnWidth(3),
+                  1: FixedColumnWidth(200),
+                },
+                children: [
+                  TableRow(
+                    children: [
+                      TableCell(
+                        child: AvatarGeneratorNew(base64Code: profilePic),
+                      ),
+                      TableCell(
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 10.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                decoration: const BoxDecoration(),
+                                width: MediaQuery.of(context).size.width * 0.60,
+                                child: Text(
+                                  studentName,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(
+                                    // fontWeight: FontWeight.bold,
+                                    fontSize: 15.0,
+                                    color: Colors.black,
+                                  ),
+                                  maxLines: 1,
+                                  softWrap: false,
+                                  textAlign: TextAlign.left,
+                                ),
+                              ),
+                              Container(
+                                alignment: Alignment.bottomRight,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    const Text(
+                                      "Roll: ",
+                                      style: TextStyle(
+                                        fontSize: 15.0,
+                                      ),
+                                    ),
+                                    Text(
+                                      rollNo,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: const TextStyle(
+                                        // fontWeight: FontWeight.bold,
+                                        fontSize: 15.0,
+                                        color: Colors.black,
+                                      ),
+                                      softWrap: false,
+                                      textAlign: TextAlign.left,
+                                    ),
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            marksField(),
+            Container(
+              child: Table(
+                columnWidths: <int, TableColumnWidth>{
+                  0: FractionColumnWidth(10),
+                  1: FractionColumnWidth(80),
+                },
+                children: [
+                  TableRow(children: [
+                    TableCell(
+                      child: const Text("Total:"),
+                    ),
+                    TableCell(
+                      child: Text(
+                        studentTotalMarks.toString(),
+                        style: const TextStyle(
+                            fontWeight: FontWeight.normal, fontSize: 16.0),
+                      ),
+                    ),
+                  ]),
+                  TableRow(children: [
+                    TableCell(
+                      child: const Text(
+                        "Result:",
+                      ),
+                    ),
+                    TableCell(
+                      child: Text(
+                        studentResult,
+                        style: const TextStyle(
+                            fontWeight: FontWeight.normal, fontSize: 16.0),
+                      ),
+                    ),
+                  ]),
+                ],
+              ),
+            ),
+            Container(
+              decoration: BoxDecoration(),
+              child: TextButton(
+                onPressed: () {
+                  if (kDebugMode) {
+                    print(obtainedMarks.toString());
+                  }
+
+                  widget.userInputHandler(studentId, obtainedMarks!,
+                      studentResult, studentTotalMarks.toString());
+                },
+                child: Icon(
+                  Icons.forward,
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
