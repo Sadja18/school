@@ -133,22 +133,30 @@ class _StickyBasicReadingState extends State<StickyBasicReading> {
     var studentIdInt = studentList[index]['studentId'];
     var studentId = studentIdInt.toString();
 
-    if (levelVal == 'NE' || levelVal == '0' || levelVal == "") {
-      setState(() {
-        levelSheet[studentId] = 'NE';
-      });
+    var levelString = "";
+    if (levelVal != '' && levelVal != '0' && levelVal != 'NE') {
+      levelString = 'Achieved';
     } else {
-      levelSheet[studentId] = levelVal.toString();
+      levelString = 'NE';
     }
+    setState(() {
+      studentList[index]['level'] = levelVal;
+      // update here
+      if (levelVal != '' && levelVal != '0' && levelVal != 'NE') {
+        studentList[index]['result'] = 'Achieved';
+        resultSheet[studentId] = 'Achieved';
+      } else {
+        studentList[index]['result'] = 'NE';
+        resultSheet[studentId] = 'NE';
+      }
+      levelSheet[studentId] = levelString;
+    });
 
     if (kDebugMode) {
-      // print(studentId.runtimeType);
-      print('valskbhacf');
-      print(levelVal.runtimeType);
-      print(levelVal.toString());
+      print(studentId.runtimeType);
 
-      // print(levelSheet.toString());
-      // print(resultSheet.runtimeType);
+      print(levelSheet.toString());
+      print(resultSheet.runtimeType);
     }
   }
 

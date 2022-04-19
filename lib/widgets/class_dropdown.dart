@@ -52,7 +52,7 @@ class _ClassDropDownState extends State<ClassDropDown> {
                 color: Colors.deepPurpleAccent,
               ),
               child: DropdownButton<String>(
-                dropdownColor: Colors.deepPurpleAccent,
+                dropdownColor: Color.fromARGB(255, 209, 37, 201),
                 hint: const Text(
                   'Select Class',
                   style: TextStyle(
