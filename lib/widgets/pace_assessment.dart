@@ -199,8 +199,8 @@ class _PaceAssessmentScreenState extends State<PaceAssessmentScreen> {
           outside: BorderSide.none,
         ),
         columnWidths: const <int, TableColumnWidth>{
-          0: FractionColumnWidth(0.335),
-          1: FractionColumnWidth(0.665),
+          0: FractionColumnWidth(0.350),
+          1: FractionColumnWidth(0.620),
         },
         children: [
           TableRow(
@@ -761,11 +761,11 @@ class _PaceAssessmentScreenState extends State<PaceAssessmentScreen> {
           ),
           cellDimensions: CellDimensions.variableColumnWidthAndRowHeight(
               columnWidths: [
-                90,
+                MediaQuery.of(context).size.width*0.12,
               ],
               rowHeights:
                   List<double>.generate(studentList.length, (int index) => 68),
-              stickyLegendWidth: 320,
+              stickyLegendWidth: MediaQuery.of(context).size.width*0.85,
               stickyLegendHeight: 0),
           columnsLength: 1,
           rowsLength: studentList.length,
@@ -1001,9 +1001,21 @@ class _UserInputWidgetState extends State<UserInputWidget> {
           ),
           child: Column(
             children: [
-              Text('Q${index + 1}'),
+              Text(
+                'Q${index + 1}',
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               Container(
-                decoration: BoxDecoration(border: Border.all()),
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Colors.blue,
+                  ),
+                  borderRadius: BorderRadius.circular(
+                    8.0,
+                  ),
+                ),
                 child: TextFormField(
                   // initialValue: obtainedMarks[index].toString(),
                   textAlignVertical: TextAlignVertical.top,
@@ -1038,8 +1050,6 @@ class _UserInputWidgetState extends State<UserInputWidget> {
                         obtainedMarks[index] = nMark;
                       });
                     }
-
-                    // totalCalculator();
                   },
                   onEditingComplete: () {
                     if (kDebugMode) {
@@ -1047,17 +1057,19 @@ class _UserInputWidgetState extends State<UserInputWidget> {
                     }
                   },
                   onFieldSubmitted: (value) {
-                    var nMark = double.parse(value);
+                    if (double.tryParse(value) != null) {
+                      var nMark = double.parse(value);
 
-                    if (nMark < 0) {
-                      // show error marks cannot be ;less than zero
-                      var title = "Value Error";
-                      var message = "Marks should not be less than zero";
-                      showAlert(title, message);
+                      if (nMark < 0) {
+                        // show error marks cannot be ;less than zero
+                        var title = "Value Error";
+                        var message = "Marks should not be less than zero";
+                        showAlert(title, message);
+                      }
+                      setState(() {
+                        obtainedMarks[index] = nMark;
+                      });
                     }
-                    setState(() {
-                      obtainedMarks[index] = nMark;
-                    });
                     // totalCalculator();
                   },
                   // onSubmi
@@ -1102,7 +1114,7 @@ class _UserInputWidgetState extends State<UserInputWidget> {
       width: MediaQuery.of(context).size.width,
       height: (isEvaluated == true)
           ? MediaQuery.of(context).size.height * 0.20
-          : MediaQuery.of(context).size.height * 0.40,
+          : MediaQuery.of(context).size.height * 0.50,
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: <Color>[
@@ -1112,150 +1124,157 @@ class _UserInputWidgetState extends State<UserInputWidget> {
         ),
       ),
       alignment: Alignment.center,
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: Colors.transparent,
-                ),
-                borderRadius: BorderRadius.circular(
-                  8.0,
-                ),
-                // borderRadius: BorderRadius.circular(4.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: Colors.transparent,
               ),
-              margin: const EdgeInsets.only(
-                bottom: 2.5,
-                top: 1.0,
+              borderRadius: BorderRadius.circular(
+                8.0,
               ),
-              padding: const EdgeInsets.only(
-                left: 8.0,
-              ),
-              width: MediaQuery.of(context).size.width * 0.80,
-              height: MediaQuery.of(context).size.height * 0.10,
-              child: Table(
-                columnWidths: const <int, TableColumnWidth>{
-                  0: FixedColumnWidth(3),
-                  1: FixedColumnWidth(200),
-                },
-                children: [
-                  TableRow(
-                    children: [
-                      TableCell(
-                        child: AvatarGeneratorNewTwo(base64Code: profilePic),
-                      ),
-                      TableCell(
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 10.0),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                decoration: const BoxDecoration(),
-                                width: MediaQuery.of(context).size.width * 0.60,
-                                child: Text(
-                                  studentName,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 18.0,
-                                    color: Colors.white,
-                                  ),
-                                  maxLines: 2,
-                                  softWrap: false,
-                                  textAlign: TextAlign.left,
+              // borderRadius: BorderRadius.circular(4.0),
+            ),
+            margin: const EdgeInsets.only(
+              bottom: 2.5,
+              top: 1.0,
+            ),
+            padding: const EdgeInsets.only(
+              left: 8.0,
+            ),
+            width: MediaQuery.of(context).size.width * 0.80,
+            height: MediaQuery.of(context).size.height * 0.10,
+            child: Table(
+              columnWidths: const <int, TableColumnWidth>{
+                0: FixedColumnWidth(3),
+                1: FixedColumnWidth(200),
+              },
+              children: [
+                TableRow(
+                  children: [
+                    TableCell(
+                      child: AvatarGeneratorNewTwo(base64Code: profilePic),
+                    ),
+                    TableCell(
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 10.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              decoration: const BoxDecoration(),
+                              width: MediaQuery.of(context).size.width * 0.60,
+                              child: Text(
+                                studentName,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18.0,
+                                  color: Colors.white,
                                 ),
+                                maxLines: 2,
+                                softWrap: false,
+                                textAlign: TextAlign.left,
                               ),
-                              Container(
-                                alignment: Alignment.bottomRight,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    const Text(
-                                      "Roll: ",
-                                      style: TextStyle(
-                                        fontSize: 16.0,
-                                        color: Colors.white,
-                                      ),
+                            ),
+                            Container(
+                              alignment: Alignment.bottomRight,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    "Roll: ",
+                                    style: TextStyle(
+                                      fontSize: 16.0,
+                                      color: Colors.white,
                                     ),
-                                    Text(
-                                      rollNo,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: const TextStyle(
-                                        // fontWeight: FontWeight.bold,
-                                        fontSize: 16.0,
-                                        color: Colors.white,
-                                      ),
-                                      softWrap: false,
-                                      textAlign: TextAlign.left,
+                                  ),
+                                  Text(
+                                    rollNo,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                      // fontWeight: FontWeight.bold,
+                                      fontSize: 16.0,
+                                      color: Colors.white,
                                     ),
-                                  ],
-                                ),
-                              )
-                            ],
-                          ),
+                                    softWrap: false,
+                                    textAlign: TextAlign.left,
+                                  ),
+                                ],
+                              ),
+                            )
+                          ],
                         ),
                       ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              width: MediaQuery.of(context).size.width,
-              decoration: BoxDecoration(
-                color: Colors.white,
-              ),
-              alignment: Alignment.center,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    decoration: BoxDecoration(),
-                    child: const Text("Absent/NE"),
-                  ),
-                  Checkbox(
-                      value: isEvaluated,
-                      onChanged: (value) {
-                        setState(() {
-                          isEvaluated = !isEvaluated;
-                        });
-                      }),
-                ],
-              ),
-            ),
-            (isEvaluated == true)
-                ? Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
                     ),
-                    child: const Text(""),
-                  )
-                : Container(
-                    width: MediaQuery.of(context).size.width,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                    ),
-                    alignment: Alignment.center,
+                  ],
+                ),
+              ],
+            ),
+          ),
+          Container(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height * 0.05,
+            decoration: BoxDecoration(
+              color: Colors.white,
+            ),
+            alignment: Alignment.center,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  decoration: BoxDecoration(),
+                  child: const Text("Absent/NE"),
+                ),
+                Checkbox(
+                    value: isEvaluated,
+                    onChanged: (value) {
+                      setState(() {
+                        isEvaluated = !isEvaluated;
+                      });
+                    }),
+              ],
+            ),
+          ),
+          (isEvaluated == true)
+              ? Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                  ),
+                  child: const Text(""),
+                )
+              : Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height * 0.244,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                  ),
+                  alignment: Alignment.center,
+                  child: SingleChildScrollView(
                     child: marksField(),
                   ),
-            isEvaluated == true
-                ? Container(
-                    decoration: BoxDecoration(color: Colors.white),
-                    child: const Text(""),
-                    height: MediaQuery.of(context).size.height * 0.10,
-                    width: MediaQuery.of(context).size.width * 0.10,
-                  )
-                : Container(
-                    width: MediaQuery.of(context).size.width,
-                    // height: MediaQuery.of(context).size.height * 0.10,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                    ),
+                ),
+          isEvaluated == true
+              ? Container(
+                  decoration: BoxDecoration(color: Colors.white),
+                  child: const Text(""),
+                  height: 0,
+                  width: MediaQuery.of(context).size.width * 0.10,
+                )
+              : Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height * 0.10,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                  ),
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.20,
+                    height: MediaQuery.of(context).size.height * 0.05,
                     child: TextButton(
+                      style: TextButton.styleFrom(),
                       onPressed: () {
                         if (kDebugMode) {
                           // print(obtainedMarks.toString());
@@ -1263,12 +1282,6 @@ class _UserInputWidgetState extends State<UserInputWidget> {
 
                         totalCalculator();
                         resultCalculator();
-
-                        // if (kDebugMode) {
-                        //   log(studentResult.toString());
-                        //   log(obtainedMarks.toString());
-                        //   log(studentTotalMarks.toString());
-                        // }
 
                         if (isEvaluated == true) {
                           widget.userInputHandler(
@@ -1280,8 +1293,8 @@ class _UserInputWidgetState extends State<UserInputWidget> {
                       },
                       child: Container(
                         alignment: Alignment.center,
-                        width: MediaQuery.of(context).size.width * 0.20,
-                        height: MediaQuery.of(context).size.height * 0.05,
+                        width: MediaQuery.of(context).size.width*0.20,
+                        height: MediaQuery.of(context).size.height,
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
                             colors: <Color>[
@@ -1301,8 +1314,8 @@ class _UserInputWidgetState extends State<UserInputWidget> {
                       ),
                     ),
                   ),
-          ],
-        ),
+                ),
+        ],
       ),
     );
   }

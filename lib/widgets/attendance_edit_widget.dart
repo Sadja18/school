@@ -82,61 +82,60 @@ class _EditAttendanceState extends State<EditAttendance> {
   }
 
   Widget countBoxWidget(String headerString, int value, boxColor) {
-    return InkWell(
-      onTap: () {
-        if (_absentees.isNotEmpty) {
-          if (kDebugMode) {
-            print(_absentees[0].runtimeType);
-          }
-          if (headerString == "Absent: ") {
-            showAbsentStudentsPreview();
-          }
-        }
-      },
-      child: Container(
-        alignment: Alignment.center,
-        width: MediaQuery.of(context).size.width * 0.25,
-        height: MediaQuery.of(context).size.height * 0.05,
-        margin: const EdgeInsets.symmetric(
-          vertical: 2.0,
-          horizontal: 0.0,
-        ),
-        // padding: const EdgeInsets.symmetric(
-        //   vertical: 1.0,
-        //   horizontal: 1.0,
-        // ),
-        decoration: BoxDecoration(
-            // border: Border.all(),
+    return Container(
+      alignment: Alignment.center,
+      width: MediaQuery.of(context).size.width * 0.28,
+      height: MediaQuery.of(context).size.height * 0.05,
+      margin: const EdgeInsets.symmetric(
+        vertical: 2.0,
+        horizontal: 1.0,
+      ),
+      decoration: BoxDecoration(
+          // border: Border.all(),
 
-            // color: boxColor,
-            ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Center(
-              child: Text(
-                headerString,
-                style: TextStyle(
-                  fontSize: 17.0,
-                  fontWeight: FontWeight.bold,
-                  color: boxColor,
+          // color: boxColor,
+          ),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: InkWell(
+          onTap: () {
+            if (_absentees.isNotEmpty) {
+              if (kDebugMode) {
+                print(_absentees[0].runtimeType);
+              }
+              if (headerString == "Absent: ") {
+                showAbsentStudentsPreview();
+              }
+            }
+          },
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Center(
+                child: Text(
+                  headerString,
+                  style: TextStyle(
+                    fontSize: 17.0,
+                    fontWeight: FontWeight.bold,
+                    color: boxColor,
+                  ),
+                  maxLines: 1,
                 ),
-                maxLines: 1,
               ),
-            ),
-            Center(
-              child: Text(
-                '$value',
-                style: TextStyle(
-                  // fontWeight: FontWeight.bold,
-                  fontSize: 17.0,
-                  fontWeight: FontWeight.bold,
-                  color: boxColor,
+              Center(
+                child: Text(
+                  '$value',
+                  style: TextStyle(
+                    // fontWeight: FontWeight.bold,
+                    fontSize: 17.0,
+                    fontWeight: FontWeight.bold,
+                    color: boxColor,
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -156,35 +155,7 @@ class _EditAttendanceState extends State<EditAttendance> {
 
   Widget columnTitleBuilder(int index) {
     switch (index) {
-      // case 0:
-      //   return Container(
-      //     alignment: Alignment.center,
-      //     decoration: BoxDecoration(
-      //       border: Border.all(
-      //         color: Colors.black,
-      //       ),
-      //       borderRadius: BorderRadius.only(
-      //         topRight: Radius.circular(
-      //           12.0,
-      //         ),
-      //       ),
-      //       color: columnTitleColor,
-      //     ),
-      //     height: MediaQuery.of(context).size.height,
-      //     width: MediaQuery.of(context).size.width,
-      //     child: const Text(
-      //       'Present',
-      //       softWrap: false,
-      //       style: TextStyle(
-      //         fontWeight: FontWeight.bold,
-      //         fontSize: 18.0,
-      //         color: Colors.white,
-      //       ),
-      //       overflow: TextOverflow.ellipsis,
-      //       textAlign: TextAlign.left,
-      //     ),
-      //   );
-
+    
       default:
         return const Text('');
     }
@@ -427,10 +398,10 @@ class _EditAttendanceState extends State<EditAttendance> {
       // padding: const EdgeInsets.fromLTRB(4.0, 4.0, 4.0, 4.0),
       child: StickyHeadersTable(
         cellDimensions: CellDimensions.variableColumnWidthAndRowHeight(
-          columnWidths: [50],
+          columnWidths: [MediaQuery.of(context).size.width*0.12],
           rowHeights:
               List<double>.generate(studentList.length, (int index) => 75),
-          stickyLegendWidth: 360,
+          stickyLegendWidth: MediaQuery.of(context).size.width*0.85,
           stickyLegendHeight: 0,
         ),
         initialScrollOffsetX: 0.0,

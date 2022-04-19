@@ -101,7 +101,7 @@ class _StickyNumericAbilityState extends State<StickyNumericAbility> {
     var studentId = studentIdInt.toString();
 
     var levelString = "";
-    if (levelVal != '' && levelVal != '0' && levelVal!='NE') {
+    if (levelVal != '' && levelVal != '0' && levelVal != 'NE') {
       levelString = 'Achieved';
     } else {
       levelString = 'NE';
@@ -109,7 +109,7 @@ class _StickyNumericAbilityState extends State<StickyNumericAbility> {
     setState(() {
       studentList[index]['level'] = levelVal;
       // update here
-      if (levelVal != '' && levelVal != '0'  && levelVal!='NE') {
+      if (levelVal != '' && levelVal != '0' && levelVal != 'NE') {
         studentList[index]['result'] = 'Achieved';
         resultSheet[studentId] = 'Achieved';
       } else {
@@ -337,7 +337,7 @@ class _StickyNumericAbilityState extends State<StickyNumericAbility> {
   }
 
   Widget studentDropDown(int studentRowIndex) {
-    if(kDebugMode){
+    if (kDebugMode) {
       print(getBgColor(studentRowIndex));
     }
     return LevelDropDown(
@@ -462,10 +462,12 @@ class _StickyNumericAbilityState extends State<StickyNumericAbility> {
             ? const Text("")
             : StickyHeadersTable(
                 cellDimensions: CellDimensions.variableColumnWidthAndRowHeight(
-                    columnWidths: [90,],
+                    columnWidths: [
+                      MediaQuery.of(context).size.width * 0.12,
+                    ],
                     rowHeights: List<double>.generate(
                         studentList.length, (int index) => 68),
-                    stickyLegendWidth: 320,
+                    stickyLegendWidth: MediaQuery.of(context).size.width * 0.85,
                     stickyLegendHeight: 0),
                 initialScrollOffsetX: 0.0,
                 initialScrollOffsetY: 0.0,

@@ -55,14 +55,14 @@ class _DateShowState extends State<DateShow> {
           children: [
             const Icon(
               Icons.calendar_month,
-              size: 30,
+              size: 25,
               color: Colors.white,
             ),
             Text(
               DateFormat('E, MMM dd, yyyy').format(date),
               style: TextStyle(
                 color: Colors.white,
-                fontSize: 18.0,
+                fontSize: 16.0,
                 fontWeight: FontWeight.bold,
               ),
             ),

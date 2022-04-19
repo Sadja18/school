@@ -177,14 +177,17 @@ class _StickyAttendanceState extends State<StickyAttendance> {
             children: [
               TableCell(
                 verticalAlignment: TableCellVerticalAlignment.middle,
-                child: Container(
-                  decoration: BoxDecoration(),
-                  margin: const EdgeInsets.symmetric(
-                    horizontal: 0.0,
-                    vertical: 0.0,
-                  ),
-                  child: DateShow(
-                    selectedDate: selectedDate,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Container(
+                    decoration: BoxDecoration(),
+                    margin: const EdgeInsets.symmetric(
+                      horizontal: 0.0,
+                      vertical: 0.0,
+                    ),
+                    child: DateShow(
+                      selectedDate: selectedDate,
+                    ),
                   ),
                 ),
               ),
@@ -277,7 +280,7 @@ class _StickyAttendanceState extends State<StickyAttendance> {
                       size: 40,
                     ),
                     Text(
-                      'View Marked',
+                      'View',
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 15,

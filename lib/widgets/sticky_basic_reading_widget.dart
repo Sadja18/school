@@ -87,6 +87,12 @@ class _StickyBasicReadingState extends State<StickyBasicReading> {
             levelNames = levelName;
             levelNames.insert(0, 'NE');
           });
+
+          for (var student in studentList) {
+            setState(() {
+              resultSheet[student['studentId'].toString()] = 'NE';
+            });
+          }
         }
       });
     }
@@ -96,6 +102,11 @@ class _StickyBasicReadingState extends State<StickyBasicReading> {
     var studentIdInt = studentList[studentRowIndex]['studentId'];
     var studentId = studentIdInt.toString();
     var bgColor = Colors.transparent;
+    // if(kDebugMode){
+    //   print("get BG coloe");
+    //   print(resultSheet.toString());
+    //   print(resultSheet[studentId]);
+    // }
     switch (resultSheet[studentId]) {
       case 'NE':
         return bgColor = Colors.blue;
@@ -122,30 +133,22 @@ class _StickyBasicReadingState extends State<StickyBasicReading> {
     var studentIdInt = studentList[index]['studentId'];
     var studentId = studentIdInt.toString();
 
-    var levelString = "";
-    if (levelVal != '' && levelVal != '0' && levelVal != 'NE') {
-      levelString = 'Achieved';
+    if (levelVal == 'NE' || levelVal == '0' || levelVal == "") {
+      setState(() {
+        levelSheet[studentId] = 'NE';
+      });
     } else {
-      levelString = 'NE';
+      levelSheet[studentId] = levelVal.toString();
     }
-    setState(() {
-      studentList[index]['level'] = levelVal;
-      // update here
-      if (levelVal != '' && levelVal != '0') {
-        studentList[index]['result'] = 'Achieved';
-        resultSheet[studentId] = 'Achieved';
-      } else {
-        studentList[index]['result'] = 'NE';
-        resultSheet[studentId] = 'NE';
-      }
-      levelSheet[studentId] = levelString;
-    });
 
     if (kDebugMode) {
-      print(studentId.runtimeType);
+      // print(studentId.runtimeType);
+      print('valskbhacf');
+      print(levelVal.runtimeType);
+      print(levelVal.toString());
 
-      print(levelSheet.toString());
-      print(resultSheet.runtimeType);
+      // print(levelSheet.toString());
+      // print(resultSheet.runtimeType);
     }
   }
 
@@ -376,7 +379,9 @@ class _StickyBasicReadingState extends State<StickyBasicReading> {
             width: MediaQuery.of(context).size.width,
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
-              child: Center(child: studentDropDown(studentRowIndex)),
+              child: Center(
+                child: studentDropDown(studentRowIndex),
+              ),
             ),
           ),
         );
@@ -483,10 +488,10 @@ class _StickyBasicReadingState extends State<StickyBasicReading> {
         decoration: const BoxDecoration(),
         child: StickyHeadersTable(
           cellDimensions: CellDimensions.variableColumnWidthAndRowHeight(
-              columnWidths: [70],
+              columnWidths: [MediaQuery.of(context).size.width * 0.12],
               rowHeights:
                   List<double>.generate(studentList.length, (int index) => 68),
-              stickyLegendWidth: 300,
+              stickyLegendWidth: MediaQuery.of(context).size.width * 0.85,
               stickyLegendHeight: 0),
           initialScrollOffsetX: 0.0,
           initialScrollOffsetY: 0.0,
@@ -620,16 +625,14 @@ class _StickyBasicReadingState extends State<StickyBasicReading> {
                     ),
               (studentList.isNotEmpty &&
                       (_selectedLanguage != null && _selectedLanguage != ''))
-                  ? Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                      child: Container(
-                        decoration: BoxDecoration(
-                            // border: Border.all(),
-                            ),
-                        height: MediaQuery.of(context).size.height * 0.67,
-                        width: MediaQuery.of(context).size.width,
-                        child: assessmentTable(),
-                      ),
+                  ? Container(
+                      alignment: Alignment.topCenter,
+                      // decoration: BoxDecoration(
+                      //     // border: Border.all(),
+                      //     ),
+                      height: MediaQuery.of(context).size.height * 0.67,
+                      width: MediaQuery.of(context).size.width,
+                      child: assessmentTable(),
                     )
                   : const Text(''),
               (studentList.isNotEmpty &&
