@@ -1,391 +1,241 @@
+// ignore_for_file: prefer_const_constructors, unused_local_variable
+
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 import 'package:table_sticky_headers/table_sticky_headers.dart';
-
+import 'package:syncfusion_flutter_calendar/calendar.dart';
 import '../services/helper_db.dart';
 
-class ViewTakenAttendance extends StatefulWidget {
-  const ViewTakenAttendance({Key? key}) : super(key: key);
+class StudentAttendanceCalendarView extends StatefulWidget {
+  const StudentAttendanceCalendarView({Key? key}) : super(key: key);
 
   @override
-  State<ViewTakenAttendance> createState() => _ViewTakenAttendanceState();
+  State<StudentAttendanceCalendarView> createState() =>
+      _StudentAttendanceCalendarViewState();
 }
 
-class _ViewTakenAttendanceState extends State<ViewTakenAttendance> {
-  DateTime _focusedDay = DateTime.now();
-  DateTime _rangeStart = DateTime(DateTime.now().year, DateTime.now().month, 0);
-  DateTime _rangeEnd = DateTime.now();
+class _StudentAttendanceCalendarViewState
+    extends State<StudentAttendanceCalendarView> {
+  final CalendarController _controller = CalendarController();
+  int isInitiated = 0;
 
-  void updateRange(date) {
+  List attendanceData = [];
+
+  void initiate() async {
+    DateTime _rangeStart =
+        DateTime(DateTime.now().year, DateTime.now().month, 0);
+    DateTime _rangeEnd = DateTime.now();
+    var data = await readAllAttendanceActive(_rangeStart, _rangeEnd);
+
+    // if (kDebugMode) {
+    //   log(data.toString());
+    // }
     setState(() {
-      _rangeStart = getFirstDate(date);
-      _rangeEnd = getLastDate(date);
+      attendanceData = data;
+      isInitiated = 1;
     });
-    if (kDebugMode) {
-      print(date);
-      print(_rangeStart);
-      print(_rangeEnd);
-    }
   }
 
-  DateTime getDateMonthBack(DateTime date) {
-    return DateTime(date.year, date.month - 1, date.day);
-  }
-
-  DateTime getDateMonthAfter(DateTime date) {
-    return DateTime(date.year, date.month + 1, date.day);
-  }
-
-  DateTime getFirstDate(DateTime date) {
-    return DateTime(date.year, date.month, 1);
-  }
-
-  DateTime getLastDate(DateTime date) {
-    return DateTime(date.year, date.month + 1, 0);
-  }
-
-  void _onNextMonth() {
-    if (kDebugMode) {
-      print('Nh');
-    }
-    DateTime tmp = getDateMonthAfter(_focusedDay);
-
-    setState(() {
-      _focusedDay = tmp;
-    });
-    updateRange(tmp);
-  }
-
-  void _onPrevMonth() {
-    if (kDebugMode) {
-      print('Nh');
-    }
-    DateTime tmp = getDateMonthBack(_focusedDay);
-
-    setState(() {
-      _focusedDay = tmp;
-    });
-    updateRange(tmp);
-  }
-
-  Widget columnTitleBuild(columnIndex) {
-    switch (columnIndex) {
-      case 0:
-        return Container(
-          alignment: Alignment.center,
-          width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height,
-          decoration: BoxDecoration(
-            border: Border.all(),
-            color: Colors.blue,
-          ),
-          child: const Text(
-            'Class',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-          ),
-        );
-      case 1:
-        return Container(
-          alignment: Alignment.center,
-          width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height,
-          decoration: BoxDecoration(
-            border: Border.all(),
-            color: Colors.blue,
-          ),
-          child: const Text(
-            'Date Added',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-          ),
-        );
-      default:
-        return Container(
-          width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height,
-          decoration: const BoxDecoration(),
-          child: const Text(
-            '',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-          ),
-        );
-    }
-  }
-
-  String dateFormatter(String date) {
-    return DateFormat('MMM dd, yyyy').format(DateTime.parse(date));
-  }
-
-  Widget rowTitleBuild(rowIndex, data) {
-    var isEven = rowIndex % 2 == 0;
-
+  Widget monthCellBuilder(BuildContext context, MonthCellDetails details) {
     return Container(
-      alignment: Alignment.center,
-      width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.height,
       decoration: BoxDecoration(
-        border: Border.all(),
-        color: isEven ? Colors.lightBlue.shade200 : Colors.lightBlue.shade400,
+        // border: Border.all(
+        //   color: Colors.black,
+        // ),
+        // borderRadius: BorderRadius.circular(28.0),
+        color: const Color.fromARGB(255, 255, 255, 255),
       ),
-      child: Text(
-        dateFormatter(data[rowIndex]['date']),
-        style: const TextStyle(
-          fontWeight: FontWeight.bold,
-          fontSize: 18,
-          color: Colors.black,
-        ),
+      child: Column(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+                // color: Colors.lightBlueAccent,
+                ),
+            margin: const EdgeInsets.symmetric(
+              vertical: 2.5,
+            ),
+            padding: const EdgeInsets.symmetric(
+              vertical: 1.0,
+              horizontal: 4.0,
+            ),
+            child: Text(
+              details.date.day.toString(),
+              textAlign: TextAlign.left,
+            ),
+          )
+        ],
       ),
     );
   }
 
-  Widget contentCellBuild(columnIndex, rowIndex, data) {
-    switch (columnIndex) {
-      case 0:
-        var isEven = rowIndex % 2 == 0;
+  List<Attendance> _getAttendance() {
+    List<Attendance> attendanceViewData = <Attendance>[];
+    if (attendanceData.isNotEmpty && isInitiated == 1) {
+      for (var i = 0; i < attendanceData.length; i++) {
+        var record = attendanceData[i];
 
-        return Container(
-          alignment: Alignment.center,
-          width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height,
-          decoration: BoxDecoration(
-            border: Border.all(),
-            color:
-                isEven ? Colors.lightBlue.shade200 : Colors.lightBlue.shade400,
-          ),
-          child: Text(
-            data[rowIndex]['class_name'],
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 18,
-              color: Colors.black,
-            ),
-          ),
-        );
-      case 1:
-        var isEven = rowIndex % 2 == 0;
+        DateTime startDateParsed = DateTime.parse(record['date']);
+        DateTime endDateParsed = DateTime.parse("${record['date']} 23:59:59");
+        String subject = record['class_name'];
+        DateTime submissionDateUn = DateTime.parse(record['submission_date']);
+        bool synced = (record['synced']=='false')? false: true;
+        // String subject = DateFormat('MMMM yyyy')
+        Attendance entry =
+            Attendance(startDateParsed, endDateParsed, subject, true, synced);
+        attendanceViewData.add(entry);
+      }
 
-        return Container(
-          alignment: Alignment.center,
-          width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height,
-          decoration: BoxDecoration(
-            border: Border.all(),
-            color:
-                isEven ? Colors.lightBlue.shade200 : Colors.lightBlue.shade400,
-          ),
-          child: Text(
-            dateFormatter(data[rowIndex]['submission_date']),
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 18,
-              color: Colors.black,
-            ),
-          ),
-        );
-      default:
-        var isEven = rowIndex % 2 == 0;
-
-        return Container(
-          decoration: BoxDecoration(
-            border: Border.all(),
-            // color:
-            // isEven ? Colors.lightBlue.shade200 : Colors.lightBlue.shade400,
-          ),
-          child: const Text(
-            '',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 18,
-              color: Colors.white,
-            ),
-          ),
-        );
+      // if (kDebugMode) {
+      //   print(attendanceViewData.toString());
+      // }
     }
+
+    return attendanceViewData;
   }
 
-  ScrollController verticalBodyController =
-      ScrollController(initialScrollOffset: 0.0);
-  ScrollController verticalTitleController =
-      ScrollController(initialScrollOffset: 0.0);
-  ScrollController horizontalTitleController =
-      ScrollController(initialScrollOffset: 0.0);
-  ScrollController horizontalBodyController =
-      ScrollController(initialScrollOffset: 0.0);
-  ScrollControllers scrollControllers() {
-    return ScrollControllers(
-      verticalTitleController: verticalTitleController,
-      verticalBodyController: verticalBodyController,
-      horizontalTitleController: horizontalTitleController,
-      horizontalBodyController: horizontalBodyController,
-    );
-  }
-
-  Widget stickyViewTable(data) {
-    return Container(
-      alignment: Alignment.topCenter,
-      decoration: const BoxDecoration(),
-      child: StickyHeadersTable(
-        cellAlignments: const CellAlignments.fixed(
-          contentCellAlignment: Alignment.center,
-          stickyColumnAlignment: Alignment.center,
-          stickyRowAlignment: Alignment.center,
-          stickyLegendAlignment: Alignment.center,
-        ),
-        cellDimensions: CellDimensions.variableColumnWidthAndRowHeight(
-            columnWidths: [130, 130],
-            rowHeights: List<double>.generate(data.length, (int index) => 70),
-            stickyLegendWidth: 140,
-            stickyLegendHeight: 70),
-        initialScrollOffsetX: 0.0,
-        initialScrollOffsetY: 0.0,
-        scrollControllers: scrollControllers(),
-        columnsLength: 2,
-        rowsLength: data.length,
-        columnsTitleBuilder: (i) => columnTitleBuild(i),
-        rowsTitleBuilder: (j) => rowTitleBuild(j, data),
-        contentCellBuilder: (i, j) => contentCellBuild(i, j, data),
-        legendCell: Container(
-          alignment: Alignment.center,
-          width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height,
-          decoration: BoxDecoration(
-            border: Border.all(),
-            color: Colors.blue,
-          ),
-          child: const Text(
-            'Date',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-          ),
-        ),
-      ),
-    );
+  @override
+  void initState() {
+    // initState();
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
+      decoration: BoxDecoration(
+        border: Border.all(),
+      ),
       alignment: Alignment.topCenter,
       width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height,
-      decoration: const BoxDecoration(),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
-        // crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Container(
-            alignment: Alignment.center,
-            decoration: const BoxDecoration(),
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height * 0.10,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  margin: const EdgeInsets.symmetric(
-                    horizontal: 10.0,
-                  ),
-                  child: OutlinedButton(
-                    style: OutlinedButton.styleFrom(
-                      primary: Colors.red,
-                      backgroundColor: Colors.black38,
-                      padding: const EdgeInsets.all(10),
-                    ),
-                    onPressed: _onPrevMonth,
-                    child: const Icon(
-                      Icons.arrow_circle_left_outlined,
-                      semanticLabel: 'Previous Month',
-                      size: 50,
-                      color: Colors.white,
-                    ),
+          (isInitiated == 1)
+              ? SizedBox(
+                  height: 0,
+                  child: const Text(""),
+                )
+              : Container(
+                  decoration: BoxDecoration(),
+                  child: TextButton(
+                    onPressed: () {
+                      initiate();
+                    },
+                    child: const Text("Show"),
                   ),
                 ),
-                Container(
+          (isInitiated == 0)
+              ? const Text("")
+              : Container(
+                  height: MediaQuery.of(context).size.height * 0.80,
                   decoration: const BoxDecoration(),
-                  margin: const EdgeInsets.symmetric(
-                    horizontal: 10.0,
-                  ),
-                  child: OutlinedButton(
-                    onPressed: _onNextMonth,
-                    style: OutlinedButton.styleFrom(
-                      primary: Colors.red,
-                      backgroundColor: Colors.black38,
-                      padding: const EdgeInsets.all(10),
+                  child: SfCalendar(
+                    allowDragAndDrop: false,
+                    allowAppointmentResize: false,
+                    controller: _controller,
+                    view: CalendarView.month,
+                    viewHeaderStyle: ViewHeaderStyle(
+                      dateTextStyle: TextStyle(),
+                      dayTextStyle: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 17.0,
+                      ),
                     ),
-                    child: const Icon(
-                      Icons.arrow_circle_right_outlined,
-                      size: 50,
-                      semanticLabel: 'Next Month',
-                      color: Colors.white,
+                    firstDayOfWeek: 1,
+                    showNavigationArrow: true,
+                    headerStyle: CalendarHeaderStyle(
+                      textStyle: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20.0,
+                      ),
                     ),
+                    monthViewSettings: MonthViewSettings(
+                      dayFormat: 'EE',
+                      agendaItemHeight: 40.0,
+                      showTrailingAndLeadingDates: false,
+                      showAgenda: true,
+                      agendaStyle: AgendaStyle(
+                        dayTextStyle: TextStyle(
+                          color: Colors.blue,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20.0,
+                        ),
+                        dateTextStyle: TextStyle(
+                            color: Colors.blue,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20.0),
+                        appointmentTextStyle: TextStyle(
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                      // dayFormat: 'EE',
+                      appointmentDisplayMode:
+                          MonthAppointmentDisplayMode.appointment,
+                    ),
+                    appointmentTextStyle: TextStyle(
+                      color: Colors.black,
+                      fontSize: 22.0,
+                    ),
+                    monthCellBuilder: monthCellBuilder,
+                    dataSource: AttendanceDataSource(_getAttendance()),
                   ),
                 ),
-              ],
-            ),
-          ),
-          Container(
-            alignment: Alignment.center,
-            margin: const EdgeInsets.symmetric(
-              vertical: 10.0,
-              horizontal: 10.0,
-            ),
-            padding: const EdgeInsets.symmetric(
-              horizontal: 8.0,
-              vertical: 8.0,
-            ),
-            child: Text(
-              DateFormat('MMMM, yyyy').format(_focusedDay).toString(),
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 21.4,
-              ),
-            ),
-          ),
-          Center(
-            child: Container(
-              width: MediaQuery.of(context).size.width*0.98,
-              alignment: Alignment.topCenter,
-              child: FutureBuilder(
-                future: readAllAttendanceActive(_rangeStart, _rangeEnd),
-                builder: (BuildContext ctx, AsyncSnapshot snapshot) {
-                  if (snapshot.hasError) {
-                    return const Text(
-                        'Internal Server Error.\nPlease try again later');
-                  }
-                  if (snapshot.hasData) {
-                    if (snapshot.data != null && snapshot.data.isNotEmpty) {
-                      var data = snapshot.data;
-
-                      return SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.50,
-                        child: stickyViewTable(data),
-                      );
-                    }
-                  }
-                  return const Text('');
-                },
-              ),
-            ),
-          ),
         ],
       ),
     );
+  }
+}
+
+class Attendance {
+  DateTime startDate;
+  DateTime endDate;
+  String subject;
+  // String className="";
+  bool synced;
+  bool isAllDay = true;
+
+  Attendance(
+      this.startDate, this.endDate, this.subject, this.isAllDay, this.synced);
+}
+
+class AttendanceDataSource extends CalendarDataSource {
+  AttendanceDataSource(List<Attendance> source) {
+    appointments = source;
+  }
+  @override
+  DateTime getStartTime(int index) {
+    return appointments![index].startDate;
+  }
+
+  @override
+  DateTime getEndTime(int index) {
+    return appointments![index].endDate;
+  }
+
+  @override
+  Color getColor(int index) {
+    if(appointments![index].synced==false){
+      return Colors.blue;
+    }else{
+      return Colors.green;
+    }
+    // return colorVal;
+  }
+
+  @override
+  bool isAllDay(int index) {
+    return appointments![index].isAllDay;
+  }
+
+  @override
+  String getSubject(int index) {
+    return appointments![index].subject;
   }
 }

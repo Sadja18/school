@@ -121,21 +121,31 @@ class _StickyAttendanceState extends State<StickyAttendance> {
                 return EditAttendance(
                     absentees: [],
                     studentList: studentList,
-                    selectedDate: selectedDate!);
+                    selectedDate: selectedDate!,
+                    isSynced: 'false',);
               } else {
                 var absenteeString = record['absenteeString'];
 
                 if (record['editable'] == 'false') {
-                  return const Text('Attendance for this date exists');
+                  var absentIds = jsonDecode(absenteeString);
+
+                  var selectedDate = _selectedDate;
+                  return EditAttendance(
+                      absentees: absentIds,
+                      studentList: studentList,
+                      selectedDate: selectedDate!,
+                      isSynced: 'true');
                 } else {
                   var absentIds = jsonDecode(absenteeString);
 
                   var selectedDate = _selectedDate;
                   return EditAttendance(
-                      key: ObjectKey(studentList),
-                      absentees: absentIds,
-                      studentList: studentList,
-                      selectedDate: selectedDate!);
+                    key: ObjectKey(studentList),
+                    absentees: absentIds,
+                    studentList: studentList,
+                    selectedDate: selectedDate!,
+                    isSynced: "false",
+                  );
                 }
               }
 
@@ -305,7 +315,7 @@ class _StickyAttendanceState extends State<StickyAttendance> {
                       ),
                     ),
                     // Text('${MediaQuery.of(context).size.height}'),
-              
+
                     Container(
                       width: MediaQuery.of(context).size.width,
                       height: MediaQuery.of(context).size.height * 0.76,
@@ -318,7 +328,7 @@ class _StickyAttendanceState extends State<StickyAttendance> {
                 ),
               ),
             ),
-            ViewTakenAttendance(),
+            StudentAttendanceCalendarView(),
           ],
         ),
       ),

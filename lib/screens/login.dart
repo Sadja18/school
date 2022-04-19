@@ -42,7 +42,7 @@ class _LoginState extends State<Login> {
         context: context,
         barrierDismissible: false,
         builder: (BuildContext ctx) => AlertDialog(
-              title: Text(_messageCode),
+              title: SizedBox(height: 0,),
               content: Text(message),
               actions: [
                 TextButton(
@@ -245,6 +245,7 @@ class _LoginState extends State<Login> {
             child: SizedBox(
               height: MediaQuery.of(context).size.height * 0.80,
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Container(
                     margin: const EdgeInsets.symmetric(vertical: 15.0),
@@ -258,6 +259,7 @@ class _LoginState extends State<Login> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Container(
+                              alignment: Alignment.centerLeft,
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 12.0),
                               child: Text(
@@ -270,10 +272,11 @@ class _LoginState extends State<Login> {
                               ),
                             ),
                             Container(
-                              margin: const EdgeInsets.only(
-                                bottom: 15.0,
-                                top: 8.0,
-                              ),
+                              alignment: Alignment.center,
+                              // margin: const EdgeInsets.only(
+                              //   bottom: 15.0,
+                              //   top: 8.0,
+                              // ),
                               width: MediaQuery.of(context).size.width,
                               child: SingleChildScrollView(
                                 scrollDirection: Axis.horizontal,
@@ -323,6 +326,7 @@ class _LoginState extends State<Login> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Container(
+                              alignment: Alignment.centerLeft,
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 10.0),
                               child: Text(
@@ -334,7 +338,8 @@ class _LoginState extends State<Login> {
                                 ),
                               ),
                             ),
-                            SizedBox(
+                            Container(
+                              alignment: Alignment.center,
                               width: MediaQuery.of(context).size.width,
                               child: SingleChildScrollView(
                                 scrollDirection: Axis.horizontal,
@@ -389,7 +394,8 @@ class _LoginState extends State<Login> {
                                           },
                                           icon: Icon(_isObscure
                                               ? Icons.visibility
-                                              : Icons.visibility_off),
+                                              : Icons.visibility_off,
+                                              size: 25,),
                                         ),
                                       ),
                                     ),
@@ -404,7 +410,7 @@ class _LoginState extends State<Login> {
                         Container(
                           alignment: Alignment.center,
                           margin:
-                              const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0),
+                              const EdgeInsets.fromLTRB(10.0, 10.0, 0.0, 0.0),
                           width: MediaQuery.of(context).size.width * 0.90,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(6.0),
@@ -427,11 +433,15 @@ class _LoginState extends State<Login> {
                               onSurface: Colors.transparent,
                               shadowColor: Colors.transparent,
                             ),
-                            child: const Text(
-                              'Login',
-                              style: TextStyle(
-                                color: Color(0xffffffff),
-                                fontSize: 16,
+                            child: Container(
+                              alignment: Alignment.center,
+                              width: MediaQuery.of(context).size.width * 0.90,
+                              child: const Text(
+                                'Login',
+                                style: TextStyle(
+                                  color: Color(0xffffffff),
+                                  fontSize: 16,
+                                ),
                               ),
                             ),
                           ),

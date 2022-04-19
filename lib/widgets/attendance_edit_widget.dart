@@ -12,6 +12,7 @@ import 'package:intl/intl.dart' show toBeginningOfSentenceCase;
 import './assist/image_assist.dart';
 
 class EditAttendance extends StatefulWidget {
+  final dynamic isSynced;
   final List<dynamic> absentees;
   final List<dynamic> studentList;
   final String selectedDate;
@@ -21,6 +22,7 @@ class EditAttendance extends StatefulWidget {
     required this.absentees,
     required this.studentList,
     required this.selectedDate,
+    required this.isSynced,
   }) : super(key: key);
 
   @override
@@ -333,45 +335,42 @@ class _EditAttendanceState extends State<EditAttendance> {
             ),
             child: TextButton(
               onPressed: () {
-                // if (kDebugMode) {
-                //   // log(studentList[studentRowIndex].toString());
-                //   log(_absentees.toString());
-                //   log(_absentees.contains(studentId).toString());
-                // }
-                if (checkBoxVals[studentId] == true ||
-                    _absentees.contains(studentId) == false) {
-                  // if student was marked present previously
-                  // mark him/her absent
-                  rowColor[studentId] = Colors.red;
-                  rowTextColor[studentId] = Colors.white;
+                if (widget.isSynced == 'false' || widget.isSynced == false) {
+                  if (checkBoxVals[studentId] == true ||
+                      _absentees.contains(studentId) == false) {
+                    // if student was marked present previously
+                    // mark him/her absent
+                    rowColor[studentId] = Colors.red;
+                    rowTextColor[studentId] = Colors.white;
 
-                  if (!_absentees.contains(studentId)) {
+                    if (!_absentees.contains(studentId)) {
+                      setState(() {
+                        _absentees.add(studentId);
+                        _absentees.sort();
+                        totalAbsent = totalAbsent + 1;
+                        totalPresent = totalPresent - 1;
+                      });
+                    }
                     setState(() {
-                      _absentees.add(studentId);
+                      rowColor[studentId] = Colors.red;
+                      checkBoxVals[studentId] = false;
+                    });
+                  } else {
+                    // if student was marked absent previously
+                    // mark him/her present
+
+                    if (_absentees.contains(studentId)) {}
+                    setState(() {
+                      _absentees.removeWhere((item) => item == studentId);
                       _absentees.sort();
-                      totalAbsent = totalAbsent + 1;
-                      totalPresent = totalPresent - 1;
+                      totalAbsent = totalAbsent - 1;
+                      totalPresent = totalPresent + 1;
+                    });
+                    setState(() {
+                      rowColor[studentId] = Color.fromARGB(255, 46, 122, 116);
+                      checkBoxVals[studentId] = true;
                     });
                   }
-                  setState(() {
-                    rowColor[studentId] = Colors.red;
-                    checkBoxVals[studentId] = false;
-                  });
-                } else {
-                  // if student was marked absent previously
-                  // mark him/her present
-
-                  if (_absentees.contains(studentId)) {}
-                  setState(() {
-                    _absentees.removeWhere((item) => item == studentId);
-                    _absentees.sort();
-                    totalAbsent = totalAbsent - 1;
-                    totalPresent = totalPresent + 1;
-                  });
-                  setState(() {
-                    rowColor[studentId] = Color.fromARGB(255, 46, 122, 116);
-                    checkBoxVals[studentId] = true;
-                  });
                 }
               },
               child: Text(
@@ -471,7 +470,11 @@ class _EditAttendanceState extends State<EditAttendance> {
     return showDialog(
       context: context,
       builder: (BuildContext ctx) => AlertDialog(
-        title: Text(title),
+        title: title == ""
+            ? SizedBox(
+                height: 0,
+              )
+            : Text(title),
         actions: [
           TextButton(
             onPressed: () {
@@ -520,6 +523,8 @@ class _EditAttendanceState extends State<EditAttendance> {
             setState(() {
               _absentees.add(studentId);
               _absentees.sort();
+              totalAbsent = _absentees.length;
+              totalPresent = totalStudent - _absentees.length;
               rowColor[studentId] = Colors.red;
               checkBoxVals[studentId] = false;
             });
@@ -543,7 +548,7 @@ class _EditAttendanceState extends State<EditAttendance> {
         builder: (ctx) {
           return AlertDialog(
             title: Text(
-              'Enter Absent student roll no\n(use comma to enter multiple)',
+              'Enter Roll No. of Absentees\n(use comma to enter multiple)',
               style: TextStyle(
                 fontSize: 15.0,
               ),
@@ -751,83 +756,125 @@ class _EditAttendanceState extends State<EditAttendance> {
     super.initState();
   }
 
-  List<TableRow> tableRowsOfAbsentStudents() {
-    List<TableRow> absentStudentTableRows = [];
-
+  Widget studentData(String studentId) {
+    String studentName = "";
+    var rollNo;
     for (var student in studentList) {
-      var studentId = student['studentId'].toString();
-      if (_absentees.contains(studentId)) {
-        absentStudentTableRows.add(
+      if (studentId == student['studentId'].toString()) {
+        studentName = student['studentName'];
+        rollNo = student['rollNo'];
+      }
+    }
+    return Container(
+      // alignment: ,
+      decoration: BoxDecoration(),
+      child: Table(
+        columnWidths: const {
+          0: FractionColumnWidth(0.10),
+          1: FractionColumnWidth(0.80),
+        },
+        children: [
           TableRow(
             children: [
               TableCell(
                 child: Container(
-                  width: MediaQuery.of(context).size.width * 0.20,
-                  decoration: BoxDecoration(border: Border.all()),
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 2.0,
+                  decoration: BoxDecoration(
+                      // border: Border.all(),
+                      ),
+                  margin: const EdgeInsets.symmetric(
+                    vertical: 5.0,
                   ),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 5.0,
+                  ),
+                  alignment: Alignment.center,
                   child: Text(
-                    nameForamtter(student['studentName']),
+                    rollNo.toString(),
+                    style: const TextStyle(
+                      color: Colors.black,
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    maxLines: 2,
+                  ),
+                ),
+              ),
+              TableCell(
+                child: Container(
+                  decoration: BoxDecoration(
+                      // border: Border.all(),
+                      ),
+                  margin: const EdgeInsets.symmetric(
+                    vertical: 5.0,
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 5.0,
+                  ),
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    nameForamtter(studentName),
+                    style: const TextStyle(
+                      color: Colors.black,
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.bold,
+                    ),
                     maxLines: 2,
                   ),
                 ),
               ),
             ],
-          ),
-        );
-      }
-    }
-
-    return absentStudentTableRows;
+          )
+        ],
+      ),
+    );
   }
 
   Future<void> showAbsentStudentsPreview() async {
     return showDialog(
+        barrierDismissible: true,
         context: context,
         builder: (BuildContext ctx) {
           return AlertDialog(
-            title: const Text('Absent Students'),
-            content: Container(
-              width: MediaQuery.of(context).size.width * 0.80,
-              height: MediaQuery.of(context).size.height * 0.50,
-              alignment: Alignment.topCenter,
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: 
-                  List.generate(_absentees.length, (index){
-                    return Container();
-                  })
-                    // Table(
-                    //   defaultVerticalAlignment: TableCellVerticalAlignment.top,
-                    //   columnWidths: const <int, TableColumnWidth>{
-                    //     0: FractionColumnWidth(10),
-                    //     1: FractionColumnWidth(40),
-                    //   },
-                    //   children: List.generate(_absentees.length, (index) {
-                    //     var absentStudenId = _absentees[index];
-                    //     var studentName = [];
-                    //     for (var student in studentList) {
-                    //       if (student['studentId'].toString() == absentStudenId) {
-                    //         studentName.add(student['studentName']);
-                    //       }
-                    //     }
-                    //     return TableRow(
-                    //       children: [
-                    //         TableCell(
-                    //           child: Text(
-                    //             nameForamtter(
-                    //               studentName[index],
-                    //             ),
-                    //             maxLines: 2,
-                    //           ),
-                    //         ),
-                    //       ],
-                    //     );
-                    //   }),
-                    // ),
-                  // ],
+            title: Container(
+              height: MediaQuery.of(context).size.height * 0.08,
+              alignment: Alignment.center,
+              // height: 0,
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: <Color>[
+                    Color(0xfff21bce),
+                    Color(0xff826cf0),
+                  ],
+                ),
+              ),
+              child: const Text(
+                'Absent Students',
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+            ),
+            contentPadding: const EdgeInsets.all(0),
+            titlePadding: const EdgeInsets.all(0),
+            content: Flexible(
+              flex: 5,
+              child: Container(
+                constraints: BoxConstraints(
+                  minWidth: MediaQuery.of(context).size.width * 0.20,
+                  // maxWidth: MediaQuery.of(context).size.width * 0.80,
+                  minHeight: MediaQuery.of(context).size.height * 0.05,
+                  maxHeight: MediaQuery.of(context).size.height * 0.40,
+                ),
+                // width: MediaQuery.of(context).size.width * 0.80,
+                height: MediaQuery.of(context).size.height * 0.20,
+                alignment: Alignment.topCenter,
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: List.generate(_absentees.length, (index) {
+                      return studentData(_absentees[index]);
+                    }),
+                  ),
                 ),
               ),
             ),
@@ -897,41 +944,46 @@ class _EditAttendanceState extends State<EditAttendance> {
                   ),
                 ),
                 attendanceTableEdit(),
-                Container(
-                  margin: const EdgeInsets.only(
-                    top: 8.0,
-                    bottom: 0.0,
-                  ),
-                  width: MediaQuery.of(context).size.width * 0.30,
-                  height: MediaQuery.of(context).size.height * 0.05,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      if (studentList.isNotEmpty) {
-                        var title = "";
-                        var message = "Press Confirm to Submit";
-                        // \nUse Sync Data button in the dashboard sidebar to sync this to server";
-                        var submissionDateUnformatted = DateTime.now().toUtc();
-                        DateFormat submissionFormat =
-                            DateFormat('yyyy-MM-dd HH:mm:ss');
+                (widget.isSynced == 'false' || widget.isSynced == false)
+                    ? Container(
+                        margin: const EdgeInsets.only(
+                          top: 8.0,
+                          bottom: 0.0,
+                        ),
+                        width: MediaQuery.of(context).size.width * 0.30,
+                        height: MediaQuery.of(context).size.height * 0.05,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            if (studentList.isNotEmpty) {
+                              var title = "";
+                              var message = "Press Confirm to Submit";
+                              // \nUse Sync Data button in the dashboard sidebar to sync this to server";
+                              var submissionDateUnformatted =
+                                  DateTime.now().toUtc();
+                              DateFormat submissionFormat =
+                                  DateFormat('yyyy-MM-dd HH:mm:ss');
 
-                        var submissionDate =
-                            submissionFormat.format(submissionDateUnformatted);
-                        if (kDebugMode) {
-                          print('Submitting to local');
+                              var submissionDate = submissionFormat
+                                  .format(submissionDateUnformatted);
+                              if (kDebugMode) {
+                                print('Submitting to local');
 
-                          print(submissionDate);
-                        }
-                        showAlertFinal(title, message, submissionDate);
-                      } else {
-                        var title = "No Records";
-                        var message =
-                            "There is no valid attendance taken.\nSubmitting will ignore it.";
-                        showAlert(title, message);
-                      }
-                    },
-                    child: const Text('Submit'),
-                  ),
-                ),
+                                print(submissionDate);
+                              }
+                              showAlertFinal(title, message, submissionDate);
+                            } else {
+                              var title = "No Records";
+                              var message =
+                                  "There is no valid attendance taken.\nSubmitting will ignore it.";
+                              showAlert(title, message);
+                            }
+                          },
+                          child: const Text('Submit'),
+                        ),
+                      )
+                    : SizedBox(
+                        height: 0,
+                      ),
               ],
             ),
           )

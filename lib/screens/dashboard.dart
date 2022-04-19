@@ -45,7 +45,7 @@ class _DashboardState extends State<Dashboard> {
   @override
   void initState() {
     super.initState();
-    fetchPersistent();
+    // fetchPersistent();
     Workmanager().initialize(callbackDispatcher, isInDebugMode: true);
     // Workmanager().registerOneOffTask("1", fetchOne);
     // Workmanager().registerPeriodicTask("2",
