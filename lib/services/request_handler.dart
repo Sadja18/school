@@ -43,7 +43,7 @@ Future<dynamic> tryLogin(String username, String userpassword) async {
   }
 }
 
-void fetchPersistent() async {
+Future<void> fetchPersistent() async {
   try {
     var value = await DBProvider.db.getCredentials();
     final userName = value[0]['userName'];

@@ -55,6 +55,47 @@ class _DashboardState extends State<Dashboard> {
     setUserName();
   }
 
+  void showAlertDialog(BuildContext context) async {
+    showDialog(
+        context: context,
+        builder: (_) {
+          return AlertDialog(
+            title: SizedBox(
+              height: 0,
+            ),
+            titlePadding: const EdgeInsets.all(0),
+            content: Container(
+              height: MediaQuery.of(context).size.height * 0.40,
+              decoration: BoxDecoration(),
+              alignment: Alignment.center,
+              child: Column(
+                children: [
+                  Container(
+                    width: MediaQuery.of(context).size.width * 0.40,
+                    height: MediaQuery.of(context).size.height * 0.10,
+                    alignment: Alignment.center,
+                    child: CircularProgressIndicator(
+                      color: Colors.purpleAccent,
+                      strokeWidth: 1.0,
+                    ),
+                  ),
+                  Container(
+                    width: MediaQuery.of(context).size.width * 0.40,
+                    height: MediaQuery.of(context).size.height * 0.10,
+                    alignment: Alignment.center,
+                    child: const Text(
+                        "Please wait for syncing to complete."),
+                  ),
+                ],
+              ),
+            ),
+            contentPadding: const EdgeInsets.all(0),
+          );
+        });
+    await wrapper();
+    Navigator.of(context).pop();
+  }
+
   @override
   Widget build(BuildContext context) {
     var statusBarHeight = MediaQuery.of(context).padding.top;
@@ -87,7 +128,7 @@ class _DashboardState extends State<Dashboard> {
       ),
       endDrawer: Container(
         padding: EdgeInsets.only(top: statusBarHeight + appBarHeight + 1),
-        width: MediaQuery.of(context).size.width*0.80,
+        width: MediaQuery.of(context).size.width * 0.80,
         height: MediaQuery.of(context).size.height,
         child: Drawer(
           child: Column(
@@ -125,10 +166,11 @@ class _DashboardState extends State<Dashboard> {
                 child: Center(
                   child: OutlinedButton(
                     onPressed: () {
-                      if(kDebugMode){
+                      if (kDebugMode) {
                         print('clicked');
                       }
-                      wrapper();
+                      showAlertDialog(context);
+                      // wrapper();
                     },
                     child: const Text(
                       'Sync Data',
