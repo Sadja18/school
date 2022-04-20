@@ -65,7 +65,7 @@ class _DashboardState extends State<Dashboard> {
             ),
             titlePadding: const EdgeInsets.all(0),
             content: Container(
-              height: MediaQuery.of(context).size.height * 0.40,
+              height: MediaQuery.of(context).size.height * 0.50,
               decoration: BoxDecoration(),
               alignment: Alignment.center,
               child: Column(
@@ -81,7 +81,7 @@ class _DashboardState extends State<Dashboard> {
                   ),
                   Container(
                     width: MediaQuery.of(context).size.width * 0.40,
-                    height: MediaQuery.of(context).size.height * 0.10,
+                    height: MediaQuery.of(context).size.height * 0.30,
                     alignment: Alignment.center,
                     child: const Text(
                         "Please wait for syncing to complete."),
