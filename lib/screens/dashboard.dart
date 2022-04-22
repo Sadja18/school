@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import '../services/helper_db.dart';
 // import 'package:school/screens/dummy.dart';
-import 'package:workmanager/workmanager.dart';
+// import 'package:workmanager/workmanager.dart';
 
 import '../main.dart';
 import '../screens/new_assessment.dart';
@@ -47,11 +47,11 @@ class _DashboardState extends State<Dashboard> {
   void initState() {
     super.initState();
     fetchPersistent();
-    Workmanager().initialize(callbackDispatcher, isInDebugMode: true);
-    // Workmanager().registerOneOffTask("1", fetchOne);
+    // Workmanager().initialize(callbackDispatcher, isInDebugMode: true);
+    // // Workmanager().registerOneOffTask("1", fetchOne);
     // Workmanager().registerPeriodicTask("2",
     //     fetchOne, //This is the value that will be returned in the callbackDispatcher
-    //     frequency: const Duration(minutes: 30, hours: 5));
+    //     frequency: const Duration(minutes: 00, hours: 12));
     setUserName();
   }
 

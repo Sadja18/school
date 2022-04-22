@@ -1,8 +1,8 @@
 // ignore_for_file: prefer_const_constructors, avoid_print, unused_import
 
-import 'package:flutter/foundation.dart';
+// import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:workmanager/workmanager.dart';
+// import 'package:workmanager/workmanager.dart';
 
 import './screens/new_assessment.dart';
 import '../services/helper_db.dart';
@@ -17,13 +17,13 @@ import './widgets/pace_assessment.dart';
 
 const fetchOne = "fetch Persistent";
 
-void callbackDispatcher() {
-  Workmanager().executeTask((task, inputData) {
-    // print("Native called background task: $task");
-    wrapper(); //simpleTask will be emitted here.S
-    return Future.value(true);
-  });
-}
+// void callbackDispatcher() {
+//   Workmanager().executeTask((task, inputData) {
+//     // print("Native called background task: $task");
+//     wrapper(); //simpleTask will be emitted here.S
+//     return Future.value(true);
+//   });
+// }
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -84,7 +84,7 @@ class _MyAppState extends State<MyApp> {
         '/': (ctx) => myWidget(ctx),
 
         /// the other paths are just specifying which Navigation route maps to which widget
-        /// all the widgets mapped to the routes are defined in <project_home>/lib/screens direcory
+        /// all the widgets mapped to the routes are defined in <project_home>/lib/screens directory
         Dashboard.routeName: (ctx) => Dashboard(),
         Login.routeName: (ctx) => Login(),
         AssessmentScreen.routeName: (ctx) => AssessmentScreen(),
