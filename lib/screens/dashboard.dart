@@ -205,8 +205,8 @@ class _DashboardState extends State<Dashboard> {
               //   title: Center(
               //     child: OutlinedButton(
               //       onPressed: () {
-              //         // DBProvider.db.fetchQuery();
-              //         Navigator.of(context).pushNamed(PaceAssessmentScreen.routeName );
+              //         DBProvider.db.fetchQuery();
+              //         // Navigator.of(context).pushNamed(PaceAssessmentScreen.routeName );
               //       },
               //       child: const Text('Test'),
               //     ),

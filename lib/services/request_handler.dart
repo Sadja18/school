@@ -152,10 +152,21 @@ Future<void> fetchPersistent() async {
       var qPaper = jsonDecode(qPaperResp.body);
       var grading = jsonDecode(gradingResp.body);
       if (kDebugMode) {
-          print('persistent fetched');
-          print(grading.toString());
-          // assessments can be empty
-        }
+        print('persistent fetched');
+        print(grading.toString());
+        print(year['academic_year'] != null &&
+            classes['classes'] != null &&
+            teacher['teacher'] != null &&
+            school['school'] != null &&
+            students['students'] != null &&
+            languages['languages'] != null &&
+            readingLevels['reading_levels'] != null &&
+            numericLevels['numeric_levels'] != null &&
+            qPaper['qpapers'] != null &&
+            grading['grading'] != null &&
+            assessments['assessments'] != null);
+        // assessments can be empty
+      }
 
       if (year['academic_year'] != null &&
           classes['classes'] != null &&
@@ -170,7 +181,7 @@ Future<void> fetchPersistent() async {
           assessments['assessments'] != null) {
         if (kDebugMode) {
           print('persistent fetched');
-          print(grading);
+          // print(grading);
           // assessments can be empty
         }
 

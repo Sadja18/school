@@ -62,7 +62,7 @@ class _StickyBasicReadingState extends State<StickyBasicReading> {
     }
   }
 
-  void selectLanguage(String? selectedLang) {
+  void selectLanguage(String? selectedLang) async {
     if (kDebugMode) {
       print('reverse language callback');
     }
@@ -71,30 +71,29 @@ class _StickyBasicReadingState extends State<StickyBasicReading> {
     });
     // get levels here
     if (_selectedClass != null || _selectedClass != '') {
-      DBProvider.db
-          .getReadingLevels(_selectedClass, _selectedLanguage)
-          .then((records) {
-        if (records.isNotEmpty) {
-          var levelRecords = records.toList();
-          if (kDebugMode) {
-            log(levelRecords.toString());
-          }
-          List<String> levelName = [];
-          for (var levelRecord in levelRecords) {
-            levelName.add(levelRecord['name']);
-          }
-          setState(() {
-            levelNames = levelName;
-            levelNames.insert(0, 'NE');
-          });
-
-          for (var student in studentList) {
-            setState(() {
-              resultSheet[student['studentId'].toString()] = 'NE';
-            });
-          }
+      var records = await DBProvider.db
+          .getReadingLevels(_selectedClass, _selectedLanguage);
+      if (records.isNotEmpty) {
+        var levelRecords = records.toList();
+        if (kDebugMode) {
+          log("levelNames");
+          log(levelRecords.toString());
         }
-      });
+        List<String> levelName = [];
+        for (var levelRecord in levelRecords) {
+          levelName.add(levelRecord['name']);
+        }
+        setState(() {
+          levelNames = levelName;
+          levelNames.insert(0, 'NE');
+        });
+
+        for (var student in studentList) {
+          setState(() {
+            resultSheet[student['studentId'].toString()] = 'NE';
+          });
+        }
+      }
     }
   }
 

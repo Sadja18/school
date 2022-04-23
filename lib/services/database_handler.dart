@@ -1217,11 +1217,12 @@ class DBProvider {
   Future<void> fetchQuery() async {
     try {
       final db = await initDB();
-      var query = 'SELECT * FROM basicLevels where standard_id=11;';
-
+      var query = 'SELECT * FROM basicLevels where standard_id=1;';
+      var query2 = "SELECT * FROM classes";
       var res = await db.rawQuery(query);
-
+      var res2 = await db.rawQuery(query2);
       if (kDebugMode) {
+        log(res2.toString());
         log(res.toString());
       }
     } catch (e) {

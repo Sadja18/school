@@ -887,6 +887,7 @@ class _UserInputWidgetState extends State<UserInputWidget> {
   late String rollNo;
   late String studentName;
   late String profilePic;
+  bool enterTotal = true;
   List _grading = [];
   String studentResult = 'NE';
   List<double> obtainedMarks = [];
@@ -986,6 +987,24 @@ class _UserInputWidgetState extends State<UserInputWidget> {
             ));
   }
 
+  Widget totalMarksField() {
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(),
+      ),
+      child: TextFormField(
+        controller: TextEditingController(
+          text: obtainedMarks[0].toString(),
+        ),
+        keyboardType: TextInputType.number,
+        decoration: InputDecoration(
+          focusColor: Colors.blue,
+          // focusedBorder: InputBorder
+        ),
+      ),
+    );
+  }
+
   Widget textFields() {
     return Wrap(
       alignment: WrapAlignment.start,
@@ -994,7 +1013,7 @@ class _UserInputWidgetState extends State<UserInputWidget> {
       children: List.generate(totalQuestions, (index) {
         return Container(
           width: MediaQuery.of(context).size.width * 0.10,
-          height: MediaQuery.of(context).size.height * 0.112,
+          height: MediaQuery.of(context).size.height * 0.120,
           margin: const EdgeInsets.symmetric(
             horizontal: 8.0,
             // vertical: 5.0,
@@ -1042,19 +1061,29 @@ class _UserInputWidgetState extends State<UserInputWidget> {
 
                       if (nMark < 0) {
                         // show error marks cannot be ;less than zero
-                        var title = "Value Error";
+                        var title = "Invalid marks";
                         var message = "Marks should not be less than zero";
                         showAlert(title, message);
                       } else {
                         double totaltmp = 0.0;
-                        for(var i=0; i<totalQuestions; i++){
-                          if(i!=index){
-                            totaltmp=totaltmp+obtainedMarks[i];
+                        for (var i = 0; i < totalQuestions; i++) {
+                          if (i != index) {
+                            totaltmp = totaltmp + obtainedMarks[i];
                           }
                         }
+                        totalCalculator();
+                        resultCalculator();
 
-                        if (totaltmp+nMark > totMarks) {
-                          showAlert("Error",
+                        if (isEvaluated == true) {
+                          widget.userInputHandler(
+                              studentId, obtainedMarks, 'NE', "0.0");
+                        } else {
+                          widget.userInputHandler(studentId, obtainedMarks,
+                              studentResult, studentTotalMarks.toString());
+                        }
+
+                        if (totaltmp + nMark > totMarks) {
+                          showAlert("Problem",
                               "Student Marks total is more than maximum marks");
                         } else {
                           setState(() {
@@ -1075,7 +1104,7 @@ class _UserInputWidgetState extends State<UserInputWidget> {
 
                       if (nMark < 0) {
                         // show error marks cannot be ;less than zero
-                        var title = "Value Error";
+                        var title = "Invalid marks";
                         var message = "Marks should not be less than zero";
                         showAlert(title, message);
                       }
@@ -1261,71 +1290,13 @@ class _UserInputWidgetState extends State<UserInputWidget> {
                 )
               : Container(
                   width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height * 0.244,
+                  height: MediaQuery.of(context).size.height * 0.204,
                   decoration: BoxDecoration(
                     color: Colors.white,
                   ),
                   alignment: Alignment.center,
                   child: SingleChildScrollView(
                     child: marksField(),
-                  ),
-                ),
-          isEvaluated == true
-              ? Container(
-                  decoration: BoxDecoration(color: Colors.white),
-                  child: const Text(""),
-                  height: 0,
-                  width: MediaQuery.of(context).size.width * 0.10,
-                )
-              : Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height * 0.10,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                  ),
-                  child: SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.20,
-                    height: MediaQuery.of(context).size.height * 0.05,
-                    child: TextButton(
-                      style: TextButton.styleFrom(),
-                      onPressed: () {
-                        if (kDebugMode) {
-                          // print(obtainedMarks.toString());
-                        }
-
-                        totalCalculator();
-                        resultCalculator();
-
-                        if (isEvaluated == true) {
-                          widget.userInputHandler(
-                              studentId, obtainedMarks, 'NE', "0.0");
-                        } else {
-                          widget.userInputHandler(studentId, obtainedMarks,
-                              studentResult, studentTotalMarks.toString());
-                        }
-                      },
-                      child: Container(
-                        alignment: Alignment.center,
-                        width: MediaQuery.of(context).size.width * 0.20,
-                        height: MediaQuery.of(context).size.height,
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: <Color>[
-                              Color(0xfff21bce),
-                              Color(0xff826cf0),
-                            ],
-                          ),
-                        ),
-                        child: Text(
-                          "Save",
-                          style: TextStyle(
-                            fontSize: 16.0,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ),
                   ),
                 ),
         ],
