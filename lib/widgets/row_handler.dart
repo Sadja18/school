@@ -13,7 +13,7 @@ class LevelDropDown extends StatefulWidget {
       required this.index,
       required this.updateLevel,
       required this.levelNames,
-      this.bgColor})
+      required this.bgColor})
       : super(key: key);
 
   @override
@@ -64,8 +64,7 @@ class _LevelDropDownState extends State<LevelDropDown> {
         },
       ).toList(),
       onChanged: (selectedLevel) {
-        // ignore: avoid_print
-        print('Selected Level: $selectedLevel');
+        // print('Selected Level: $selectedLevel');
         widget.updateLevel(selectedLevel.toString(), widget.index);
         setState(() {
           _selectedLevel = selectedLevel.toString();

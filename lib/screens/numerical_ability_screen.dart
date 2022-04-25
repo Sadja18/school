@@ -129,6 +129,7 @@ class _NumAbScreenState extends State<NumAbScreen> {
                   index: index,
                   updateLevel: updateLevel,
                   levelNames: _levelNames,
+                  bgColor: Colors.green,
                 ),
               ),
             ),

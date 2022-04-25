@@ -1,7 +1,6 @@
-// ignore_for_file: unused_import
+// ignore_for_file: unused_import, prefer_const_literals_to_create_immutables, prefer_const_constructors
 
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
@@ -34,6 +33,7 @@ class _StickyBasicReadingState extends State<StickyBasicReading> {
   List<String> levelNames = [];
   Map<String?, Object?> levelSheet = {};
   Map<String?, String?> resultSheet = {};
+  Map<String, Color> bgColorSheet = {};
 
   ScrollController verticalBodyController =
       ScrollController(initialScrollOffset: 0.0);
@@ -85,40 +85,17 @@ class _StickyBasicReadingState extends State<StickyBasicReading> {
         }
         setState(() {
           levelNames = levelName;
-          levelNames.insert(0, 'NE');
+          // levelNames.insert(0, 'NE');
         });
 
         for (var student in studentList) {
           setState(() {
             resultSheet[student['studentId'].toString()] = 'NE';
+            levelSheet[student['studentId'].toString()] = '';
+            bgColorSheet[student['studentId'].toString()] = Colors.blue;
           });
         }
       }
-    }
-  }
-
-  dynamic getBgColor(int studentRowIndex) {
-    var studentIdInt = studentList[studentRowIndex]['studentId'];
-    var studentId = studentIdInt.toString();
-    var bgColor = Colors.transparent;
-    // if(kDebugMode){
-    //   print("get BG coloe");
-    //   print(resultSheet.toString());
-    //   print(resultSheet[studentId]);
-    // }
-    switch (resultSheet[studentId]) {
-      case 'NE':
-        return bgColor = Colors.blue;
-      // break;
-      case 'Not Achieved':
-        return bgColor = Colors.red;
-      // break;
-      case 'Achieved':
-        return bgColor = Colors.green;
-      // break;
-      default:
-        return bgColor = Colors.blue;
-// break;
     }
   }
 
@@ -128,39 +105,8 @@ class _StickyBasicReadingState extends State<StickyBasicReading> {
     });
   }
 
-  void updateLevel(dynamic levelVal, int index) {
-    var studentIdInt = studentList[index]['studentId'];
-    var studentId = studentIdInt.toString();
-
-    var levelString = "";
-    if (levelVal != '' && levelVal != '0' && levelVal != 'NE') {
-      levelString = 'Achieved';
-    } else {
-      levelString = 'NE';
-    }
-    setState(() {
-      studentList[index]['level'] = levelVal;
-      // update here
-      if (levelVal != '' && levelVal != '0' && levelVal != 'NE') {
-        studentList[index]['result'] = 'Achieved';
-        resultSheet[studentId] = 'Achieved';
-      } else {
-        studentList[index]['result'] = 'NE';
-        resultSheet[studentId] = 'NE';
-      }
-      levelSheet[studentId] = levelString;
-    });
-
-    if (kDebugMode) {
-      print(studentId.runtimeType);
-
-      print(levelSheet.toString());
-      print(resultSheet.runtimeType);
-    }
-  }
-
   int columnsLengthCalculator() {
-    return 1;
+    return 0;
   }
 
   int rowsLengthCalculator() {
@@ -217,101 +163,154 @@ class _StickyBasicReadingState extends State<StickyBasicReading> {
     return formattedName;
   }
 
-  Widget rowsTitleBuilder(int index) {
-    var isEven = index % 2 == 0;
+  void userInputHandler(
+      int studentRowIndex, String result, String selectedLevelName) {
+    var studentIdString = studentList[studentRowIndex]['studentId'].toString();
+    setState(() {
+      levelSheet[studentIdString] = selectedLevelName;
+      resultSheet[studentIdString] = result;
+      (selectedLevelName != "" && result != "NE")
+          ? bgColorSheet[studentIdString] = Colors.green
+          : bgColorSheet[studentIdString] = Colors.blue;
+    });
+    if (kDebugMode) {
+      print("User input handler set complete $studentRowIndex");
+      print(levelSheet.toString());
+      print(resultSheet.toString());
+      // print(selectedLevelName);
+    }
+  }
 
+  Future<void> showUserInputDialogBox(int studentRowIndex) async {
+    String rollNo = studentList[studentRowIndex]['rollNo'].toString();
+    String studentName = studentList[studentRowIndex]['studentName'].toString();
+    String profilePic = studentList[studentRowIndex]['profilePic'].toString();
+    return showDialog(
+        context: context,
+        builder: (BuildContext ctx) {
+          return AlertDialog(
+            titlePadding: const EdgeInsets.all(0),
+            contentPadding: const EdgeInsets.all(0),
+            content: UserInputWidget(
+                rollNo: rollNo,
+                studentName: studentName,
+                profilePic: profilePic,
+                result: resultSheet[
+                    studentList[studentRowIndex]['studentId'].toString()]!,
+                levelNames: levelNames,
+                studentRowIndex: studentRowIndex,
+                selectedLevel: levelSheet[studentList[studentRowIndex]
+                                ['studentId']
+                            .toString()] ==
+                        null
+                    ? ""
+                    : levelSheet[studentList[studentRowIndex]['studentId']
+                            .toString()]!
+                        .toString(),
+                userInputHandler: userInputHandler),
+          );
+        });
+  }
+
+  Widget rowsTitleBuilder(int index) {
     return Card(
       color: Colors.transparent,
       shadowColor: Colors.purple.shade200,
       elevation: 8.0,
-      child: Container(
-        // alignment: Alignment.centerLeft,
-        decoration: BoxDecoration(
-          border: Border.all(
-            color: Colors.transparent,
+      child: InkWell(
+        onTap: () {
+          showUserInputDialogBox(index);
+        },
+        child: Container(
+          // alignment: Alignment.centerLeft,
+          decoration: BoxDecoration(
+            // border: Border.all(
+            //   color: Colors.transparent,
+            // ),
+            borderRadius: BorderRadius.circular(
+              8.0,
+            ),
+            // borderRadius: BorderRadius.circular(4.0),
+            color: bgColorSheet[studentList[index]['studentId'].toString()],
           ),
-          borderRadius: BorderRadius.circular(
-            8.0,
+          margin: const EdgeInsets.symmetric(
+            vertical: 2.5,
           ),
-          // borderRadius: BorderRadius.circular(4.0),
-          color: Colors.white,
-        ),
-        margin: const EdgeInsets.symmetric(
-          vertical: 2.5,
-        ),
-        padding: const EdgeInsets.only(
-          left: 8.0,
-        ),
-        height: MediaQuery.of(context).size.height,
-        width: MediaQuery.of(context).size.width,
-        child: Table(
-          columnWidths: const <int, TableColumnWidth>{
-            0: FixedColumnWidth(3),
-            1: FixedColumnWidth(200),
-          },
-          children: [
-            TableRow(children: [
-              TableCell(
-                child: AvatarGeneratorNew(
-                    base64Code: studentList[index]['profilePic']),
-              ),
-              TableCell(
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 10.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        decoration: const BoxDecoration(),
-                        width: MediaQuery.of(context).size.width * 0.60,
-                        child: SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Text(
-                            nameForamtter(studentList[index]['studentName']),
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                              // fontWeight: FontWeight.bold,
-                              fontSize: 15.0,
-                              color: Colors.black,
-                            ),
-                            maxLines: 1,
-                            softWrap: false,
-                            textAlign: TextAlign.left,
-                          ),
-                        ),
-                      ),
-                      Container(
-                        alignment: Alignment.bottomRight,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            const Text(
-                              "Roll: ",
-                              style: TextStyle(
-                                fontSize: 15.0,
-                              ),
-                            ),
-                            Text(
-                              studentList[index]['rollNo'],
+          padding: const EdgeInsets.only(
+            left: 8.0,
+          ),
+          height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
+          child: Table(
+            columnWidths: const <int, TableColumnWidth>{
+              0: FixedColumnWidth(3),
+              1: FixedColumnWidth(200),
+            },
+            children: [
+              TableRow(children: [
+                TableCell(
+                  child: AvatarGeneratorNew(
+                      base64Code: studentList[index]['profilePic']),
+                ),
+                TableCell(
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 10.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          decoration: const BoxDecoration(),
+                          width: MediaQuery.of(context).size.width * 0.60,
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Text(
+                              nameForamtter(studentList[index]['studentName']),
                               overflow: TextOverflow.ellipsis,
                               style: const TextStyle(
                                 // fontWeight: FontWeight.bold,
                                 fontSize: 15.0,
-                                color: Colors.black,
+                                color: Colors.white,
                               ),
+                              maxLines: 1,
                               softWrap: false,
                               textAlign: TextAlign.left,
                             ),
-                          ],
+                          ),
                         ),
-                      )
-                    ],
+                        Container(
+                          alignment: Alignment.bottomRight,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              const Text(
+                                "Roll: ",
+                                style: TextStyle(
+                                  fontSize: 15.0,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              Text(
+                                studentList[index]['rollNo'],
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  // fontWeight: FontWeight.bold,
+                                  fontSize: 15.0,
+                                  color: Colors.white,
+                                ),
+                                softWrap: false,
+                                textAlign: TextAlign.left,
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ]),
-          ],
+              ]),
+            ],
+          ),
         ),
       ),
     );
@@ -339,101 +338,6 @@ class _StickyBasicReadingState extends State<StickyBasicReading> {
         ),
       ),
     );
-  }
-
-  Widget studentDropDown(int studentRowIndex) {
-    return LevelDropDown(
-      index: studentRowIndex,
-      updateLevel: updateLevel,
-      levelNames: levelNames,
-      bgColor: getBgColor(studentRowIndex),
-    );
-  }
-
-  Widget resultWidget(int studentRowIndex) {
-    var studentIdInt = studentList[studentRowIndex]['studentId'];
-    var studentId = studentIdInt.toString();
-    if (resultSheet[studentId] != null) {
-      return Text(
-        '${resultSheet[studentId]}',
-        softWrap: true,
-        overflow: TextOverflow.ellipsis,
-        maxLines: 4,
-      );
-    } else {
-      return const Text('Not Evaluated');
-    }
-  }
-
-  Widget cellWidget(int columnIndex, int studentRowIndex) {
-    var isEven = studentRowIndex % 2 == 0;
-
-    switch (columnIndex) {
-      case 0:
-        return Card(
-          elevation: 8.0,
-          child: Container(
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: Colors.black,
-              ),
-              borderRadius: BorderRadius.circular(
-                8.0,
-              ),
-              color: getBgColor(studentRowIndex),
-            ),
-            width: MediaQuery.of(context).size.width,
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Center(
-                child: studentDropDown(studentRowIndex),
-              ),
-            ),
-          ),
-        );
-      case 1:
-        return Container(
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            border: Border.all(
-              color: Colors.black,
-            ),
-            color: isEven
-                ? const Color.fromARGB(127, 120, 165, 255)
-                : const Color.fromARGB(255, 120, 165, 255),
-          ),
-          width: MediaQuery.of(context).size.width,
-          child: Center(
-            child: resultWidget(studentRowIndex),
-          ),
-        );
-      // case 0:
-      //   return Container(
-      //     decoration: BoxDecoration(
-      //       border: Border.all(
-      //         color: Colors.black,
-      //       ),
-      //       color: isEven
-      //           ? const Color.fromARGB(127, 120, 165, 255)
-      //           : const Color.fromARGB(255, 120, 165, 255),
-      //     ),
-      //     alignment: Alignment.center,
-      //     child: Text(
-      //       studentList[studentRowIndex]['rollNo'],
-      //       overflow: TextOverflow.ellipsis,
-      //       style: const TextStyle(
-      //         fontWeight: FontWeight.bold,
-      //         fontSize: 15.0,
-      //         color: Colors.black,
-      //       ),
-      //       softWrap: false,
-      //       textAlign: TextAlign.left,
-      //     ),
-      //   );
-      default:
-        return const Text('');
-    }
   }
 
   Widget topRow(BuildContext context) {
@@ -492,13 +396,20 @@ class _StickyBasicReadingState extends State<StickyBasicReading> {
   Widget assessmentTable() {
     return Center(
       child: Container(
+        alignment: Alignment.topCenter,
+        width: MediaQuery.of(context).size.width,
         decoration: const BoxDecoration(),
         child: StickyHeadersTable(
+          cellAlignments: CellAlignments.fixed(
+              contentCellAlignment: Alignment.topCenter,
+              stickyColumnAlignment: Alignment.topCenter,
+              stickyRowAlignment: Alignment.topCenter,
+              stickyLegendAlignment: Alignment.topCenter),
           cellDimensions: CellDimensions.variableColumnWidthAndRowHeight(
-              columnWidths: [MediaQuery.of(context).size.width * 0.12],
+              columnWidths: [],
               rowHeights:
                   List<double>.generate(studentList.length, (int index) => 68),
-              stickyLegendWidth: MediaQuery.of(context).size.width * 0.85,
+              stickyLegendWidth: MediaQuery.of(context).size.width,
               stickyLegendHeight: 0),
           initialScrollOffsetX: 0.0,
           initialScrollOffsetY: 0.0,
@@ -507,7 +418,9 @@ class _StickyBasicReadingState extends State<StickyBasicReading> {
           rowsLength: rowsLengthCalculator(),
           columnsTitleBuilder: columnsTitleBuilder,
           rowsTitleBuilder: rowsTitleBuilder,
-          contentCellBuilder: (i, j) => cellWidget(i, j),
+          contentCellBuilder: (i, j) => Container(
+            height: 0,
+          ),
           legendCell: legendCellBuilder(),
         ),
       ),
@@ -624,8 +537,8 @@ class _StickyBasicReadingState extends State<StickyBasicReading> {
                         horizontal: 10.0,
                       ),
                       decoration: BoxDecoration(
-                        border: Border.all(),
-                      ),
+                          // border: Border.all(),
+                          ),
                       child: LanguageDropDown(
                           className: _selectedClass!,
                           selectLanguage: selectLanguage),
@@ -684,6 +597,355 @@ class _StickyBasicReadingState extends State<StickyBasicReading> {
                   : const Text(''),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class UserInputWidget extends StatefulWidget {
+  final String studentName;
+  final String rollNo;
+  final String profilePic;
+  final String result;
+  final List<String> levelNames;
+  final int studentRowIndex;
+  final String selectedLevel;
+  final Function(int, String, String) userInputHandler;
+  // final String
+  const UserInputWidget(
+      {Key? key,
+      required this.studentName,
+      required this.rollNo,
+      required this.profilePic,
+      required this.result,
+      required this.levelNames,
+      required this.studentRowIndex,
+      required this.selectedLevel,
+      required this.userInputHandler})
+      : super(key: key);
+
+  @override
+  State<UserInputWidget> createState() => _UserInputWidgetState();
+}
+
+class _UserInputWidgetState extends State<UserInputWidget> {
+  bool isEvaluated = false;
+  late String rollNo;
+  late String studentName;
+  late String profilePic;
+  late String result;
+  late List<String> levelNames = [];
+  late String selectedLevel;
+
+  String nameForamtter(studentName) {
+    String formattedName = "";
+
+    for (var i = 0; i < studentName.split(" ").length; i++) {
+      String word = studentName.split(" ")[i];
+      String newWord = toBeginningOfSentenceCase(word.toLowerCase()).toString();
+      formattedName = formattedName + newWord;
+      if (i < studentName.split(" ").length - 1) {
+        formattedName = formattedName + " ";
+      }
+    }
+
+    return formattedName;
+  }
+
+  Widget topRow() {
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: <Color>[
+            Color(0xfff21bce),
+            Color(0xff826cf0),
+          ],
+        ),
+      ),
+      alignment: Alignment.center,
+      width: MediaQuery.of(context).size.width * 0.80,
+      height: MediaQuery.of(context).size.height * 0.12,
+      child: Table(
+        columnWidths: const <int, TableColumnWidth>{
+          0: FractionColumnWidth(0.20),
+          1: FractionColumnWidth(0.70),
+        },
+        children: [
+          TableRow(
+            children: [
+              TableCell(
+                child: AvatarGeneratorNewTwo(base64Code: profilePic),
+              ),
+              TableCell(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 10.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        decoration: const BoxDecoration(),
+                        width: MediaQuery.of(context).size.width * 0.60,
+                        child: Text(
+                          nameForamtter(studentName),
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18.0,
+                            color: Colors.white,
+                          ),
+                          maxLines: 2,
+                          softWrap: false,
+                          textAlign: TextAlign.left,
+                        ),
+                      ),
+                      Container(
+                        alignment: Alignment.bottomRight,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            const Text(
+                              "Roll: ",
+                              style: TextStyle(
+                                fontSize: 16.0,
+                                color: Colors.white,
+                              ),
+                            ),
+                            Text(
+                              rollNo,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                // fontWeight: FontWeight.bold,
+                                fontSize: 16.0,
+                                color: Colors.white,
+                              ),
+                              softWrap: false,
+                              textAlign: TextAlign.left,
+                            ),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget absentNeCheckBox() {
+    return Container(
+      alignment: Alignment.topCenter,
+      decoration: BoxDecoration(),
+      child: Table(
+        columnWidths: const <int, TableColumnWidth>{
+          0: FractionColumnWidth(0.50),
+          1: FractionColumnWidth(0.50),
+        },
+        children: [
+          TableRow(
+            children: [
+              TableCell(
+                child: Container(
+                  alignment: Alignment.centerLeft,
+                  decoration: BoxDecoration(),
+                  margin: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: const Text("Absent/NE:"),
+                ),
+              ),
+              TableCell(
+                child: Container(
+                  alignment: Alignment.centerLeft,
+                  child: Checkbox(
+                    value: isEvaluated,
+                    onChanged: (bool? selection) {
+                      setState(() {
+                        isEvaluated = !isEvaluated;
+                      });
+
+                      if (isEvaluated == true) {
+                        setState(() {
+                          selectedLevel = "";
+                        });
+                        widget.userInputHandler(
+                            widget.studentRowIndex, "NE", "");
+                      }
+                    },
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  void updateLevel(selectedLevel, int studentRowIndex) {
+    if (kDebugMode) {
+      print("inside user inut widget");
+    }
+    setState(() {
+      selectedLevel = selectedLevel;
+    });
+    widget.userInputHandler(studentRowIndex, "Achieved", selectedLevel!);
+  }
+
+  Widget dropdownSelection() {
+    return Container(
+      alignment: Alignment.topCenter,
+      decoration: BoxDecoration(),
+      child: Table(
+        columnWidths: const <int, TableColumnWidth>{
+          0: FractionColumnWidth(0.50),
+          1: FractionColumnWidth(0.50),
+        },
+        children: [
+          TableRow(
+            children: [
+              TableCell(
+                child: Container(
+                  alignment: Alignment.centerLeft,
+                  decoration: BoxDecoration(),
+                  margin: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: const Text("Level:"),
+                ),
+              ),
+              TableCell(
+                child: Container(
+                  alignment: Alignment.centerLeft,
+                  decoration: BoxDecoration(),
+                  child: LevelDropDown(
+                    index: widget.studentRowIndex,
+                    updateLevel: updateLevel,
+                    levelNames: levelNames,
+                    bgColor: Colors.deepPurpleAccent,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget checkBoxAndDropdown() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        absentNeCheckBox(),
+        (isEvaluated == true)
+            ? SizedBox(
+                height: 0,
+                width: 0,
+              )
+            : dropdownSelection(),
+      ],
+    );
+  }
+
+  Widget rows(String headerName, String value) {
+    return Table(
+      defaultVerticalAlignment: TableCellVerticalAlignment.top,
+      columnWidths: const <int, TableColumnWidth>{
+        0: FractionColumnWidth(0.50),
+        1: FractionColumnWidth(0.50),
+      },
+      children: [
+        TableRow(
+          children: [
+            TableCell(
+              child: Container(
+                margin: const EdgeInsets.symmetric(
+                  horizontal: 8.0,
+                ),
+                alignment: Alignment.centerLeft,
+                decoration: BoxDecoration(),
+                child: Text(headerName),
+              ),
+            ),
+            TableCell(
+              child: Container(
+                alignment: Alignment.centerLeft,
+                decoration: BoxDecoration(),
+                child: Text(value),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget instantiatedView() {
+    return Container(
+      decoration: BoxDecoration(),
+      alignment: Alignment.topCenter,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          rows("Result: ", result),
+          (isEvaluated == true)
+              ? SizedBox(
+                  height: 0,
+                  width: 0,
+                )
+              : selectedLevel == "" || selectedLevel.isEmpty
+                  ? SizedBox(
+                      height: 0,
+                    )
+                  : rows("Level: ", selectedLevel),
+          checkBoxAndDropdown(),
+        ],
+      ),
+    );
+  }
+
+  Widget inputFields() {
+    return Container(
+      decoration: BoxDecoration(),
+      alignment: Alignment.topCenter,
+      width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.height * 0.28,
+      child: instantiatedView(),
+    );
+  }
+
+  @override
+  void initState() {
+    setState(() {
+      profilePic = widget.profilePic;
+      rollNo = widget.rollNo;
+      studentName = widget.studentName;
+      result = widget.result;
+      levelNames = widget.levelNames;
+      selectedLevel = widget.selectedLevel;
+    });
+    // super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+          // color: Colors.blue,
+          ),
+      width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.height * 0.450,
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            topRow(),
+            inputFields(),
+          ],
         ),
       ),
     );

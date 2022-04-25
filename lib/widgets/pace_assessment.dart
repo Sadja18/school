@@ -1272,12 +1272,13 @@ class _UserInputWidgetState extends State<UserInputWidget> {
                   child: const Text("Absent/NE"),
                 ),
                 Checkbox(
-                    value: isEvaluated,
-                    onChanged: (value) {
-                      setState(() {
-                        isEvaluated = !isEvaluated;
-                      });
-                    }),
+                  value: isEvaluated,
+                  onChanged: (value) {
+                    setState(() {
+                      isEvaluated = !isEvaluated;
+                    });
+                  },
+                ),
               ],
             ),
           ),

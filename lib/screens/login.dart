@@ -42,7 +42,9 @@ class _LoginState extends State<Login> {
         context: context,
         barrierDismissible: false,
         builder: (BuildContext ctx) => AlertDialog(
-              title: SizedBox(height: 0,),
+              title: SizedBox(
+                height: 0,
+              ),
               content: Text(message),
               actions: [
                 TextButton(
@@ -76,7 +78,7 @@ class _LoginState extends State<Login> {
       var conn = connResponse;
 
       if (kDebugMode) {
-        log(conn.toString());
+        // log(connResponse.toString());
         log(conn.runtimeType.toString());
       }
 
@@ -392,10 +394,12 @@ class _LoginState extends State<Login> {
                                               _isObscure = !_isObscure;
                                             });
                                           },
-                                          icon: Icon(_isObscure
-                                              ? Icons.visibility
-                                              : Icons.visibility_off,
-                                              size: 25,),
+                                          icon: Icon(
+                                            _isObscure
+                                                ? Icons.visibility
+                                                : Icons.visibility_off,
+                                            size: 25,
+                                          ),
                                         ),
                                       ),
                                     ),
