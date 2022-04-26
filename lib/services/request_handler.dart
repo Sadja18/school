@@ -61,68 +61,89 @@ Future<void> fetchPersistent() async {
         host: uri_paths.baseURLA,
         path: uri_paths.fetchRelevantData,
         queryParameters: queryParams);
-    print('sending persistent');
-
+    if (kDebugMode) {
+      print('sending persistent');
+    }
     var yearResp = await http.get(Uri(
         scheme: 'http',
         host: uri_paths.baseURLA,
         path: uri_paths.fetchYear,
         queryParameters: queryParams));
-
+    if (kDebugMode) {
+      print('sending year');
+    }
     var teacherResp = await http.get(Uri(
         scheme: 'http',
         host: uri_paths.baseURLA,
         path: uri_paths.fetchTeacher,
         queryParameters: queryParams));
-
+    if (kDebugMode) {
+      print('sending teacher');
+    }
     var schoolResp = await http.get(Uri(
         scheme: 'http',
         host: uri_paths.baseURLA,
         path: uri_paths.fetchSchool,
         queryParameters: queryParams));
-
+    if (kDebugMode) {
+      print('sending school');
+    }
     var classResp = await http.get(Uri(
         scheme: 'http',
         host: uri_paths.baseURLA,
         path: uri_paths.fetchClasses,
         queryParameters: queryParams));
-
+    if (kDebugMode) {
+      print('sending class');
+    }
     var studentsResp = await http.get(Uri(
         scheme: 'http',
         host: uri_paths.baseURLA,
         path: uri_paths.fetchStudents,
         queryParameters: queryParams));
-
+    if (kDebugMode) {
+      print('sending students');
+    }
     var languagesResp = await http.get(Uri(
         scheme: 'http',
         host: uri_paths.baseURLA,
         path: uri_paths.fetchLanguages,
         queryParameters: queryParams));
-
+    if (kDebugMode) {
+      print('sending languages');
+    }
     var readingLevelResp = await http.get(Uri(
         scheme: 'http',
         host: uri_paths.baseURLA,
         path: uri_paths.fetchReadingLevels,
         queryParameters: queryParams));
-
+    if (kDebugMode) {
+      print('sending reading');
+    }
     var numericLevelResp = await http.get(Uri(
         scheme: 'http',
         host: uri_paths.baseURLA,
         path: uri_paths.fetchNumericLevels,
         queryParameters: queryParams));
-
+    if (kDebugMode) {
+      print('sending numeric');
+    }
     var assessmentsResp = await http.get(Uri(
         scheme: 'http',
         host: uri_paths.baseURLA,
         path: uri_paths.fetchAssessments,
         queryParameters: queryParams));
-
+    if (kDebugMode) {
+      print('sending assessment');
+    }
     var qPaperResp = await http.get(Uri(
         scheme: 'http',
         host: uri_paths.baseURLA,
         path: uri_paths.fetchQPapers,
         queryParameters: queryParams));
-
+    if (kDebugMode) {
+      print('sending grading');
+    }
     var gradingResp = await http.get(Uri(
         scheme: 'http',
         host: uri_paths.baseURLA,

@@ -1,10 +1,13 @@
 // ignore_for_file: unused_import, duplicate_ignore, prefer_const_constructors
 
+import 'dart:developer';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import '../services/helper_db.dart';
 // import 'package:school/screens/dummy.dart';
 // import 'package:workmanager/workmanager.dart';
+import 'package:http/http.dart' as http;
 
 import '../main.dart';
 import '../screens/new_assessment.dart';
@@ -14,6 +17,7 @@ import '../services/database_handler.dart';
 import '../services/sync_services.dart';
 import '../widgets/sticky_attendance_widget.dart';
 import '../widgets/pace_assessment.dart';
+import '../models/urlPaths.dart' as uri_paths;
 
 const fetchOne = "fetch Persistent";
 
@@ -55,44 +59,75 @@ class _DashboardState extends State<Dashboard> {
     setUserName();
   }
 
-  void showAlertDialog() async {
-    showDialog(
+  void offlineSyncPressDialog() async {
+    return showDialog(
         context: context,
         builder: (BuildContext ctx) {
           return AlertDialog(
             title: SizedBox(
-              height: 0,
+              child: const Text("No Internet"),
             ),
-            titlePadding: const EdgeInsets.all(0),
-            content: Container(
-              height: MediaQuery.of(context).size.height * 0.50,
-              decoration: BoxDecoration(),
-              alignment: Alignment.center,
-              child: Column(
-                children: [
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.40,
-                    height: MediaQuery.of(context).size.height * 0.10,
-                    alignment: Alignment.center,
-                    child: CircularProgressIndicator(
-                      color: Colors.purpleAccent,
-                      strokeWidth: 1.0,
-                    ),
-                  ),
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.40,
-                    height: MediaQuery.of(context).size.height * 0.30,
-                    alignment: Alignment.center,
-                    child: const Text("Please wait for syncing to complete."),
-                  ),
-                ],
-              ),
-            ),
-            contentPadding: const EdgeInsets.all(0),
+            // titlePadding: const EdgeInsets.all(0),
+            // contentPadding: const EdgeInsets.all(0),
+            content: const Text("Cannot sync in offline mode"),
           );
         });
-    await wrapper();
-    Navigator.of(context).pop();
+  }
+
+  void showAlertDialog() async {
+    try {
+      var response = await http.get(
+          Uri.parse(uri_paths.baseURL + uri_paths.checkIfOnline + '?get=1'));
+
+      if (response.statusCode == 200) {
+        showDialog(
+            context: context,
+            builder: (BuildContext ctx) {
+              return AlertDialog(
+                title: SizedBox(
+                  height: 0,
+                ),
+                titlePadding: const EdgeInsets.all(0),
+                content: Container(
+                  height: MediaQuery.of(context).size.height * 0.50,
+                  decoration: BoxDecoration(),
+                  alignment: Alignment.center,
+                  child: Column(
+                    children: [
+                      Container(
+                        width: MediaQuery.of(context).size.width * 0.40,
+                        height: MediaQuery.of(context).size.height * 0.10,
+                        alignment: Alignment.center,
+                        child: CircularProgressIndicator(
+                          color: Colors.purpleAccent,
+                          strokeWidth: 1.0,
+                        ),
+                      ),
+                      Container(
+                        width: MediaQuery.of(context).size.width * 0.40,
+                        height: MediaQuery.of(context).size.height * 0.30,
+                        alignment: Alignment.center,
+                        child:
+                            const Text("Please wait for syncing to complete."),
+                      ),
+                    ],
+                  ),
+                ),
+                contentPadding: const EdgeInsets.all(0),
+              );
+            });
+        await wrapper();
+        Navigator.of(context).pop();
+      } else {
+        offlineSyncPressDialog();
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        log(e.toString());
+        log("offline no sync available");
+        offlineSyncPressDialog();
+      }
+    }
   }
 
   @override
