@@ -93,6 +93,7 @@ class _StickyAttendanceState extends State<StickyAttendance> {
     setState(() {
       _selectedDate = selectDate.toString();
       _selectedClass = "";
+      studentList = [];
     });
     if (kDebugMode) {
       print('reverse date callback');
@@ -202,8 +203,8 @@ class _StickyAttendanceState extends State<StickyAttendance> {
                     horizontal: 0.0,
                     vertical: 0.0,
                   ),
-
                   child: ClassDropDown(
+                    key: ObjectKey(_selectedDate),
                     selectClass: selectClass,
                     getAllStudents: getAllStudents,
                   ),

@@ -56,6 +56,8 @@ class _StickyBasicReadingState extends State<StickyBasicReading> {
   void selectedDate(String? selectDate) {
     setState(() {
       _selectedDate = selectDate.toString();
+      _selectedClass = "";
+      studentList = [];
     });
     if (kDebugMode) {
       print('reverse date callback');
@@ -474,6 +476,7 @@ class _StickyBasicReadingState extends State<StickyBasicReading> {
                   ),
 
                   child: ClassDropDown(
+                    key: ObjectKey(_selectedDate),
                     selectClass: selectClass,
                     getAllStudents: getAllStudents,
                   ),

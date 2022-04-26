@@ -73,6 +73,8 @@ class _StickyNumericAbilityState extends State<StickyNumericAbility> {
   void selectedDate(String? selectDate) {
     setState(() {
       _selectedDate = selectDate.toString();
+      _selectedClass = "";
+      studentList = [];
     });
     if (kDebugMode) {
       print('reverse date callback');
@@ -428,6 +430,7 @@ class _StickyNumericAbilityState extends State<StickyNumericAbility> {
                   ),
 
                   child: ClassDropDown(
+                    key: ObjectKey(_selectedDate),
                     selectClass: selectClass,
                     getAllStudents: getAllStudents,
                   ),
