@@ -153,6 +153,15 @@ class _EditAttendanceState extends State<EditAttendance> {
     );
   }
 
+  double verticalRowScrollOffset() {
+    double scrollOffset = 75.0;
+    if (currentRowIndex == 0.0) {
+      return 0.0;
+    } else {
+      return scrollOffset * currentRowIndex;
+    }
+  }
+
   var columnTitleColor = Color.fromARGB(255, 156, 45, 175);
   var textColor = Color.fromARGB(255, 230, 100, 253);
 
@@ -308,6 +317,9 @@ class _EditAttendanceState extends State<EditAttendance> {
             ),
             child: TextButton(
               onPressed: () {
+                setState(() {
+                  currentRowIndex = studentRowIndex;
+                });
                 if (widget.isSynced == 'false' || widget.isSynced == false) {
                   if (checkBoxVals[studentId] == true ||
                       _absentees.contains(studentId) == false) {
@@ -407,7 +419,7 @@ class _EditAttendanceState extends State<EditAttendance> {
           stickyLegendHeight: 0,
         ),
         initialScrollOffsetX: 0.0,
-        initialScrollOffsetY: 0.0,
+        initialScrollOffsetY: verticalRowScrollOffset(),
         scrollControllers: scrollControllers(),
         columnsLength: columnsLengthCalculator(),
         rowsLength: rowsLengthCalculator(),

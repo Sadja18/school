@@ -35,6 +35,8 @@ class _StickyBasicReadingState extends State<StickyBasicReading> {
   Map<String?, String?> resultSheet = {};
   Map<String, Color> bgColorSheet = {};
 
+  int currentRowIndex = 0;
+
   ScrollController verticalBodyController =
       ScrollController(initialScrollOffset: 0.0);
   ScrollController verticalTitleController =
@@ -214,6 +216,15 @@ class _StickyBasicReadingState extends State<StickyBasicReading> {
         });
   }
 
+  double verticalRowScrollOffset() {
+    double scrollOffset = 68.0;
+    if (currentRowIndex == 0.0) {
+      return 0.0;
+    } else {
+      return scrollOffset * currentRowIndex;
+    }
+  }
+
   Widget rowsTitleBuilder(int index) {
     return Card(
       color: Colors.transparent,
@@ -221,6 +232,9 @@ class _StickyBasicReadingState extends State<StickyBasicReading> {
       elevation: 8.0,
       child: InkWell(
         onTap: () {
+          setState(() {
+            currentRowIndex = index;
+          });
           showUserInputDialogBox(index);
         },
         child: Container(
@@ -538,7 +552,7 @@ class _StickyBasicReadingState extends State<StickyBasicReading> {
               stickyLegendWidth: MediaQuery.of(context).size.width,
               stickyLegendHeight: 0),
           initialScrollOffsetX: 0.0,
-          initialScrollOffsetY: 0.0,
+          initialScrollOffsetY: verticalRowScrollOffset(),
           scrollControllers: scrollControllers(),
           columnsLength: columnsLengthCalculator(),
           rowsLength: rowsLengthCalculator(),
