@@ -207,7 +207,7 @@ class DBProvider {
           'dbname TEXT DEFAULT "school",'
           'loginstatus INTEGER DEFAULT 0,'
           'userID INTEGER,'
-          'isOnline INTEGER,'
+          'isOnline INTEGER DEFAULT 0,'
           'UNIQUE(userName, userPassword)'
           ');');
 
@@ -289,8 +289,13 @@ class DBProvider {
   Future<dynamic> logoutUser() async {
     final db = await initDB();
     var updateCount = await db.rawQuery('UPDATE users '
-        'SET loginstatus = 0 '
+        'SET loginstatus = 0, isOnline = 0 '
         'WHERE loginstatus=1;');
+
+    if (kDebugMode) {
+      log("update count");
+      log(updateCount.toString());
+    }
     return updateCount;
   }
 
@@ -1259,9 +1264,9 @@ class DBProvider {
     try {
       final db = await initDB();
       var query =
-          "UPDATE users SET loginStatus = ? WHERE userName = ? AND userPassword=?;";
+          "UPDATE users SET loginStatus = 1, isOnline=0 WHERE userName = ? AND userPassword=?;";
 
-      var params = ["1", enteredUserName, enteredPassword];
+      var params = [enteredUserName, enteredPassword];
 
       var userQ = await db.rawQuery(query, params);
 
