@@ -12,14 +12,21 @@ Future<dynamic> offlineLogin(enteredUserName, enteredUserPassword) async {
       print("printing user data");
       print(user.toString());
     }
-    var login = await DBProvider.db
-        .makeUserOfflineLogin(enteredUserName, enteredUserPassword);
-
+    var userID = user[0]['userID'];
     if (kDebugMode) {
-      print(login.toString());
+      print(userID.runtimeType);
+      print(userID);
     }
+    // var login = await DBProvider.db.makeUserOfflineLogin(userID);
 
-    return user[0];
+    // if (kDebugMode) {
+    //   print("login.toString(");
+    //   print(login.toString());
+    // }
+
+    return {'no_user': 1};
+
+    // return user[0];
   } else {
     return {'no_user': 1};
   }

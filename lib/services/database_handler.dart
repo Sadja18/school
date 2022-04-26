@@ -1248,10 +1248,10 @@ class DBProvider {
 
       var user = userQ.toList();
 
-      if (kDebugMode) {
-        print('user is');
-        print(user.toString());
-      }
+      // if (kDebugMode) {
+      //   print('user is');
+      //   print(user.toString());
+      // }
       return user;
     } catch (e) {
       if (kDebugMode) {
@@ -1260,14 +1260,25 @@ class DBProvider {
     }
   }
 
-  Future<dynamic> makeUserOfflineLogin(enteredUserName, enteredPassword) async {
+  Future<dynamic> makeUserOfflineLogin(userID) async {
     try {
+      if (kDebugMode) {
+        print("entereduser $userID");
+        print("offline login");
+      }
       final db = await initDB();
       var query =
-          "UPDATE users SET loginStatus = 1, isOnline=0 WHERE userName = ? AND userPassword=?;";
+          "UPDATE users SET loginStatus = 1, isOnline=0 WHERE userID = ?;";
 
-      var params = [enteredUserName, enteredPassword];
+      // var params = [enteredUserName, enteredPassword];
 
+      var result = await db.rawQuery(query, [userID]);
+      if (kDebugMode) {
+        print('user is');
+        print(result.toString());
+      }
+      query = 'SELECT * FROM user WHERE loginstatus = 1';
+      var params = [];
       var userQ = await db.rawQuery(query, params);
 
       var user = userQ.toList();

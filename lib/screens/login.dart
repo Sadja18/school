@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print, duplicate_ignore, unused_import
+// ignore_for_file: avoid_print, duplicate_ignore, unused_import, prefer_const_constructors
 
 import 'dart:developer';
 import 'dart:io';
@@ -62,72 +62,127 @@ class _LoginState extends State<Login> {
             ));
   }
 
-  // ignore: duplicate_ignore, duplicate_ignore
+  void showAlert(message) async {
+    return showDialog(
+        context: context,
+        builder: (BuildContext ctx) {
+          return AlertDialog(
+            titlePadding: const EdgeInsets.all(0),
+            title: SizedBox(
+              height: 0,
+            ),
+            content: Text(message),
+          );
+        });
+  }
+
   void _onClickLogin(BuildContext context) async {
     try {
       final enteredUserName = usernameController.text;
       final enteredUserPassword = userPasswordController.text;
 
-      if (enteredUserPassword.isEmpty || enteredUserName.isEmpty) {
-        return;
-      }
+      if (enteredUserPassword.isEmpty ||
+          enteredUserName.isEmpty ||
+          enteredUserName == "" ||
+          enteredUserPassword == "") {
+        var message = "UserName and Password fields cannot be empty";
+        showAlert(message);
+      } else {
+        if (kDebugMode) {
+          print('clicked');
+        }
 
-      print('clicked');
+        var connResponse = await request_handler.sendTestRequest();
+        var conn = connResponse;
 
-      var connResponse = await request_handler.sendTestRequest();
-      var conn = connResponse;
+        if (kDebugMode) {
+          // log(connResponse.toString());
+          log(conn.runtimeType.toString());
+        }
 
-      if (kDebugMode) {
-        // log(connResponse.toString());
-        log(conn.runtimeType.toString());
-      }
+        if (connResponse.runtimeType != SocketException) {
+          if (connResponse.statusCode == 200) {
+            var g = jsonDecode(connResponse.body);
+            if (kDebugMode) {
+              print('connection: ' + connResponse.statusCode.toString());
+              print('connection: ' + g['connected'].runtimeType.toString());
+            }
+            if (g != null && g['connected'] == "true") {
+              if (enteredUserPassword.isNotEmpty &&
+                  enteredUserPassword != "" &&
+                  enteredUserName.isNotEmpty &&
+                  enteredUserName != "") {
+                var tryLoginRequest = await request_handler.tryLogin(
+                    enteredUserName, enteredUserPassword);
+                if (kDebugMode) {
+                  print('try login: ' + tryLoginRequest.statusCode.toString());
+                  print('try login: ' + tryLoginRequest.body.toString());
+                }
 
-      if (connResponse.runtimeType != SocketException) {
-        if (connResponse.statusCode == 200) {
-          var g = jsonDecode(connResponse.body);
-          if (kDebugMode) {
-            print('connection: ' + connResponse.statusCode.toString());
-            print('connection: ' + g['connected'].runtimeType.toString());
-          }
-          if (g != null && g['connected'] == "true") {
-            if (enteredUserPassword.isNotEmpty &&
-                enteredUserPassword != "" &&
-                enteredUserName.isNotEmpty &&
-                enteredUserName != "") {
-              var tryLoginRequest = await request_handler.tryLogin(
-                  enteredUserName, enteredUserPassword);
-              if (kDebugMode) {
-                print('try login: ' + tryLoginRequest.statusCode.toString());
-                print('try login: ' + tryLoginRequest.body.toString());
-              }
+                if (tryLoginRequest.statusCode == 200) {
+                  var loginRespBody = jsonDecode(tryLoginRequest.body);
+                  if (loginRespBody != null && loginRespBody.isNotEmpty) {
+                    if (kDebugMode) {
+                      print('try login: ' + loginRespBody['user'].toString());
+                      print(
+                          'try login: ' + loginRespBody['password'].toString());
+                      print('try login: ' + loginRespBody['dbname'].toString());
+                      print('try login: ' +
+                          loginRespBody['login_status'].toString());
+                      print('try login: ' + loginRespBody['userID'].toString());
+                      print(
+                          'try login: ' + loginRespBody['isOnline'].toString());
+                    }
 
-              if (tryLoginRequest.statusCode == 200) {
-                var loginRespBody = jsonDecode(tryLoginRequest.body);
-                if (loginRespBody != null && loginRespBody.isNotEmpty) {
-                  if (kDebugMode) {
-                    print('try login: ' + loginRespBody['user'].toString());
-                    print('try login: ' + loginRespBody['password'].toString());
-                    print('try login: ' + loginRespBody['dbname'].toString());
-                    print('try login: ' +
-                        loginRespBody['login_status'].toString());
-                    print('try login: ' + loginRespBody['userID'].toString());
-                    print('try login: ' + loginRespBody['isOnline'].toString());
-                  }
-
-                  if (loginRespBody['login_status'] == 1 ||
-                      loginRespBody['login_status'] == '1') {
-                    setState(() {
-                      _messageCode = '1LO200';
-                    });
-                    await saveUserToDB(loginRespBody);
-                    _showAlertDialog();
-                  } else {
-                    setState(() {
-                      _messageCode = '1LO01';
-                    });
-                    _showAlertDialog();
+                    if (loginRespBody['login_status'] == 1 ||
+                        loginRespBody['login_status'] == '1') {
+                      setState(() {
+                        _messageCode = '1LO200';
+                      });
+                      await saveUserToDB(loginRespBody);
+                      _showAlertDialog();
+                    } else {
+                      setState(() {
+                        _messageCode = '1LO01';
+                      });
+                      _showAlertDialog();
+                    }
                   }
                 }
+              }
+            }
+          } else {
+            if (kDebugMode) {
+              print('remote server down, offline attempt');
+            }
+            var offlineLoginAttempt =
+                await offlineLogin(enteredUserName, enteredUserPassword);
+            if (kDebugMode) {
+              print(offlineLoginAttempt.toString());
+            }
+            if (offlineLoginAttempt['no_user'] == 1) {
+              // if no user record was found
+              setState(() {
+                _messageCode = '0LO01';
+              });
+              _showAlertDialog();
+            } else {
+              // if user record was found
+              if (offlineLoginAttempt['loginstatus'] == 1 ||
+                  offlineLoginAttempt['loginstatus'] == '1') {
+                setState(() {
+                  _messageCode = '0LO200';
+                });
+                _showAlertDialog();
+
+                print('here 3');
+              } else {
+                setState(() {
+                  _messageCode = '0LO02';
+                });
+                _showAlertDialog();
+
+                print('here 4');
               }
             }
           }
@@ -137,9 +192,7 @@ class _LoginState extends State<Login> {
           }
           var offlineLoginAttempt =
               await offlineLogin(enteredUserName, enteredUserPassword);
-          if (kDebugMode) {
-            print(offlineLoginAttempt.toString());
-          }
+
           if (offlineLoginAttempt['no_user'] == 1) {
             // if no user record was found
             setState(() {
@@ -148,8 +201,8 @@ class _LoginState extends State<Login> {
             _showAlertDialog();
           } else {
             // if user record was found
-            if (offlineLoginAttempt['login_status'] == 1 ||
-                offlineLoginAttempt['login_status'] == '1') {
+            if (offlineLoginAttempt['loginstatus'] == 1 ||
+                offlineLoginAttempt['loginstatus'] == '1') {
               setState(() {
                 _messageCode = '0LO200';
               });
@@ -164,38 +217,6 @@ class _LoginState extends State<Login> {
 
               print('here 4');
             }
-          }
-        }
-      } else {
-        if (kDebugMode) {
-          print('remote server down, offline attempt');
-        }
-        var offlineLoginAttempt =
-            await offlineLogin(enteredUserName, enteredUserPassword);
-
-        if (offlineLoginAttempt['no_user'] == 1) {
-          // if no user record was found
-          setState(() {
-            _messageCode = '0LO01';
-          });
-          _showAlertDialog();
-        } else {
-          // if user record was found
-          if (offlineLoginAttempt['loginstatus'] == 1 ||
-              offlineLoginAttempt['loginstatus'] == '1') {
-            setState(() {
-              _messageCode = '0LO200';
-            });
-            _showAlertDialog();
-
-            print('here 3');
-          } else {
-            setState(() {
-              _messageCode = '0LO02';
-            });
-            _showAlertDialog();
-
-            print('here 4');
           }
         }
       }
