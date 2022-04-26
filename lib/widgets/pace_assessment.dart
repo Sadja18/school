@@ -376,20 +376,70 @@ class _PaceAssessmentScreenState extends State<PaceAssessmentScreen> {
     );
   }
 
+  void saveDataToDB() async {
+    Map<String, dynamic> assessmentData = {};
+    assessmentData['assessmentName'] = _selectedAssessment['name'];
+    assessmentData['subjectName'] = _selectedAssessment['subject_name'];
+    assessmentData['mediumName'] = _selectedAssessment['medium_name'];
+    assessmentData['qp_code'] = _selectedAssessment['qp_code'];
+    assessmentData['qp_code_name'] = _selectedAssessment['qp_code_name'];
+    assessmentData['scheduledDate'] = _selectedAssessment['date'];
+    assessmentData['className'] = _selectedClass.toString();
+    assessmentData['uploadDate'] =
+        DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
+    assessmentData['result'] = studentIdResultSheet;
+    assessmentData['marksheet'] = studentIdMarksMap;
+    /*
+{
+  assessmentName: IGUJARATI/ENGLISH/2022-04-07029, 
+  subjectName: ENGLISH, 
+  mediumName: GUJARATI, 
+  qp_code: 15, 
+  qp_code_name: I/GUJARATI/ENGLISH/021, 
+  scheduledDate: 2022-04-07, 
+  className: I-A-GUJ, 
+  uploadDate: 2022-04-26 11:10:31, 
+  result: {
+    2240: Not Achieved, 2242: NE, 2243: NE, 24603: NE, 24604: NE, 24605: NE, 
+    24606: NE, 24607: NE, 24608: NE, 24609: NE, 24610: NE, 24611: NE, 24612: NE,
+    24614: NE}, 
+  marksheet: {
+    2240: [5.0, 0.0, 0.0, 0.0, 0.0], 2242: [0.0, 0.0, 0.0, 0.0, 0.0], 
+    2243: [0.0, 0.0, 0.0, 0.0, 0.0], 24603: [0.0, 0.0, 0.0, 0.0, 0.0], 
+    24604: [0.0, 0.0, 0.0, 0.0, 0.0], 24605: [0.0, 0.0, 0.0, 0.0, 0.0], 
+    24606: [0.0, 0.0, 0.0, 0.0, 0.0], 24607: [0.0, 0.0, 0.0, 0.0, 0.0], 
+    24608: [0.0, 0.0, 0.0, 0.0, 0.0], 24609: [0.0, 0.0, 0.0, 0.0, 0.0], 
+    24610: [0.0, 0.0, 0.0, 0.0, 0.0], 24611: [0.0, 0.0, 0.0, 0.0, 0.0], 
+    24612: [0.0, 0.0, 0.0, 0.0, 0.0], 24614: [0.0, 0.0, 0.0, 0.0, 0.0],},
+}
+*/
+
+    if (kDebugMode) {
+      print(assessmentData.toString());
+    }
+    // assessmentData
+    await DBProvider.db.savePaceAssessment(assessmentData);
+  }
+
   Widget widgetSubmitButton() {
     return Container(
       alignment: Alignment.center,
       decoration: BoxDecoration(),
       child: ElevatedButton(
-          onPressed: () {
-            if (kDebugMode) {
-              print('submit Button clicked');
-              print(studentIdMarksMap.toString());
-              print(studentIdCheckboxVal.toString());
-              print(studentIdResultSheet.toString());
-            }
-          },
-          child: const Text("Submit")),
+        onPressed: () {
+          if (kDebugMode) {
+            print('submit Button clicked');
+            print(studentIdMarksMap.toString());
+            print(studentIdCheckboxVal.toString());
+            print(studentIdResultSheet.toString());
+            print(_selectedAssessment.toString());
+            print(_selectedClass.toString());
+          }
+
+          saveDataToDB();
+        },
+        child: const Text("Submit"),
+      ),
     );
   }
 

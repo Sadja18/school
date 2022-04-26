@@ -9,7 +9,7 @@ import 'package:intl/intl.dart';
 
 final DateFormat format = DateFormat('yyyy-MM-dd');
 
-Future<void> syncAttendance()async {
+Future<void> syncAttendance() async {
   try {
     final todayDate = DateTime.now();
     final lastMonthDate =
@@ -34,7 +34,7 @@ Future<void> syncAttendance()async {
   }
 }
 
-Future<void> syncNumeric() async{
+Future<void> syncNumeric() async {
   try {
     final todayDate = DateTime.now();
     final lastMonthDate =
@@ -56,7 +56,7 @@ Future<void> syncNumeric() async{
   }
 }
 
-Future<void> syncBasic() async{
+Future<void> syncBasic() async {
   try {
     final todayDate = DateTime.now();
     final lastMonthDate =
@@ -77,7 +77,7 @@ Future<void> syncBasic() async{
   }
 }
 
-Future<void> syncPace() async{
+Future<void> syncPace() async {
   try {
     final todayDate = DateTime.now();
     final lastMonthDate =
@@ -98,8 +98,8 @@ Future<void> syncPace() async{
   }
 }
 
-Future<void> wrapper() async{
-  if(kDebugMode){
+Future<void> wrapper() async {
+  if (kDebugMode) {
     print('Fetch Persistent place here');
   }
   await fetchPersistent();
