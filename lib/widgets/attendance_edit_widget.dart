@@ -41,6 +41,9 @@ class _EditAttendanceState extends State<EditAttendance> {
 
   List<dynamic> studentList = [];
   Map<String, bool> checkBoxVals = {};
+
+  int currentRowIndex = 0;
+
   ScrollController verticalBodyController =
       ScrollController(initialScrollOffset: 0.0);
   ScrollController verticalTitleController =
@@ -427,7 +430,7 @@ class _EditAttendanceState extends State<EditAttendance> {
               setState(() {});
               Navigator.of(context).pop();
             },
-            child: const Text('Re-enter'),
+            child: const Text('Cancel'),
           ),
         ],
         content: Text(message),
@@ -450,7 +453,7 @@ class _EditAttendanceState extends State<EditAttendance> {
             onPressed: () {
               Navigator.of(context).pop();
             },
-            child: const Text('Re-enter'),
+            child: const Text('Cancel'),
           ),
           TextButton(
             onPressed: () {
@@ -467,15 +470,15 @@ class _EditAttendanceState extends State<EditAttendance> {
                 print(selectedDate);
               }
 
-              // DBProvider.db.saveAttendance(selectedDate, className,
-              //     submissionDate, jsonEncode(absentees));
-              // setState(() {
-              //   _absentees = [];
-              //   studentList = [];
-              //   _selectedDate = '';
-              //   reset = 1;
-              // });
-              // Navigator.of(context).pop();
+              DBProvider.db.saveAttendance(selectedDate, className,
+                  submissionDate, jsonEncode(absentees));
+              setState(() {
+                _absentees = [];
+                studentList = [];
+                _selectedDate = '';
+                reset = 1;
+              });
+              Navigator.of(context).pop();
             },
             child: const Text('Confirm'),
           ),

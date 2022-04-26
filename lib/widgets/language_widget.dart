@@ -37,13 +37,21 @@ class _LanguageDropDownState extends State<LanguageDropDown> {
                 // print(medium['medium_id']);
               }
               return DropdownButton<String>(
-                hint: const Text('Select Language'),
+                dropdownColor: Colors.deepPurpleAccent,
+                hint: const Text(
+                  'Select Language',
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
                 underline: Container(
                   height: 2,
-                  color: Colors.deepPurpleAccent,
+                  color: Colors.white,
                 ),
                 elevation: 16,
-                style: const TextStyle(color: Colors.deepPurpleAccent),
+                style: const TextStyle(
+                  color: Colors.white,
+                ),
                 value: _selectedLanguage!.isNotEmpty ? _selectedLanguage : null,
                 // ignore: prefer_const_literals_to_create_immutables
                 items: mediumNames.map<DropdownMenuItem<String>>(
@@ -56,6 +64,7 @@ class _LanguageDropDownState extends State<LanguageDropDown> {
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 15.0,
+                            color: Colors.white,
                           ),
                         ),
                       ),

@@ -59,7 +59,7 @@ class _DateShowState extends State<DateShow> {
               color: Colors.white,
             ),
             Text(
-              DateFormat('E, MMM dd, yyyy').format(date),
+              DateFormat('MMM dd').format(date),
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 16.0,

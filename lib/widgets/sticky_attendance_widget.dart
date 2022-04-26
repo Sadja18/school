@@ -92,6 +92,7 @@ class _StickyAttendanceState extends State<StickyAttendance> {
   void selectedDate(String? selectDate) {
     setState(() {
       _selectedDate = selectDate.toString();
+      _selectedClass = "";
     });
     if (kDebugMode) {
       print('reverse date callback');
@@ -105,7 +106,7 @@ class _StickyAttendanceState extends State<StickyAttendance> {
     var selectionClass = _selectedClass;
 
     return FutureBuilder(
-        key: ObjectKey(selectionClass),
+        // key: ObjectKey(selectiondate),
         future: editOrCreateNewAttendance(
           selectiondate!,
           selectionClass!,
@@ -119,10 +120,11 @@ class _StickyAttendanceState extends State<StickyAttendance> {
                 var selectedDate = _selectedDate;
 
                 return EditAttendance(
-                    absentees: [],
-                    studentList: studentList,
-                    selectedDate: selectedDate!,
-                    isSynced: 'false',);
+                  absentees: [],
+                  studentList: studentList,
+                  selectedDate: selectedDate!,
+                  isSynced: 'false',
+                );
               } else {
                 var absenteeString = record['absenteeString'];
 

@@ -55,10 +55,10 @@ class _DashboardState extends State<Dashboard> {
     setUserName();
   }
 
-  void showAlertDialog(BuildContext context) async {
+  void showAlertDialog() async {
     showDialog(
         context: context,
-        builder: (_) {
+        builder: (BuildContext ctx) {
           return AlertDialog(
             title: SizedBox(
               height: 0,
@@ -83,8 +83,7 @@ class _DashboardState extends State<Dashboard> {
                     width: MediaQuery.of(context).size.width * 0.40,
                     height: MediaQuery.of(context).size.height * 0.30,
                     alignment: Alignment.center,
-                    child: const Text(
-                        "Please wait for syncing to complete."),
+                    child: const Text("Please wait for syncing to complete."),
                   ),
                 ],
               ),
@@ -169,7 +168,7 @@ class _DashboardState extends State<Dashboard> {
                       if (kDebugMode) {
                         print('clicked');
                       }
-                      showAlertDialog(context);
+                      showAlertDialog();
                       // wrapper();
                     },
                     child: const Text(
