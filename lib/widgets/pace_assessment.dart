@@ -509,21 +509,8 @@ class _PaceAssessmentScreenState extends State<PaceAssessmentScreen> {
             titlePadding: const EdgeInsets.all(0),
             title: Container(
               height: 0,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: <Color>[
-                    Color(0xfff21bce),
-                    Color(0xff826cf0),
-                  ],
-                ),
-              ),
             ),
-
-            contentPadding: const EdgeInsets.only(
-              left: 0,
-              right: 0,
-              top: 0.0,
-            ),
+            contentPadding: const EdgeInsets.all(0),
             content: UserInputWidget(
               studentId: studentId,
               maximumMarks: totMarks,
@@ -990,17 +977,87 @@ class _UserInputWidgetState extends State<UserInputWidget> {
   Widget totalMarksField() {
     return Container(
       decoration: BoxDecoration(
-        border: Border.all(),
-      ),
-      child: TextFormField(
-        controller: TextEditingController(
-          text: obtainedMarks[0].toString(),
-        ),
-        keyboardType: TextInputType.number,
-        decoration: InputDecoration(
-          focusColor: Colors.blue,
-          // focusedBorder: InputBorder
-        ),
+          // border: Border.all(),
+          ),
+      alignment: Alignment.topCenter,
+      child: Table(
+        columnWidths: const <int, TableColumnWidth>{
+          0: FractionColumnWidth(0.60),
+          1: FractionColumnWidth(0.30),
+        },
+        children: [
+          TableRow(
+            children: [
+              TableCell(
+                child: Container(
+                  alignment: Alignment.centerLeft,
+                  child: const Text("Total: "),
+                ),
+              ),
+              TableCell(
+                child: Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Colors.blue,
+                    ),
+                    borderRadius: BorderRadius.circular(
+                      8.0,
+                    ),
+                  ),
+                  alignment: Alignment.centerLeft,
+                  width: MediaQuery.of(context).size.width * 0.30,
+                  child: TextFormField(
+                    initialValue: obtainedMarks[0].toString(),
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      focusColor: Colors.blue,
+                    ),
+                    onChanged: (value) {
+                      if (kDebugMode) {
+                        print("Inside total Marks field");
+                      }
+                      if (double.tryParse(value) != null) {
+                        var nMark = double.parse(value);
+
+                        if (nMark < 0) {
+                          // show error marks cannot be ;less than zero
+                          var title = "Invalid marks";
+                          var message = "Marks should not be less than zero";
+                          showAlert(title, message);
+                        } else {
+                          // double totaltmp = nMark;
+                          if (kDebugMode) {
+                            print('$nMark for $studentId ');
+                          }
+
+                          if (nMark > totMarks) {
+                            String title = "";
+                            String message =
+                                "Entered marks $nMark is greater than maximum marks $totMarks";
+                            showAlert(title, message);
+                          } else {
+                            setState(() {
+                              obtainedMarks[0] = nMark;
+                            });
+
+                            totalCalculator();
+                            resultCalculator();
+
+                            if (kDebugMode) {
+                              print("send tot user input handler");
+                            }
+                            widget.userInputHandler(studentId, obtainedMarks,
+                                studentResult, nMark.toString());
+                          }
+                        }
+                      }
+                    },
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
@@ -1036,7 +1093,7 @@ class _UserInputWidgetState extends State<UserInputWidget> {
                   ),
                 ),
                 child: TextFormField(
-                  // initialValue: obtainedMarks[index].toString(),
+                  initialValue: obtainedMarks[index].toString(),
                   textAlignVertical: TextAlignVertical.top,
                   textAlign: TextAlign.center,
                   keyboardType: TextInputType.number,
@@ -1045,7 +1102,7 @@ class _UserInputWidgetState extends State<UserInputWidget> {
                     focusColor: Colors.blue,
                     contentPadding: EdgeInsets.zero,
                   ),
-                  // controller: TextEditingController(),
+
                   onChanged: (value) {
                     if (kDebugMode) {
                       print('onchange ${index + 1}');
@@ -1065,30 +1122,29 @@ class _UserInputWidgetState extends State<UserInputWidget> {
                         var message = "Marks should not be less than zero";
                         showAlert(title, message);
                       } else {
-                        double totaltmp = 0.0;
+                        if (kDebugMode) {
+                          print('$nMark for $index ');
+                        }
+                        double totalTmp = 0.0;
                         for (var i = 0; i < totalQuestions; i++) {
-                          if (i != index) {
-                            totaltmp = totaltmp + obtainedMarks[i];
+                          if (index != i) {
+                            totalTmp = totalTmp + obtainedMarks[i];
                           }
                         }
-                        totalCalculator();
-                        resultCalculator();
-
-                        if (isEvaluated == true) {
-                          widget.userInputHandler(
-                              studentId, obtainedMarks, 'NE', "0.0");
-                        } else {
-                          widget.userInputHandler(studentId, obtainedMarks,
-                              studentResult, studentTotalMarks.toString());
-                        }
-
-                        if (totaltmp + nMark > totMarks) {
-                          showAlert("Problem",
-                              "Student Marks total is more than maximum marks");
+                        if (totalTmp + nMark > totMarks) {
+                          String title = "";
+                          String message =
+                              "Total obtained marks exceeds the maximum marks by ${totalTmp + nMark - totMarks}";
+                          showAlert(title, message);
                         } else {
                           setState(() {
                             obtainedMarks[index] = nMark;
                           });
+
+                          totalCalculator();
+                          resultCalculator();
+                          widget.userInputHandler(studentId, obtainedMarks,
+                              studentResult, studentTotalMarks.toString());
                         }
                       }
                     }
@@ -1098,22 +1154,7 @@ class _UserInputWidgetState extends State<UserInputWidget> {
                       print('values');
                     }
                   },
-                  onFieldSubmitted: (value) {
-                    if (double.tryParse(value) != null) {
-                      var nMark = double.parse(value);
-
-                      if (nMark < 0) {
-                        // show error marks cannot be ;less than zero
-                        var title = "Invalid marks";
-                        var message = "Marks should not be less than zero";
-                        showAlert(title, message);
-                      }
-                      setState(() {
-                        obtainedMarks[index] = nMark;
-                      });
-                    }
-                    // totalCalculator();
-                  },
+                  onFieldSubmitted: (value) {},
                   // onSubmi
                 ),
               ),
@@ -1124,9 +1165,9 @@ class _UserInputWidgetState extends State<UserInputWidget> {
     );
   }
 
-  Widget marksField() {
-    return textFields();
-  }
+  // Widget marksField() {
+  //   return textFields();
+  // }
 
   @override
   void initState() {
@@ -1158,149 +1199,200 @@ class _UserInputWidgetState extends State<UserInputWidget> {
           ? MediaQuery.of(context).size.height * 0.20
           : MediaQuery.of(context).size.height * 0.50,
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: <Color>[
-            Color(0xfff21bce),
-            Color(0xff826cf0),
-          ],
-        ),
+        color: Colors.white,
       ),
       alignment: Alignment.center,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: Colors.transparent,
-              ),
-              borderRadius: BorderRadius.circular(
-                8.0,
-              ),
-              // borderRadius: BorderRadius.circular(4.0),
-            ),
-            margin: const EdgeInsets.only(
-              bottom: 2.5,
-              top: 1.0,
-            ),
-            padding: const EdgeInsets.only(
-              left: 8.0,
-            ),
-            width: MediaQuery.of(context).size.width * 0.80,
-            height: MediaQuery.of(context).size.height * 0.10,
-            child: Table(
-              columnWidths: const <int, TableColumnWidth>{
-                0: FixedColumnWidth(3),
-                1: FixedColumnWidth(200),
-              },
-              children: [
-                TableRow(
-                  children: [
-                    TableCell(
-                      child: AvatarGeneratorNewTwo(base64Code: profilePic),
-                    ),
-                    TableCell(
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 10.0),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              decoration: const BoxDecoration(),
-                              width: MediaQuery.of(context).size.width * 0.60,
-                              child: Text(
-                                studentName,
-                                overflow: TextOverflow.ellipsis,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18.0,
-                                  color: Colors.white,
-                                ),
-                                maxLines: 2,
-                                softWrap: false,
-                                textAlign: TextAlign.left,
-                              ),
-                            ),
-                            Container(
-                              alignment: Alignment.bottomRight,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  const Text(
-                                    "Roll: ",
-                                    style: TextStyle(
-                                      fontSize: 16.0,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                  Text(
-                                    rollNo,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: const TextStyle(
-                                      // fontWeight: FontWeight.bold,
-                                      fontSize: 16.0,
-                                      color: Colors.white,
-                                    ),
-                                    softWrap: false,
-                                    textAlign: TextAlign.left,
-                                  ),
-                                ],
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Container(
+              alignment: Alignment.topCenter,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: <Color>[
+                    Color(0xfff21bce),
+                    Color(0xff826cf0),
                   ],
                 ),
-              ],
-            ),
-          ),
-          Container(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height * 0.05,
-            decoration: BoxDecoration(
-              color: Colors.white,
-            ),
-            alignment: Alignment.center,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  decoration: BoxDecoration(),
-                  child: const Text("Absent/NE"),
-                ),
-                Checkbox(
-                  value: isEvaluated,
-                  onChanged: (value) {
-                    setState(() {
-                      isEvaluated = !isEvaluated;
-                    });
-                  },
-                ),
-              ],
-            ),
-          ),
-          (isEvaluated == true)
-              ? Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
+              ),
+              // borderRadius: BorderRadius.circular(4.0),
+
+              width: MediaQuery.of(context).size.width * 0.80,
+              height: MediaQuery.of(context).size.height * 0.125,
+              child: Table(
+                columnWidths: const <int, TableColumnWidth>{
+                  0: FractionColumnWidth(0.30),
+                  1: FractionColumnWidth(0.70),
+                },
+                children: [
+                  TableRow(
+                    children: [
+                      TableCell(
+                        child: AvatarGeneratorNewTwo(base64Code: profilePic),
+                      ),
+                      TableCell(
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 10.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                decoration: const BoxDecoration(),
+                                width: MediaQuery.of(context).size.width * 0.60,
+                                child: Text(
+                                  studentName,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18.0,
+                                    color: Colors.white,
+                                  ),
+                                  maxLines: 2,
+                                  softWrap: false,
+                                  textAlign: TextAlign.left,
+                                ),
+                              ),
+                              Container(
+                                alignment: Alignment.bottomRight,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    const Text(
+                                      "Roll: ",
+                                      style: TextStyle(
+                                        fontSize: 16.0,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    Text(
+                                      rollNo,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: const TextStyle(
+                                        // fontWeight: FontWeight.bold,
+                                        fontSize: 16.0,
+                                        color: Colors.white,
+                                      ),
+                                      softWrap: false,
+                                      textAlign: TextAlign.left,
+                                    ),
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                  child: const Text(""),
-                )
-              : Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height * 0.204,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
+                ],
+              ),
+            ),
+            Container(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height * 0.05,
+              decoration: BoxDecoration(
+                color: Colors.white,
+              ),
+              alignment: Alignment.topCenter,
+              child: Table(
+                columnWidths: const <int, TableColumnWidth>{
+                  0: FractionColumnWidth(0.60),
+                  1: FractionColumnWidth(0.30),
+                },
+                children: [
+                  TableRow(
+                    children: [
+                      TableCell(
+                        child: Container(
+                          alignment: Alignment.centerLeft,
+                          decoration: BoxDecoration(),
+                          child: const Text("Absent/NE"),
+                        ),
+                      ),
+                      TableCell(
+                        child: Container(
+                          alignment: Alignment.centerLeft,
+                          child: Checkbox(
+                            value: isEvaluated,
+                            onChanged: (value) {
+                              setState(() {
+                                isEvaluated = !isEvaluated;
+                              });
+                            },
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                  alignment: Alignment.center,
-                  child: SingleChildScrollView(
-                    child: marksField(),
-                  ),
-                ),
-        ],
+                ],
+              ),
+            ),
+            (isEvaluated == true)
+                ? Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                    ),
+                    child: const Text(""),
+                  )
+                : Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                    ),
+                    alignment: Alignment.topCenter,
+                    child: Column(
+                      children: [
+                        Table(
+                          columnWidths: const <int, TableColumnWidth>{
+                            0: FractionColumnWidth(0.60),
+                            1: FractionColumnWidth(0.30),
+                          },
+                          children: [
+                            TableRow(
+                              children: [
+                                TableCell(
+                                  child: Container(
+                                    alignment: Alignment.centerLeft,
+                                    child: const Text('Enter total marks:'),
+                                  ),
+                                ),
+                                TableCell(
+                                  child: Container(
+                                    alignment: Alignment.centerLeft,
+                                    child: Checkbox(
+                                      value: enterTotal,
+                                      onChanged: (bool? selection) {
+                                        setState(() {
+                                          enterTotal = !enterTotal;
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        (enterTotal == true)
+                            ? totalMarksField()
+                            : Container(
+                                width: MediaQuery.of(context).size.width,
+                                height:
+                                    MediaQuery.of(context).size.height * 0.190,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                ),
+                                alignment: Alignment.topCenter,
+                                child: SingleChildScrollView(
+                                  child: textFields(),
+                                ),
+                              ),
+                      ],
+                    ),
+                  )
+          ],
+        ),
       ),
     );
   }

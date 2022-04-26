@@ -462,15 +462,20 @@ class _EditAttendanceState extends State<EditAttendance> {
               var absentees = _absentees;
               var selectedDate = _selectedDate;
 
-              DBProvider.db.saveAttendance(selectedDate, className,
-                  submissionDate, jsonEncode(absentees));
-              setState(() {
-                _absentees = [];
-                studentList = [];
-                _selectedDate = '';
-                reset = 1;
-              });
-              Navigator.of(context).pop();
+              if (kDebugMode) {
+                print(absentees.toString());
+                print(selectedDate);
+              }
+
+              // DBProvider.db.saveAttendance(selectedDate, className,
+              //     submissionDate, jsonEncode(absentees));
+              // setState(() {
+              //   _absentees = [];
+              //   studentList = [];
+              //   _selectedDate = '';
+              //   reset = 1;
+              // });
+              // Navigator.of(context).pop();
             },
             child: const Text('Confirm'),
           ),
@@ -738,7 +743,7 @@ class _EditAttendanceState extends State<EditAttendance> {
     return Container(
       // alignment: ,
       decoration: BoxDecoration(),
-      height: MediaQuery.of(context).size.height*0.05,
+      height: MediaQuery.of(context).size.height * 0.05,
       margin: const EdgeInsets.symmetric(
         vertical: 2.0,
       ),
