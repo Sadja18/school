@@ -586,10 +586,7 @@ class _PaceAssessmentScreenState extends State<PaceAssessmentScreen> {
                   }
                   Navigator.of(context).pop();
                 },
-                child: Icon(
-                  Icons.close_rounded,
-                  size: 35,
-                ),
+                child: const Text("Save"),
               ),
             ],
           );
@@ -605,14 +602,8 @@ class _PaceAssessmentScreenState extends State<PaceAssessmentScreen> {
         elevation: 8.0,
         child: InkWell(
           onTap: () {
-            // if (kDebugMode) {
-            //   print('this student');
-            //   print(studentList[studentRowIndex]['studentName'].toString());
-            // }
             var studentId = studentList[studentRowIndex]['studentId'];
-            // setState(() {
-            //   currentStudentId = studentId;
-            // });
+
             if (kDebugMode) {
               print('this student');
               // print(_totmarks);

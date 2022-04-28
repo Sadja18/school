@@ -17,7 +17,7 @@ Future<dynamic> offlineLogin(enteredUserName, enteredUserPassword) async {
       print(userID.runtimeType);
       print(userID);
     }
-    // var login = await DBProvider.db.makeUserOfflineLogin(userID);
+    var login = await DBProvider.db.makeUserOfflineLogin(userID);
 
     // if (kDebugMode) {
     //   print("login.toString(");

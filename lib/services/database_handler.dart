@@ -450,10 +450,16 @@ class DBProvider {
             var rollNo = student['roll_no'];
 
             var studentName = student['name'].toString();
-            if (student['middle'] != "" && student['middle'] != null) {
+            if (student['middle'] != "" &&
+                student['middle'] != null &&
+                student['middle'] != false &&
+                student['middle'] != "false") {
               studentName = studentName + " " + student['middle'].toString();
             }
-            if (student['last'] != "" && student['last'] != null) {
+            if (student['last'] != "" &&
+                student['last'] != null &&
+                student['last'] != false &&
+                student['last'] != "false") {
               studentName = studentName + " " + student['last'].toString();
             }
 
