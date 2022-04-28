@@ -457,11 +457,29 @@ class _EditAttendanceState extends State<EditAttendance> {
     return showDialog(
       context: context,
       builder: (BuildContext ctx) => AlertDialog(
+        titlePadding: const EdgeInsets.all(0),
+        contentPadding: const EdgeInsets.all(0),
         title: title == ""
             ? SizedBox(
                 height: 0,
               )
-            : Text(title),
+            : Container(
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: <Color>[
+                      Color(0xfff21bce),
+                      Color(0xff826cf0),
+                    ],
+                  ),
+                ),
+                child: Text(
+                  title,
+                  style: const TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+              ),
         actions: [
           TextButton(
             onPressed: () {
@@ -497,7 +515,7 @@ class _EditAttendanceState extends State<EditAttendance> {
             child: const Text('Confirm'),
           ),
         ],
-        content: Text(message),
+        content: showAbsentStudentsPreviewOnSubmit(),
       ),
     );
   }
@@ -835,6 +853,107 @@ class _EditAttendanceState extends State<EditAttendance> {
     );
   }
 
+  Widget showAbsentStudentsPreviewOnSubmit() {
+    return Container(
+      width: MediaQuery.of(context).size.width * 0.80,
+      height: MediaQuery.of(context).size.height * 0.80,
+      margin: const EdgeInsets.only(
+        top: 8.0,
+      ),
+      decoration: BoxDecoration(),
+      alignment: Alignment.topCenter,
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            Table(
+              columnWidths: const <int, TableColumnWidth>{
+                0: FractionColumnWidth(0.25),
+                1: FractionColumnWidth(0.75),
+              },
+              children: [
+                TableRow(
+                  children: [
+                    TableCell(
+                      child: Container(
+                        alignment: Alignment.topCenter,
+                        child: const Text(
+                          "Roll",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                    TableCell(
+                      child: Container(
+                        alignment: Alignment.topCenter,
+                        child: const Text(
+                          "Name",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            Table(
+              defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+              border: TableBorder.all(),
+              columnWidths: const <int, TableColumnWidth>{
+                0: FractionColumnWidth(0.25),
+                1: FractionColumnWidth(0.75),
+              },
+              children: List.generate(_absentees.length, (index) {
+                var studentId = _absentees[index];
+                String rollNo = "";
+                String studentName = "";
+
+                for (var student in studentList) {
+                  if (studentId == student['studentId'].toString()) {
+                    studentName = nameForamtter(student['studentName']);
+                    rollNo = student['rollNo'];
+                  }
+                }
+                return TableRow(
+                  children: [
+                    TableCell(
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: Text(
+                          rollNo,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                    TableCell(
+                      child: Container(
+                        alignment: Alignment.centerLeft,
+                        padding: const EdgeInsets.only(
+                          left: 12.0,
+                        ),
+                        child: Text(
+                          studentName,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              }),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Future<void> showAbsentStudentsPreview() async {
     return showDialog(
         barrierDismissible: true,
@@ -967,6 +1086,7 @@ class _EditAttendanceState extends State<EditAttendance> {
 
                                 print(submissionDate);
                               }
+                              title = "Absent Students";
                               showAlertFinal(title, message, submissionDate);
                             } else {
                               var title = "No Records";
