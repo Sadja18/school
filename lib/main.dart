@@ -54,12 +54,12 @@ class _MyAppState extends State<MyApp> {
           if (snapshot.hasData &&
               (snapshot.data == 1 || snapshot.data == "1")) {
             // print();
-            // return StickyAttendance();
+            return StickyAttendance();
             // return PaceAssessmentScreen();
             // return StickyNumericAbility();
 
             // return StickyBasicReading();
-            return Dashboard();
+            // return Dashboard();
           } else {
             return Login();
           }

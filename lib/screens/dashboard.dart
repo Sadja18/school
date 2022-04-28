@@ -234,18 +234,17 @@ class _DashboardState extends State<Dashboard> {
                   ),
                 ),
               ),
-
-              // ListTile(
-              //   title: Center(
-              //     child: OutlinedButton(
-              //       onPressed: () {
-              //         DBProvider.db.fetchQuery();
-              //         // Navigator.of(context).pushNamed(PaceAssessmentScreen.routeName );
-              //       },
-              //       child: const Text('Test'),
-              //     ),
-              //   ),
-              // ),
+              ListTile(
+                title: Center(
+                  child: OutlinedButton(
+                    onPressed: () {
+                      DBProvider.db.fetchQuery();
+                      // Navigator.of(context).pushNamed(PaceAssessmentScreen.routeName );
+                    },
+                    child: const Text('Test'),
+                  ),
+                ),
+              ),
             ],
           ),
         ),

@@ -234,12 +234,7 @@ class DBProvider {
       await dbBatch.commit(noResult: true);
     }, onUpgrade: (Database db, currentVersion, nextVersion) async {
       final upgradeCalls = {
-        2: (Database db, Batch dbBatch) async {
-          // dbBatch.execute(_createSchoolTable());
-          // dbBatch.execute(_createTeacherTable());
-          // dbBatch.execute(_createClassTable());
-          // dbBatch.execute(_createStudentTable());
-        },
+        2: (Database db, Batch dbBatch) async {},
       };
       var dbBatch = db.batch();
       upgradeCalls.forEach((version, call) async {
@@ -1228,13 +1223,23 @@ class DBProvider {
   Future<void> fetchQuery() async {
     try {
       final db = await initDB();
-      var query = 'SELECT * FROM basicLevels where standard_id=1;';
-      var query2 = "SELECT * FROM classes";
+      var query = 'SELECT * FROM attendance;';
+      var query2 = "SELECT * FROM numeric";
+      var query3 = "SELECT * FROM basic";
+      var query4 = "SELECT * FROM pace";
       var res = await db.rawQuery(query);
       var res2 = await db.rawQuery(query2);
+      var res3 = await db.rawQuery(query3);
+      var res4 = await db.rawQuery(query3);
       if (kDebugMode) {
-        log(res2.toString());
+        log("attendance");
         log(res.toString());
+        log("numeric");
+        log(res2.toString());
+        log("basic");
+        log(res3.toString());
+        log("pace");
+        log(res4.toString());
       }
     } catch (e) {
       if (kDebugMode) {

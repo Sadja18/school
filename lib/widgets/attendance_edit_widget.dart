@@ -44,6 +44,8 @@ class _EditAttendanceState extends State<EditAttendance> {
 
   int currentRowIndex = 0;
 
+  TextEditingController absenteeCSVController = TextEditingController();
+
   ScrollController verticalBodyController =
       ScrollController(initialScrollOffset: 0.0);
   ScrollController verticalTitleController =
@@ -500,10 +502,11 @@ class _EditAttendanceState extends State<EditAttendance> {
     );
   }
 
-  void absentMarkerOneGo(List<String> csvNames) {
+  int absentMarkerOneGo(List<String> csvNames) {
     if (kDebugMode) {
       print(csvNames);
     }
+    int popIt = 0;
 
     for (var rollNo in csvNames) {
       for (var student in studentList) {
@@ -522,14 +525,24 @@ class _EditAttendanceState extends State<EditAttendance> {
         }
       }
     }
+    popIt = 1;
+    return popIt;
   }
 
-  void shortCutDataProcessor(String value) {
-    var rolls = value.split(",");
+  int shortCutDataProcessor(String value) {
+    List<String> rollsUntrimmed = value.split(",");
+    List<String> rolls = [];
+
+    for (String rollUntrimmed in rollsUntrimmed) {
+      String rollTrimmed = rollUntrimmed.trim();
+      rolls.add(rollTrimmed);
+    }
+
     if (kDebugMode) {
       print(rolls.toString());
     }
-    absentMarkerOneGo(rolls);
+    int popIt = absentMarkerOneGo(rolls);
+    return popIt;
   }
 
   Future<void> _displayAbsentMarkShortMode() async {
@@ -546,40 +559,37 @@ class _EditAttendanceState extends State<EditAttendance> {
             actions: [
               TextButton(
                 onPressed: () {
-                  Navigator.of(context).pop();
+                  var value = absenteeCSVController.text;
+                  if (kDebugMode) {
+                    print('editing controller');
+                    print(value.toString());
+                  }
+                  var popIt = 0;
+
+                  if (value.toString().isNotEmpty &&
+                      value.toString() != "" &&
+                      value.toString().split(",")[0] != "") {
+                    popIt = shortCutDataProcessor(value.toString());
+                  }
+
+                  if (popIt == 1) {
+                    Navigator.of(context).pop();
+                  }
                 },
-                child: const Text(
-                  'Close',
-                  style: TextStyle(
-                    fontSize: 15.0,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+                child: const Text("Save"),
               ),
             ],
             content: TextField(
+              controller: absenteeCSVController,
               keyboardType: TextInputType.number,
               style: TextStyle(
                 fontSize: 15.0,
               ),
               onChanged: (value) {
                 if (kDebugMode) {
-                  print(value.toString());
+                  // print(value.toString());
+                  print("onchange");
                 }
-              },
-              onEditingComplete: () {
-                if (kDebugMode) {
-                  print('Editing complete');
-                }
-                // Navigator.of(ctx).pop();
-              },
-              onSubmitted: (value) {
-                if (kDebugMode) {
-                  print('Submitted');
-                  print(value.toString());
-                }
-                shortCutDataProcessor(value.toString());
-                // Navigator.of(ctx).pop();
               },
             ),
           );
