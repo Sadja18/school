@@ -82,7 +82,7 @@ class _StudentAttendanceCalendarViewState
         DateTime endDateParsed = DateTime.parse("${record['date']} 23:59:59");
         String subject = record['class_name'];
         DateTime submissionDateUn = DateTime.parse(record['submission_date']);
-        bool synced = (record['synced']=='false')? false: true;
+        bool synced = (record['synced'] == 'false') ? false : true;
         // String subject = DateFormat('MMMM yyyy')
         Attendance entry =
             Attendance(startDateParsed, endDateParsed, subject, true, synced);
@@ -125,7 +125,7 @@ class _StudentAttendanceCalendarViewState
                     onPressed: () {
                       initiate();
                     },
-                    child: const Text("Show"),
+                    child: const Text("View"),
                   ),
                 ),
           (isInitiated == 0)
@@ -221,9 +221,9 @@ class AttendanceDataSource extends CalendarDataSource {
 
   @override
   Color getColor(int index) {
-    if(appointments![index].synced==false){
+    if (appointments![index].synced == false) {
       return Colors.blue;
-    }else{
+    } else {
       return Colors.green;
     }
     // return colorVal;

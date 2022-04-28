@@ -143,6 +143,8 @@ class _StickyNumericAbilityState extends State<StickyNumericAbility> {
     }
     var studentIdString = studentList[studentRowIndex]['studentId'].toString();
     setState(() {
+      studentList[studentRowIndex]['level'] = selectedLevel.toString();
+      studentList[studentRowIndex]['result'] = result.toString();
       resultSheet[studentIdString] = result;
       levelSheet[studentIdString] = selectedLevel;
       (selectedLevel != "" && result != "NE")
@@ -462,7 +464,7 @@ class _StickyNumericAbilityState extends State<StickyNumericAbility> {
             onPressed: () {
               Navigator.of(context).pop();
             },
-            child: const Text('Re-enter'),
+            child: const Text('Cancel'),
           ),
         ],
         content: Text(message),
@@ -475,13 +477,29 @@ class _StickyNumericAbilityState extends State<StickyNumericAbility> {
     return showDialog(
       context: context,
       builder: (BuildContext ctx) => AlertDialog(
-        title: Text(title),
+        title: Container(
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              colors: <Color>[
+                Color(0xfff21bce),
+                Color(0xff826cf0),
+              ],
+            ),
+          ),
+          child: const Text(
+            "Preview",
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
         actions: [
           TextButton(
             onPressed: () {
               Navigator.of(context).pop();
             },
-            child: const Text('Re-enter'),
+            child: const Text('Cancel'),
           ),
           TextButton(
             onPressed: () {
@@ -495,7 +513,148 @@ class _StickyNumericAbilityState extends State<StickyNumericAbility> {
             child: const Text('Confirm'),
           ),
         ],
-        content: Text(message),
+        content: dataPreviewBeforeSave(),
+      ),
+    );
+  }
+
+  Widget dataPreviewBeforeSave() {
+    return Container(
+      decoration: BoxDecoration(),
+      height: MediaQuery.of(context).size.height * 0.80,
+      width: MediaQuery.of(context).size.width * 0.80,
+      alignment: Alignment.topCenter,
+      child: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Table(
+              columnWidths: const <int, TableColumnWidth>{
+                0: FractionColumnWidth(0.15),
+                1: FractionColumnWidth(0.55),
+                2: FractionColumnWidth(0.30),
+              },
+              children: [
+                TableRow(
+                  children: [
+                    TableCell(
+                      child: Container(
+                        alignment: Alignment.topCenter,
+                        child: const Text(
+                          "Roll",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                    TableCell(
+                      child: Container(
+                        alignment: Alignment.topCenter,
+                        child: const Text(
+                          "Name",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                    TableCell(
+                      child: Container(
+                        alignment: Alignment.topCenter,
+                        child: const Text(
+                          "Level",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            Table(
+              defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+              border: TableBorder.all(),
+              columnWidths: const <int, TableColumnWidth>{
+                0: FractionColumnWidth(0.15),
+                1: FractionColumnWidth(0.55),
+                2: FractionColumnWidth(0.30),
+              },
+              children: List.generate(studentList.length, (index) {
+                if (studentList[index]['result'] != "" &&
+                    studentList[index]['level'] != '0') {
+                  return TableRow(
+                    children: [
+                      TableCell(
+                        child: Container(
+                          alignment: Alignment.center,
+                          child: Text(
+                            studentList[index]['rollNo'].toString(),
+                            style: const TextStyle(
+                              // fontWeight: FontWeight.bold,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ),
+                      ),
+                      TableCell(
+                        child: Container(
+                          alignment: Alignment.centerLeft,
+                          padding: const EdgeInsets.only(
+                            left: 12.0,
+                          ),
+                          child: Text(
+                            nameForamtter(
+                                studentList[index]['studentName'].toString()),
+                            style: const TextStyle(
+                                // fontWeight: FontWeight.bold,
+                                ),
+                          ),
+                        ),
+                      ),
+                      TableCell(
+                        child: Container(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            studentList[index]['level'].toString(),
+                            style: const TextStyle(
+                                // fontWeight: FontWeight.bold,
+                                ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                } else {
+                  return TableRow(
+                    children: [
+                      TableCell(
+                        child: SizedBox(
+                          height: 0,
+                        ),
+                      ),
+                      TableCell(
+                        child: SizedBox(
+                          height: 0,
+                        ),
+                      ),
+                      TableCell(
+                        child: SizedBox(
+                          height: 0,
+                        ),
+                      ),
+                    ],
+                  );
+                }
+              }),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -650,10 +809,6 @@ class _StickyNumericAbilityState extends State<StickyNumericAbility> {
 
                             if (kDebugMode) {
                               print('Submitting to local');
-
-                              print(submissionDate);
-                              print(studentList);
-                              print(_selectedDate);
                             }
                             showAlertFinal(title, message, submissionDate);
                           }

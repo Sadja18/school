@@ -39,8 +39,8 @@ void numericAssessmentProcessor(
   }
 }
 
-void basicAssessmentProcessor(List assessedResult, String? selectedDate,
-    String? selectedLanguage, String? submissionDate) {
+Future<void> basicAssessmentProcessor(List assessedResult, String? selectedDate,
+    String? selectedLanguage, String? submissionDate) async {
   if (assessedResult.isNotEmpty) {
     print('here');
     print(selectedDate.toString());
@@ -71,7 +71,7 @@ void basicAssessmentProcessor(List assessedResult, String? selectedDate,
     }
     // print(processedRecord.toString());
     // print(processedRecord);
-    DBProvider.db.saveReadingAssessment(processedRecord);
+    await DBProvider.db.saveReadingAssessment(processedRecord);
   }
 }
 

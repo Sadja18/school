@@ -452,6 +452,33 @@ class _EditAttendanceState extends State<EditAttendance> {
     );
   }
 
+  void dataSave(selectedDate, className, submissionDate, absentees) async {
+    await DBProvider.db.saveAttendance(
+        selectedDate, className, submissionDate, jsonEncode(absentees));
+    setState(() {
+      _absentees = [];
+      studentList = [];
+      _selectedDate = '';
+      reset = 1;
+    });
+    return showDialog(
+        context: context,
+        builder: (BuildContext ctx) {
+          return AlertDialog(
+            title: SizedBox(
+              height: 0,
+            ),
+            titlePadding: const EdgeInsets.all(0),
+            content: Container(
+              height: MediaQuery.of(context).size.height * 0.20,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(),
+              child: const Text("Attendance Saved Successfully"),
+            ),
+          );
+        });
+  }
+
   Future<void> showAlertFinal(
       String title, String message, String submissionDate) {
     return showDialog(
@@ -502,14 +529,8 @@ class _EditAttendanceState extends State<EditAttendance> {
                 print(selectedDate);
               }
 
-              DBProvider.db.saveAttendance(selectedDate, className,
-                  submissionDate, jsonEncode(absentees));
-              setState(() {
-                _absentees = [];
-                studentList = [];
-                _selectedDate = '';
-                reset = 1;
-              });
+              dataSave(selectedDate, className, submissionDate, absentees);
+
               Navigator.of(context).pop();
             },
             child: const Text('Confirm'),

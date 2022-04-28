@@ -325,7 +325,7 @@ class _StickyAttendanceState extends State<StickyAttendance> {
                     Container(
                       width: MediaQuery.of(context).size.width,
                       height: MediaQuery.of(context).size.height * 0.76,
-                      // decoration: BoxDecoration(color: Colors.amber),
+                      decoration: BoxDecoration(),
                       child: (studentList.isEmpty)
                           ? const Text('')
                           : createOrEdit(),
