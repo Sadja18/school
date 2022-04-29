@@ -380,7 +380,7 @@ class _PaceAssessmentScreenState extends State<PaceAssessmentScreen> {
     Map<String, dynamic> assessmentData = {};
     assessmentData['assessmentName'] = _selectedAssessment['name'];
     assessmentData['subjectName'] = _selectedAssessment['subject_name'];
-    assessmentData['mediumName'] = _selectedAssessment['medium_name'];
+    assessmentData['medium_name'] = _selectedAssessment['medium_name'];
     assessmentData['qp_code'] = _selectedAssessment['qp_code'];
     assessmentData['qp_code_name'] = _selectedAssessment['qp_code_name'];
     assessmentData['scheduledDate'] = _selectedAssessment['date'];
@@ -415,10 +415,38 @@ class _PaceAssessmentScreenState extends State<PaceAssessmentScreen> {
 */
 
     if (kDebugMode) {
-      print(assessmentData.toString());
+      var result = assessmentData['result'];
+      var markSheet = assessmentData['marksheet'];
+      log(markSheet.toString());
+      log("some 9");
+      log(result.toString());
     }
     // assessmentData
     await DBProvider.db.savePaceAssessment(assessmentData);
+
+    // return showDialog(
+    //     context: context,
+    //     builder: (BuildContext ctx) {
+    //       return AlertDialog(
+    //         title: SizedBox(
+    //           height: 0,
+    //         ),
+    //         titlePadding: const EdgeInsets.all(0),
+    //         content: Container(
+    //           height: MediaQuery.of(context).size.height * 0.10,
+    //           alignment: Alignment.center,
+    //           child: const Text("Assessment Saved Successfully"),
+    //         ),
+    //         actions: [
+    //           TextButton(
+    //             onPressed: () {
+    //               Navigator.of(context).pop();
+    //             },
+    //             child: const Text("close"),
+    //           ),
+    //         ],
+    //       );
+    //     });
   }
 
   Widget widgetSubmitButton() {
@@ -427,15 +455,6 @@ class _PaceAssessmentScreenState extends State<PaceAssessmentScreen> {
       decoration: BoxDecoration(),
       child: ElevatedButton(
         onPressed: () {
-          if (kDebugMode) {
-            print('submit Button clicked');
-            print(studentIdMarksMap.toString());
-            print(studentIdCheckboxVal.toString());
-            print(studentIdResultSheet.toString());
-            print(_selectedAssessment.toString());
-            print(_selectedClass.toString());
-          }
-
           saveDataToDB();
         },
         child: const Text("Submit"),
@@ -544,6 +563,7 @@ class _PaceAssessmentScreenState extends State<PaceAssessmentScreen> {
       studentIdResultSheet[studentId] = resultName(result);
       studentIdMarksMap[studentId] = marksOfStudentId;
       studentIdTotalSheet[studentId] = totalMarksOfStudent;
+      // studentList[]
     });
   }
 
@@ -1015,6 +1035,16 @@ class _UserInputWidgetState extends State<UserInputWidget> {
             ));
   }
 
+  String getTotalMarksInitialValue() {
+    String total = "";
+    double tmp = 0;
+    for (var mark in obtainedMarks) {
+      tmp = tmp + mark;
+    }
+    total = tmp.toString();
+    return total;
+  }
+
   Widget totalMarksField() {
     return Container(
       decoration: BoxDecoration(
@@ -1048,7 +1078,7 @@ class _UserInputWidgetState extends State<UserInputWidget> {
                   alignment: Alignment.centerLeft,
                   width: MediaQuery.of(context).size.width * 0.30,
                   child: TextFormField(
-                    initialValue: obtainedMarks[0].toString(),
+                    initialValue: getTotalMarksInitialValue(),
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
                       focusColor: Colors.blue,

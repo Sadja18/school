@@ -142,7 +142,7 @@ class DBProvider {
         "stringData TEXT NOT NULL,"
         'editable TEXT DEFAULT "true" NOT NULL,'
         'synced TEXT DEFAULT "false" NOT NULL,'
-        "UNIQUE(date, class_name, submission_date, stringData, editable, synced) ON CONFLICT REPLACE"
+        "UNIQUE(date, class_name, submission_date, editable, synced)"
         ");";
   }
 
@@ -156,7 +156,7 @@ class DBProvider {
         "stringData TEXT NOT NULL,"
         'editable TEXT DEFAULT "true" NOT NULL,'
         'synced TEXT DEFAULT "false" NOT NULL,'
-        "UNIQUE(date, class_name, submission_date, language, stringData, editable, synced) ON CONFLICT REPLACE"
+        "UNIQUE(date, class_name, submission_date, language, editable, synced)"
         ");";
   }
 
@@ -173,11 +173,8 @@ class DBProvider {
         "marksheet TEXT NOT NULL,"
         "result TEXT NOT NULL,"
         'editable TEXT DEFAULT "true" NOT NULL,'
-        "synced TEXT DEFAULT false NOT NULL,"
-        "UNIQUE("
-        "assessmentName, subject_name, medium_name, qp_code,"
-        " scheduledDate, uploadDate, class_name, marksheet, result"
-        ", editable, synced) ON CONFLICT REPLACE"
+        'synced TEXT DEFAULT "false" NOT NULL,'
+        "UNIQUE(assessmentName, scheduledDate, uploadDate, class_name, editable, synced)"
         ");";
   }
 
@@ -876,32 +873,45 @@ class DBProvider {
 
   Future<void> savePaceAssessment(assessmentData) async {
     // print(assessmentData.toString());
-    var assessmentName = assessmentData['assessmentName'];
-    var subjectName = assessmentData['subjectName'];
-    var mediumName = assessmentData['medium_name'];
-    var qpCode = assessmentData['qp_code'];
-    var qpCodeName = assessmentData['qp_code_name'];
-    var scheduledDate = assessmentData['scheduledDate'];
-    var uploadDate = assessmentData['uploadDate'];
-    var className = assessmentData['className'];
-    var result = assessmentData['result'];
-    var markSheet = assessmentData['marksheet'];
+    try {
+      if (kDebugMode) {
+        print("save to db pace");
+      }
+      var assessmentName = assessmentData['assessmentName'];
+      var subjectName = assessmentData['subjectName'];
+      var mediumName = assessmentData['medium_name'];
+      var qpCode = assessmentData['qp_code'];
+      var qpCodeName = assessmentData['qp_code_name'];
+      var scheduledDate = assessmentData['scheduledDate'];
+      var uploadDate = assessmentData['uploadDate'];
+      var className = assessmentData['className'];
+      var result = assessmentData['result'];
+      var markSheet = assessmentData['marksheet'];
+      if (kDebugMode) {
+        print(assessmentName != null &&
+            subjectName != null &&
+            mediumName != null &&
+            qpCode != null &&
+            qpCodeName != null &&
+            scheduledDate != null &&
+            uploadDate != null &&
+            className != null &&
+            markSheet.isNotEmpty &&
+            result.isNotEmpty);
+      }
 
-    if (assessmentName != null &&
-        subjectName != null &&
-        mediumName != null &&
-        qpCode != null &&
-        qpCodeName != null &&
-        scheduledDate != null &&
-        uploadDate != null &&
-        className != null &&
-        markSheet.isNotEmpty &&
-        result.isNotEmpty) {
-      print('inserting assessment pace');
-      final dba = initDB();
-      dba.then((db) async {
-        final batch = await db.batch();
-
+      if (assessmentName != null &&
+          subjectName != null &&
+          mediumName != null &&
+          qpCode != null &&
+          qpCodeName != null &&
+          scheduledDate != null &&
+          uploadDate != null &&
+          className != null &&
+          markSheet.isNotEmpty &&
+          result.isNotEmpty) {
+        print('inserting assessment pace');
+        final batch = await initDB();
         var vResult = {};
         var vMarkSheet = {};
 
@@ -913,8 +923,7 @@ class DBProvider {
         }
         var vResults = jsonEncode(vResult);
         var vMarkSheets = jsonEncode(vMarkSheet);
-
-        batch.insert('pace', {
+        Map<String, Object> values = {
           'assessmentName': assessmentName,
           'subject_name': subjectName,
           'medium_name': mediumName,
@@ -924,10 +933,20 @@ class DBProvider {
           'class_name': className,
           'marksheet': vMarkSheets,
           'result': vResults
-        });
-        await batch.commit(noResult: true);
-        print('pace saved $uploadDate');
-      });
+        };
+
+        var res = await batch.insert('pace', values,
+            conflictAlgorithm: ConflictAlgorithm.replace);
+
+        if (kDebugMode) {
+          log(values.toString());
+          log(res.toString());
+        }
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        log(e.toString());
+      }
     }
   }
 
@@ -1224,13 +1243,13 @@ class DBProvider {
     try {
       final db = await initDB();
       var query = 'SELECT * FROM attendance;';
-      var query2 = "SELECT * FROM numeric";
-      var query3 = "SELECT * FROM basic";
-      var query4 = "SELECT * FROM pace";
+      var query2 = "SELECT * FROM numeric;";
+      var query3 = "SELECT * FROM basic;";
+      var query4 = "SELECT * FROM pace;";
       var res = await db.rawQuery(query);
       var res2 = await db.rawQuery(query2);
       var res3 = await db.rawQuery(query3);
-      var res4 = await db.rawQuery(query3);
+      var res4 = await db.rawQuery(query4);
       if (kDebugMode) {
         log("attendance");
         log(res.toString());
