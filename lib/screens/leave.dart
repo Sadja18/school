@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 
 import '../widgets/leave_apply.dart';
 import '../widgets/leave_view_applied.dart';
+import './dashboard.dart';
 
 class LeaveScreen extends StatefulWidget {
   static const routeName = "/screen-leave";
@@ -30,6 +31,14 @@ class _LeaveScreenState extends State<LeaveScreen> {
               fontWeight: FontWeight.bold,
             ),
           ),
+          actions: [
+            IconButton(
+              onPressed: () {
+                Navigator.of(context).popAndPushNamed(Dashboard.routeName);
+              },
+              icon: const Icon(Icons.home),
+            ),
+          ],
           backgroundColor: Theme.of(context).primaryColor,
           flexibleSpace: Container(
             decoration: const BoxDecoration(
