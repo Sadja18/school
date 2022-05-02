@@ -8,6 +8,8 @@ import './screens/new_assessment.dart';
 import '../services/helper_db.dart';
 import './screens/dashboard.dart';
 import './screens/login.dart';
+import './screens/attendance_leave.dart';
+import './screens/leave.dart';
 import './services/sync_services.dart';
 // import './screens/dummy.dart';
 import './widgets/sticky_basic_reading_widget.dart';
@@ -87,13 +89,15 @@ class _MyAppState extends State<MyApp> {
 
         /// the other paths are just specifying which Navigation route maps to which widget
         /// all the widgets mapped to the routes are defined in <project_home>/lib/screens directory
-        Dashboard.routeName: (ctx) => Dashboard(),
         Login.routeName: (ctx) => Login(),
+        Dashboard.routeName: (ctx) => Dashboard(),
+        AttedanceLeaveScreen.routeName: (ctx) => AttedanceLeaveScreen(),
+        StickyAttendance.routeName: (ctx) => StickyAttendance(),
+        LeaveScreen.routeName: (ctx) => LeaveScreen(),
         AssessmentScreen.routeName: (ctx) => AssessmentScreen(),
         StickyBasicReading.routeName: (ctx) => StickyBasicReading(),
         StickyNumericAbility.routeName: (ctx) => StickyNumericAbility(),
-        StickyAttendance.routeName: (ctx) => StickyAttendance(),
-        PaceAssessmentScreen.routeName: (ctx) => PaceAssessmentScreen()
+        PaceAssessmentScreen.routeName: (ctx) => PaceAssessmentScreen(),
       },
     );
   }

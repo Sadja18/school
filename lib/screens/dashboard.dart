@@ -4,6 +4,8 @@ import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:school/screens/attendance_leave.dart';
+import 'package:school/screens/leave.dart';
 import '../services/helper_db.dart';
 // import 'package:school/screens/dummy.dart';
 // import 'package:workmanager/workmanager.dart';
@@ -15,7 +17,6 @@ import '../services/request_handler.dart';
 import '../screens/login.dart';
 import '../services/database_handler.dart';
 import '../services/sync_services.dart';
-import '../widgets/sticky_attendance_widget.dart';
 import '../widgets/pace_assessment.dart';
 import '../models/urlPaths.dart' as uri_paths;
 
@@ -276,7 +277,8 @@ class _DashboardState extends State<Dashboard> {
               height: MediaQuery.of(context).size.height * 0.30,
               child: TextButton(
                 onPressed: () {
-                  Navigator.of(context).pushNamed(StickyAttendance.routeName);
+                  Navigator.of(context)
+                      .pushNamed(AttedanceLeaveScreen.routeName);
 //
                 },
                 child: Column(
@@ -285,7 +287,7 @@ class _DashboardState extends State<Dashboard> {
                   children: [
                     Image.asset('assets/dashboardIcons/leave.png'),
                     const Text(
-                      'Attendance',
+                      'Attendance/Leave',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 20.0,
