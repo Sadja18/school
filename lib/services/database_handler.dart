@@ -194,9 +194,9 @@ class DBProvider {
     return "CREATE TABLE TeacherLeaveAllocation("
         "leaveTypeId INTEGER NOT NULL,"
         "leaveTypeName TEXT NOT NULL,"
-        "leaveAllocated TEXT NOT NULL,"
-        "leavePending TEXT,"
-        "leaveAvailable TEXT,"
+        "leaveAllocated TEXT,"
+        "leavePending TEXT DEFAULT '0',"
+        "leaveAvailable TEXT DEFAULT '0',"
         "UNIQUE(leaveTypeId)"
         ");";
   }
@@ -211,9 +211,13 @@ class DBProvider {
         "leaveFromDate TEXT NOT NULL,"
         "leaveToDate TEXT NOT NULL,"
         "leaveDays TEXT NOT NULL,"
+        "leaveReason TEXT NOT NULL,"
+        "leaveAttachment TEXT,"
+        "leaveRequestStatus TEXT NOT NULL,"
         "leaveRequestEditable TEXT DEFAULT 'false',"
         "leaveRequestSynced TEXT DEFAULT 'false',"
-        "UNIQUE(leaveRequestTeacherId, leaveTypeId, leaveTypeName, leaveAppliedDate, leaveFromDate, leaveToDate, leaveDays)"
+        "UNIQUE(leaveTypeId, leaveTypeName, leaveRequestTeacherId, "
+        "leaveAppliedDate, leaveFromDate, leaveToDate, leaveDays, leaveReason)"
         ");";
   }
 
