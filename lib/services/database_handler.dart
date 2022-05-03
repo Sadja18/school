@@ -190,6 +190,33 @@ class DBProvider {
         "totmarks TEXT NOT NULL);";
   }
 
+  String _createTeacherLeaveTypeAllocationTable() {
+    return "CREATE TABLE TeacherLeaveAllocation("
+        "leaveTypeId INTEGER NOT NULL,"
+        "leaveTypeName TEXT NOT NULL,"
+        "leaveAllocated TEXT NOT NULL,"
+        "leavePending TEXT,"
+        "leaveAvailable TEXT,"
+        "UNIQUE(leaveTypeId)"
+        ");";
+  }
+
+  String _createTeacherLeaveRequestTable() {
+    return "CREATE TABLE TeacherLeaveRequest("
+        "leaveRequestId INTEGER,"
+        "leaveRequestTeacherId INTEGER NOT NULL,"
+        "leaveTypeId INTEGER NOT NULL,"
+        "leaveTypeName TEXT NOT NULL,"
+        "leaveAppliedDate TEXT NOT NULL,"
+        "leaveFromDate TEXT NOT NULL,"
+        "leaveToDate TEXT NOT NULL,"
+        "leaveDays TEXT NOT NULL,"
+        "leaveRequestEditable TEXT DEFAULT 'false',"
+        "leaveRequestSynced TEXT DEFAULT 'false',"
+        "UNIQUE(leaveRequestTeacherId, leaveTypeId, leaveTypeName, leaveAppliedDate, leaveFromDate, leaveToDate, leaveDays)"
+        ");";
+  }
+
   Future initDB() async {
     String path = join(await getDatabasesPath(), dbname);
     return await openDatabase(path, version: version, onOpen: (db) {},
@@ -228,6 +255,9 @@ class DBProvider {
       dbBatch.execute(_createPaceTable());
       dbBatch.execute(_createBasicTable());
       dbBatch.execute(_createNumericTable());
+
+      dbBatch.execute(_createTeacherLeaveTypeAllocationTable());
+      dbBatch.execute(_createTeacherLeaveRequestTable());
       await dbBatch.commit(noResult: true);
     }, onUpgrade: (Database db, currentVersion, nextVersion) async {
       final upgradeCalls = {

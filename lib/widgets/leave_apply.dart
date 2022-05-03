@@ -4,6 +4,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
+
+import './assist/date_selector.dart';
 
 class ApplyForLeaveWidget extends StatefulWidget {
   const ApplyForLeaveWidget({Key? key}) : super(key: key);
@@ -18,6 +21,37 @@ class _ApplyForLeaveWidgetState extends State<ApplyForLeaveWidget> {
   final ImagePicker _picker = ImagePicker();
   late File _image;
   String _image64Code = "";
+
+  String _selectedStartDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+  String _selectedEndDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+
+  double dateDiff = DateTime.now().difference(DateTime.now()).inHours / 24;
+
+  double dateDiffCacl() {
+    var to = DateTime.parse(_selectedEndDate);
+    var from = DateTime.parse(_selectedStartDate);
+    var dateDifference = (to.difference(from).inHours / 24);
+    setState(() {
+      dateDiff = dateDifference;
+    });
+    return dateDifference;
+  }
+
+  Map<String, dynamic>? _selectedLeaveType = {};
+
+  void startDateSelector(String? selectedDate) {
+    setState(() {
+      _selectedStartDate = selectedDate!;
+    });
+    dateDiffCacl();
+  }
+
+  void endDateSelector(String? selectedDate) {
+    setState(() {
+      _selectedEndDate = selectedDate!;
+    });
+    dateDiffCacl();
+  }
 
   void uploadedImagePreview() async {
     return showDialog(
@@ -153,14 +187,14 @@ class _ApplyForLeaveWidgetState extends State<ApplyForLeaveWidget> {
             "From:",
             Container(
               alignment: Alignment.centerLeft,
-              child: const Text("From Date"),
+              child: DateShowNew(dateSelector: startDateSelector),
             ),
           ),
           tableViewField(
             "To:",
             Container(
               alignment: Alignment.centerLeft,
-              child: const Text("To Date"),
+              child: DateShowNew(dateSelector: endDateSelector),
             ),
           ),
           tableViewField(
