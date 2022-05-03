@@ -103,6 +103,7 @@ Future<void> wrapper() async {
     print('Fetch Persistent place here');
   }
   await fetchPersistent();
+  await fetchLeaveTypeAndRequests();
 
   // await syncAttendance();
   // await syncBasic();

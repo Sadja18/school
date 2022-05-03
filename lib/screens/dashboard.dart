@@ -4,8 +4,8 @@ import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:school/screens/attendance_leave.dart';
-import 'package:school/screens/leave.dart';
+import './attendance_leave.dart';
+import './leave.dart';
 import '../services/helper_db.dart';
 // import 'package:school/screens/dummy.dart';
 // import 'package:workmanager/workmanager.dart';
@@ -131,6 +131,15 @@ class _DashboardState extends State<Dashboard> {
     }
   }
 
+  void getLeaveTypes() async {
+    String query = "SELECT leaveTypeName FROM TeacherLeaveAllocation;";
+    var leaveTypes = await DBProvider.db.dynamicRead(query, []);
+    if (kDebugMode) {
+      print('leave tgypes');
+      print(leaveTypes.toString());
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     var statusBarHeight = MediaQuery.of(context).padding.top;
@@ -239,7 +248,8 @@ class _DashboardState extends State<Dashboard> {
                 title: Center(
                   child: OutlinedButton(
                     onPressed: () {
-                      DBProvider.db.fetchQuery();
+                      // DBProvider.db.fetchQuery();
+                      getLeaveTypes();
                       // Navigator.of(context).pushNamed(PaceAssessmentScreen.routeName );
                     },
                     child: const Text('Test'),

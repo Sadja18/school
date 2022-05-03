@@ -44,6 +44,10 @@ class _DateShowNewState extends State<DateShowNew> {
         onPressed: () => _selectDate(context),
         child: Text(
           DateFormat('E, MMM, dd yyyy').format(date),
+          style: const TextStyle(
+            color: Colors.deepPurpleAccent,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
     );

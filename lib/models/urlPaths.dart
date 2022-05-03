@@ -1,7 +1,9 @@
 // ignore_for_file: file_names
 
-const baseURL = 'https://namanpwa.xyz';
-const baseURLA = 'namanpwa.xyz';
+// const baseURL = 'https://namanpwa.xyz';
+// const baseURLA = 'namanpwa.xyz';
+const baseURL = 'http://10.0.2.2';
+const baseURLA = '10.0.2.2';
 const checkIfOnline = '/online/checkIfOnline.php/';
 const onlineLogin = '/online/login.php';
 const fetchRelevantData = '/online/fetchRelevantData.php';
@@ -16,6 +18,7 @@ const fetchLanguages = '/online/fetchlanguages.php';
 const fetchReadingLevels = '/online/fetchreadinglevels.php';
 const fetchNumericLevels = '/online/fetchnumericlevels.php';
 const fetchAssessments = '/online/fetchassessments.php';
-const fetchQPapers= '/online/fetchqpapers.php';
+const fetchQPapers = '/online/fetchqpapers.php';
 const fetchGrading = '/online/fetchgrading.php';
 
+const fetchLeaveTypes = '/online/fetchleavetypes.php';

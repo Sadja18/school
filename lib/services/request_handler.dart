@@ -301,6 +301,59 @@ Future<void> fetchPersistent() async {
   }
 }
 
+Future<void> fetchLeaveTypeAndRequests() async {
+  try {
+    var value = await DBProvider.db.getCredentials();
+    final userName = value[0]['userName'];
+    final userPassword = value[0]['userPassword'];
+    final dbname = value[0]['dbname'];
+
+    Map<String, String> queryParams = {
+      'userName': userName as String,
+      'userPassword': userPassword as String,
+      'dbname': dbname as String,
+      'Persistent': '1',
+    };
+
+    if (kDebugMode) {
+      print('sending fetch leave');
+    }
+    var leaveTypesResponse = await http.get(Uri(
+        scheme: 'http',
+        host: "10.0.2.2",
+        path: uri_paths.fetchLeaveTypes,
+        queryParameters: queryParams));
+
+    if (kDebugMode) {
+      log('response leave type ${leaveTypesResponse.statusCode}');
+      // log(leaveTypesResponse.body.toString());
+    }
+    if (leaveTypesResponse.statusCode == 200) {
+      var respBody = jsonDecode(leaveTypesResponse.body);
+      if (respBody['message'] != null &&
+          respBody['message'].toString().toLowerCase() == 'success' &&
+          respBody['leaveTypes'] != null &&
+          respBody['leaveTypes'].isNotEmpty) {
+        var leaveTypes = respBody['leaveTypes'];
+        for (var leaveType in leaveTypes) {
+          var id = leaveType['id'];
+          var name = leaveType['name'];
+          Map<String, Object> leaveTypeEntry = {
+            "leaveTypeId": id,
+            "leaveTypeName": name,
+          };
+
+          await DBProvider.db
+              .dynamicInsert("TeacherLeaveAllocation", leaveTypeEntry);
+        }
+      }
+    }
+  } catch (e) {
+    log("error fetch leave types");
+    log(e.toString());
+  }
+}
+
 Future<void> attendanceSyncHandler(attendanceRecordQuery) async {
   try {
     var valueQ = await DBProvider.db.getCredentials();

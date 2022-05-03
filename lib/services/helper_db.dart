@@ -26,18 +26,18 @@ Future<void> saveUserToDB(Map<String, dynamic> userData) async {
 }
 
 Future<dynamic> isLoggedIn() async {
-  String query ="SELECT * FROM users WHERE loginstatus=1 OR loginstatus='1'";
+  String query = "SELECT * FROM users WHERE loginstatus=1 OR loginstatus='1'";
   var params = [];
 
   var result = await DBProvider.db.dynamicRead(query, params);
 
-  if(kDebugMode){
+  if (kDebugMode) {
     print('isLoggedIn()');
     print(result.toString());
   }
-  if(result.isEmpty){
+  if (result.isEmpty) {
     return 0;
-  }else{
+  } else {
     return '1';
   }
 }
@@ -247,5 +247,19 @@ Future<dynamic> readAllAttendanceActive(
   } catch (e) {
     // log('konm');
     log(e.toString());
+  }
+}
+
+Future<dynamic> saveLeaveRequestToDB(
+    fromDate, toDate, days, leaveType, reason) async {
+  try {
+    // get teacher Id and use it as leaveTeacherId
+    // get leave type id using sql query to match the selected leave type
+    // save to db using dynamic insert
+
+  } catch (e) {
+    if (kDebugMode) {
+      log(e.toString());
+    }
   }
 }
