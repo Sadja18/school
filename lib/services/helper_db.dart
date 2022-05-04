@@ -255,16 +255,45 @@ Future<dynamic> saveLeaveRequestToDB(
   try {
     // get teacher Id and use it as leaveTeacherId
     int leaveRequestTeacherId = 0;
-    String query = "SELECT * FROM teacher WHERE"
+    int leaveTypeId = 0;
+    String leaveTypeName = "";
+    String query = "SELECT * FROM teacher WHERE "
         "userID = (SELECT userID FROM users WHERE loginStatus=1)";
     List params = [];
-    var teacher = await DBProvider.db.dynamicRead(query, params);
-    // get leave type id using sql query to match the selected leave type
-    // save to db using dynamic insert
+    var teacherList = await DBProvider.db.dynamicRead(query, params);
 
-    Map<String, Object> data = {
-      "leaveRequestTeacherId": leaveRequestTeacherId,
-    };
+    if (teacherList.isNotEmpty) {
+      var teacher = teacherList[0];
+      leaveRequestTeacherId = teacher['teacher_id'];
+    }
+
+    // get leave type id using sql query to match the selected leave type
+    query = "SELECT * FROM TeacherLeaveAllocation WHERE leaveTypeName = ?";
+    params = [leaveType];
+
+    var leaveTypeList = await DBProvider.db.dynamicRead(query, params);
+    if (leaveTypeList.isNotEmpty) {
+      leaveTypeId = leaveTypeList[0]['leaveTypeId'];
+      leaveTypeName = leaveTypeList[0]['leaveTypeName'];
+    }
+
+    // save to db using dynamic insert
+    if (leaveTypeId != 0 && leaveRequestTeacherId != 0 && leaveTypeName != "") {
+      Map<String, Object> data = {
+        "leaveRequestTeacherId": leaveRequestTeacherId,
+        "leaveTypeId": leaveTypeId,
+        "leaveTypeName": leaveTypeName,
+        "leaveFromDate": fromDate.toString(),
+        "leaveToDate": toDate.toString(),
+        "leaveDays": days.toString(),
+        "leaveReason": reason,
+        "leaveRequestStatus": "draft",
+      };
+      if (kDebugMode) {
+        log(data.toString());
+      }
+      await DBProvider.db.dynamicInsert("TeacherLeaveRequest", data);
+    }
   } catch (e) {
     if (kDebugMode) {
       log(e.toString());

@@ -36,7 +36,7 @@ class DBProvider {
     return "CREATE TABLE teacher("
         "teacher_id INTEGER PRIMARY KEY,"
         "teacher_name TEXT,"
-        "userID INTEGER NOT NULL,"
+        "userID INTEGER NOT NULL"
         ");";
   }
 

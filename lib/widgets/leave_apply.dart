@@ -195,7 +195,9 @@ class _ApplyForLeaveWidgetState extends State<ApplyForLeaveWidget> {
     // show saving dialog;
     await saveLeaveRequestToDB(fromDate, toDate, days, leaveType, reason);
     // show saved dialog;
-    // Navigator.of(context).pop();
+    Navigator.of(context).pop();
+
+    showAlertBox("Success", "Data Saved Successfully");
   }
 
   void showPreview() async {
