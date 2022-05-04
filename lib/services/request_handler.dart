@@ -413,6 +413,7 @@ Future<void> fetchLeaveTypeAndRequests() async {
             data['leaveDays'] = leaveDays;
             data['leaveReason'] = leaveReason;
             data['leaveRequestStatus'] = leaveRequestStatus;
+            data['leaveRequestEditable'] = 'true';
 
             await DBProvider.db.dynamicInsert("TeacherLeaveRequest", data);
           }
@@ -881,4 +882,74 @@ Future<void> paceSyncHandler(assessmentRecords) async {
       }
     }
   } catch (e) {}
+}
+
+Future<void> leaveRequestSyncHandler(leaveRequests) async {
+  try {
+    var usersQ = await DBProvider.db.getCredentials();
+    var users = usersQ.toList();
+    final userName = users[0]['userName'];
+    final userPassword = users[0]['userPassword'];
+    final dbname = users[0]['dbname'];
+    var schoolQ = await DBProvider.db.getSchool();
+    var schools = schoolQ.toList();
+
+    var school = schools[0];
+    var schoolId = school['school_id'];
+
+    var teacherIdQ = await DBProvider.db.getTeacherId();
+    var teacherIds = teacherIdQ.toList();
+    var teacherId = teacherIds[0]['teacher_id'];
+    if (kDebugMode) {
+      print("here");
+      print(teacherId);
+      print(schoolId);
+      print(leaveRequests.toString());
+    }
+
+    var requestBody = {
+      "userName": userName,
+      "userPassword": userPassword,
+      "dbname": dbname,
+      "schoolId": schoolId,
+      "teacherId": teacherId,
+      "sync": 1
+    };
+    var responses = [];
+
+    for (var leaveRequest in leaveRequests) {
+      var leaveTypeId = leaveRequest['leaveTypeId'];
+      var startDate = leaveRequest['leaveFromDate'];
+      var endDate = leaveRequest['leaveToDate'];
+      var days = leaveRequest['leaveDays'];
+      var reason = leaveRequest['leaveReason'];
+      var state = leaveRequest['leaveRequestStatus'];
+
+      requestBody['leaveTypeId'] = leaveTypeId;
+      requestBody['start_date'] = startDate;
+      requestBody['end_date'] = endDate;
+      requestBody['reason'] = reason;
+      requestBody['days'] = double.parse(days).toInt();
+
+      if (kDebugMode) {
+        print("o");
+        print(requestBody.toString());
+      }
+
+      var response = await http.post(
+          Uri.parse('${uri_paths.baseURL}${uri_paths.syncLeaveRequest}'),
+          headers: {'Content-Type': 'application/json'},
+          body: jsonEncode(requestBody));
+
+      if (response.statusCode == 200) {
+        if (kDebugMode) {
+          log(response.body);
+        }
+        responses.add(response.statusCode);
+      }
+    }
+    await DBProvider.db.updateLeave();
+  } catch (e) {
+    log(e.toString());
+  }
 }

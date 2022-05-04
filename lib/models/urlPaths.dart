@@ -23,3 +23,5 @@ const fetchGrading = '/online/fetchgrading.php';
 
 const fetchLeaveTypes = '/online/fetchleavetypes.php';
 const fetchLeaveRequests = '/online/fetchleaverequests.php';
+
+const syncLeaveRequest = '/online/syncleaverequest.php';

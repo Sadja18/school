@@ -1147,6 +1147,18 @@ class DBProvider {
     }
   }
 
+  Future<void> updateLeave() async {
+    try {
+      final db = await initDB();
+      var res = await db.rawQuery(
+          "UPDATE TeacherLeaveRequest SET leaveRequestEditable='true' WHERE leaveRequestEditable='false';");
+    } catch (e) {
+      if (kDebugMode) {
+        print(e.toString());
+      }
+    }
+  }
+
   Future<void> dum() async {
     final db = await initDB();
     var res = await db.rawQuery("SELECT * FROM basic;");

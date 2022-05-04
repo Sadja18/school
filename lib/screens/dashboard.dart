@@ -251,7 +251,7 @@ class _DashboardState extends State<Dashboard> {
                       // DBProvider.db.fetchQuery();
                       // DBProvider.db.dynamicRead(
                       //     "Select * FROM TeacherLeaveRequest;", []);
-
+                      syncLeaveRequest();
                       // fetchLeaveTypeAndRequests();
                       // Navigator.of(context).pushNamed(PaceAssessmentScreen.routeName );
                     },

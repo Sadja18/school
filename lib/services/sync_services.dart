@@ -1,5 +1,7 @@
 // ignore_for_file: avoid_print
 
+import 'dart:developer';
+
 import 'package:flutter/foundation.dart';
 
 import '../services/request_handler.dart';
@@ -94,6 +96,23 @@ Future<void> syncPace() async {
   } catch (e) {
     if (kDebugMode) {
       print(e.toString());
+    }
+  }
+}
+
+Future<void> syncLeaveRequest() async {
+  try {
+    var query =
+        "SELECT * FROM TeacherLeaveRequest WHERE leaveRequestEditable='false';";
+    var params = [];
+    var leaveRequests = await DBProvider.db.dynamicRead(query, params);
+
+    if (leaveRequests.isNotEmpty) {
+      leaveRequestSyncHandler(leaveRequests);
+    }
+  } catch (e) {
+    if (kDebugMode) {
+      log(e.toString());
     }
   }
 }
