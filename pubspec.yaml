@@ -22,7 +22,7 @@ dependencies:
   intl: ^0.17.0
   table_sticky_headers: ^2.0.0
   syncfusion_flutter_calendar: ^20.1.50
-  image_picker: ^0.8.5
+  # image_picker: ^0.8.5
 
  
 

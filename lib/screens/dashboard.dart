@@ -51,7 +51,8 @@ class _DashboardState extends State<Dashboard> {
   @override
   void initState() {
     super.initState();
-    // fetchPersistent();
+    fetchPersistent();
+    fetchLeaveTypeAndRequests();
     // Workmanager().initialize(callbackDispatcher, isInDebugMode: true);
     // // Workmanager().registerOneOffTask("1", fetchOne);
     // Workmanager().registerPeriodicTask("2",
@@ -244,22 +245,22 @@ class _DashboardState extends State<Dashboard> {
                   ),
                 ),
               ),
-              ListTile(
-                title: Center(
-                  child: OutlinedButton(
-                    onPressed: () {
-                      // DBProvider.db.fetchQuery();
-                      DBProvider.db.dynamicRead("Select * FROM pace;", []);
-                      // syncLeaveRequest();
-                      // syncAttendance();
-                      syncPace();
-                      // fetchLeaveTypeAndRequests();
-                      // Navigator.of(context).pushNamed(PaceAssessmentScreen.routeName );
-                    },
-                    child: const Text('Test'),
-                  ),
-                ),
-              ),
+              // ListTile(
+              //   title: Center(
+              //     child: OutlinedButton(
+              //       onPressed: () {
+              //         // DBProvider.db.fetchQuery();
+              //         DBProvider.db.dynamicRead("Select * FROM pace;", []);
+              //         // syncLeaveRequest();
+              //         // syncAttendance();
+              //         syncPace();
+              //         // fetchLeaveTypeAndRequests();
+              //         // Navigator.of(context).pushNamed(PaceAssessmentScreen.routeName );
+              //       },
+              //       child: const Text('Test'),
+              //     ),
+              //   ),
+              // ),
             ],
           ),
         ),

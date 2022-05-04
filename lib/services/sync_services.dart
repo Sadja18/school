@@ -136,9 +136,9 @@ Future<void> wrapper() async {
   await fetchPersistent();
   await fetchLeaveTypeAndRequests();
 
-  // await syncAttendance();
-  // await syncBasic();
-  // await syncNumeric();
-  // await syncPace();
-  // syncLeaveRequest();
+  await syncAttendance();
+  await syncBasic();
+  await syncNumeric();
+  await syncPace();
+  await syncLeaveRequest();
 }

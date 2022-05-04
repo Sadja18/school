@@ -127,7 +127,7 @@ class _StickyBasicReadingState extends State<StickyBasicReading> {
   }
 
   Widget columnsTitleBuilder(int index) {
-    var headers = ["Level", "Result"];
+    // var headers = ["Level", "Result"];
     return Container(
       alignment: Alignment.center,
       decoration: BoxDecoration(
@@ -1226,7 +1226,7 @@ class _UserInputWidgetState extends State<UserInputWidget> {
       levelNames = widget.levelNames;
       selectedLevel = widget.selectedLevel;
     });
-    // super.initState();
+    super.initState();
   }
 
   @override
