@@ -35,7 +35,7 @@ Future<dynamic> isLoggedIn() async {
     print('isLoggedIn()');
     print(result.toString());
   }
-  if (result.isEmpty) {
+  if (result == null || result.isEmpty) {
     return 0;
   } else {
     return '1';
