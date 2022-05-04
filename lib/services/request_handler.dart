@@ -35,6 +35,7 @@ Future<dynamic> tryLogin(String username, String userpassword) async {
       body: jsonEncode(<String, String>{
         'user': username,
         'password': userpassword,
+        'dbname': 'doednhdd'
       }),
     );
     return response;
@@ -315,36 +316,100 @@ Future<void> fetchLeaveTypeAndRequests() async {
       'Persistent': '1',
     };
 
+    // if (kDebugMode) {
+    //   print('sending fetch leave types');
+    // }
+    // var leaveTypesResponse = await http.get(Uri(
+    //     scheme: 'http',
+    //     host: uri_paths.baseURLA,
+    //     path: uri_paths.fetchLeaveTypes,
+    //     queryParameters: queryParams));
+
+    // if (kDebugMode) {
+    //   // log('response leave type ${leaveTypesResponse.statusCode}');
+    //   // log(leaveTypesResponse.body.toString());
+    // }
+    // if (leaveTypesResponse.statusCode == 200) {
+    //   var respBody = jsonDecode(leaveTypesResponse.body);
+    //   if (respBody['message'] != null &&
+    //       respBody['message'].toString().toLowerCase() == 'success' &&
+    //       respBody['leaveTypes'] != null &&
+    //       respBody['leaveTypes'].isNotEmpty) {
+    //     var leaveTypes = respBody['leaveTypes'];
+    //     for (var leaveType in leaveTypes) {
+    //       var id = leaveType['id'];
+    //       var name = leaveType['name'];
+    //       Map<String, Object> leaveTypeEntry = {
+    //         "leaveTypeId": id,
+    //         "leaveTypeName": name,
+    //       };
+
+    //       await DBProvider.db
+    //           .dynamicInsert("TeacherLeaveAllocation", leaveTypeEntry);
+    //     }
+    //   }
+    // }
     if (kDebugMode) {
-      print('sending fetch leave');
+      print('sending fetch leave requests');
+      log(queryParams.toString());
     }
-    var leaveTypesResponse = await http.get(Uri(
+
+    var leaveRequestResponse = await http.get(Uri(
         scheme: 'http',
-        host: "10.0.2.2",
-        path: uri_paths.fetchLeaveTypes,
+        host: uri_paths.baseURLA,
+        path: uri_paths.fetchLeaveRequests,
         queryParameters: queryParams));
 
-    if (kDebugMode) {
-      log('response leave type ${leaveTypesResponse.statusCode}');
-      // log(leaveTypesResponse.body.toString());
-    }
-    if (leaveTypesResponse.statusCode == 200) {
-      var respBody = jsonDecode(leaveTypesResponse.body);
-      if (respBody['message'] != null &&
-          respBody['message'].toString().toLowerCase() == 'success' &&
-          respBody['leaveTypes'] != null &&
-          respBody['leaveTypes'].isNotEmpty) {
-        var leaveTypes = respBody['leaveTypes'];
-        for (var leaveType in leaveTypes) {
-          var id = leaveType['id'];
-          var name = leaveType['name'];
-          Map<String, Object> leaveTypeEntry = {
-            "leaveTypeId": id,
-            "leaveTypeName": name,
-          };
+    if (leaveRequestResponse.statusCode == 200) {
+      if (kDebugMode) {
+        print('leave');
+        log(leaveRequestResponse.body.toString());
+      }
+      var respBody = jsonDecode(leaveRequestResponse.body);
+      if (respBody['message'].toString().toLowerCase() == "success") {
+        var leaveRequests = respBody['teacherLeaveRequests'];
 
-          await DBProvider.db
-              .dynamicInsert("TeacherLeaveAllocation", leaveTypeEntry);
+        if (leaveRequests.isNotEmpty) {
+          for (var leaveRequest in leaveRequests) {
+            var leaveRequestId = leaveRequest['id'];
+
+            var leaveRequestTeacher = leaveRequest['staff_id'];
+            int leaveRequestTeacherId = 0;
+            String leaveRequestTeacherName = "";
+            if (leaveRequestTeacher.isNotEmpty) {
+              leaveRequestTeacherId = leaveRequestTeacher[0];
+              leaveRequestTeacherName = leaveRequestTeacher[1].toString();
+            }
+
+            var leaveType = leaveRequest['name'];
+            String leaveTypeName = "";
+            int leaveTypeId = 0;
+            if (leaveType.isNotEmpty && leaveType.length == 2) {
+              leaveTypeId = leaveType[0];
+              leaveTypeName = leaveType[1].toString();
+            }
+
+            String leaveFromDate = leaveRequest['start_date'];
+            String leaveToDate = leaveRequests['end_date'];
+
+            String leaveDays = leaveRequest['days'];
+
+            String leaveReason = leaveRequest['reason'];
+            String leaveRequestStatus = leaveRequest['state'];
+
+            Map<String, Object> data = {};
+            data['leaveRequestId'] = leaveRequestId;
+            data['leaveRequestTeacherId'] = leaveRequestTeacherId;
+            data['leaveTypeId'] = leaveTypeId;
+            data['leaveTypeName'] = leaveTypeName;
+            data['leaveFromDate'] = leaveFromDate;
+            data['leaveToDate'] = leaveToDate;
+            data['leaveDays'] = leaveDays;
+            data['leaveReason'] = leaveReason;
+            data['leaveRequestStatus'] = leaveRequestStatus;
+
+            await DBProvider.db.dynamicInsert("TeacherLeaveRequest", data);
+          }
         }
       }
     }

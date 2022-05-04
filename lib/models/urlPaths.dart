@@ -22,3 +22,4 @@ const fetchQPapers = '/online/fetchqpapers.php';
 const fetchGrading = '/online/fetchgrading.php';
 
 const fetchLeaveTypes = '/online/fetchleavetypes.php';
+const fetchLeaveRequests = '/online/fetchleaverequests.php';

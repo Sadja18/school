@@ -17,7 +17,7 @@ Future<void> saveUserToDB(Map<String, dynamic> userData) async {
         userId: userData['userID'],
         loginStatus: userData['login_status'],
         isOnline: userData['isOnline'],
-        dbname: 'school');
+        dbname: 'doednhdd');
 
     await DBProvider.db.insertUser(userObject);
   } catch (e) {

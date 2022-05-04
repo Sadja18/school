@@ -131,14 +131,14 @@ class _DashboardState extends State<Dashboard> {
     }
   }
 
-  void getLeaveTypes() async {
-    String query = "SELECT leaveTypeName FROM TeacherLeaveAllocation;";
-    var leaveTypes = await DBProvider.db.dynamicRead(query, []);
-    if (kDebugMode) {
-      print('leave tgypes');
-      print(leaveTypes.toString());
-    }
-  }
+  // void getLeaveTypes() async {
+  //   String query = "SELECT leaveTypeName FROM TeacherLeaveAllocation;";
+  //   var leaveTypes = await DBProvider.db.dynamicRead(query, []);
+  //   if (kDebugMode) {
+  //     print('leave thypes');
+  //     print(leaveTypes.toString());
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -249,7 +249,10 @@ class _DashboardState extends State<Dashboard> {
                   child: OutlinedButton(
                     onPressed: () {
                       // DBProvider.db.fetchQuery();
-                      getLeaveTypes();
+                      // DBProvider.db.dynamicRead(
+                      //     "Select * FROM TeacherLeaveRequest;", []);
+
+                      fetchLeaveTypeAndRequests();
                       // Navigator.of(context).pushNamed(PaceAssessmentScreen.routeName );
                     },
                     child: const Text('Test'),

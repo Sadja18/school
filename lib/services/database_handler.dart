@@ -207,7 +207,7 @@ class DBProvider {
         "leaveRequestTeacherId INTEGER NOT NULL,"
         "leaveTypeId INTEGER NOT NULL,"
         "leaveTypeName TEXT NOT NULL,"
-        "leaveAppliedDate TEXT NOT NULL,"
+        "leaveAppliedDate TEXT,"
         "leaveFromDate TEXT NOT NULL,"
         "leaveToDate TEXT NOT NULL,"
         "leaveDays TEXT NOT NULL,"
@@ -217,7 +217,7 @@ class DBProvider {
         "leaveRequestEditable TEXT DEFAULT 'false',"
         "leaveRequestSynced TEXT DEFAULT 'false',"
         "UNIQUE(leaveTypeId, leaveTypeName, leaveRequestTeacherId, "
-        "leaveAppliedDate, leaveFromDate, leaveToDate, leaveDays, leaveReason)"
+        " leaveFromDate, leaveToDate, leaveDays, leaveReason)"
         ");";
   }
 
@@ -232,7 +232,7 @@ class DBProvider {
       dbBatch.execute('CREATE TABLE users('
           'userName TEXT ,'
           'userPassword TEXT,'
-          'dbname TEXT DEFAULT "school",'
+          'dbname TEXT DEFAULT "doednhdd",'
           'loginstatus INTEGER DEFAULT 0,'
           'userID INTEGER,'
           'isOnline INTEGER DEFAULT 0,'
@@ -294,7 +294,7 @@ class DBProvider {
           userId: users[index]['userID'],
           loginStatus: users[index]['loginstatus'] as int,
           isOnline: users[index]['isOnline'] as int,
-          dbname: 'school');
+          dbname: 'doednhdd');
     });
   }
 
