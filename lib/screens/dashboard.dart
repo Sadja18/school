@@ -252,7 +252,7 @@ class _DashboardState extends State<Dashboard> {
                       // DBProvider.db.dynamicRead(
                       //     "Select * FROM TeacherLeaveRequest;", []);
 
-                      fetchLeaveTypeAndRequests();
+                      // fetchLeaveTypeAndRequests();
                       // Navigator.of(context).pushNamed(PaceAssessmentScreen.routeName );
                     },
                     child: const Text('Test'),
@@ -274,76 +274,85 @@ class _DashboardState extends State<Dashboard> {
           ),
           color: Colors.white,
         ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                border: Border.all(
-                  width: 4.0,
+        child: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    width: 4.0,
+                  ),
+                  borderRadius: BorderRadius.circular(
+                    10.0,
+                  ),
                 ),
-                borderRadius: BorderRadius.circular(
-                  10.0,
+                margin: const EdgeInsets.only(
+                  bottom: 4.0,
                 ),
-              ),
-              width: MediaQuery.of(context).size.width * 0.60,
-              height: MediaQuery.of(context).size.height * 0.30,
-              child: TextButton(
-                onPressed: () {
-                  Navigator.of(context)
-                      .pushNamed(AttedanceLeaveScreen.routeName);
-//
-                },
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Image.asset('assets/dashboardIcons/leave.png'),
-                    const Text(
-                      'Attendance/Leave',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20.0,
+                width: MediaQuery.of(context).size.width * 0.60,
+                height: MediaQuery.of(context).size.height * 0.30,
+                child: TextButton(
+                  onPressed: () {
+                    Navigator.of(context)
+                        .pushNamed(AttedanceLeaveScreen.routeName);
+                    //
+                  },
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Image.asset('assets/dashboardIcons/leave.png'),
+                      const Text(
+                        'Attendance/Leave',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20.0,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
-            ),
-            Container(
-              decoration: BoxDecoration(
-                border: Border.all(
-                  width: 4.0,
+              Container(
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    width: 4.0,
+                  ),
+                  borderRadius: BorderRadius.circular(
+                    10.0,
+                  ),
                 ),
-                borderRadius: BorderRadius.circular(
-                  10.0,
+                margin: const EdgeInsets.only(
+                  top: 4.0,
                 ),
-              ),
-              width: MediaQuery.of(context).size.width * 0.60,
-              height: MediaQuery.of(context).size.height * 0.30,
-              child: TextButton(
-                onPressed: () {
-                  // ignore: avoid_print
-                  // print("assesment");
-                  Navigator.of(context).pushNamed(AssessmentScreen.routeName);
-                },
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Image.asset('assets/dashboardIcons/assessment.png'),
-                    const Text(
-                      'Assessment',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20.0,
+                width: MediaQuery.of(context).size.width * 0.60,
+                height: MediaQuery.of(context).size.height * 0.30,
+                child: TextButton(
+                  onPressed: () {
+                    // ignore: avoid_print
+                    // print("assesment");
+                    Navigator.of(context).pushNamed(AssessmentScreen.routeName);
+                  },
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Image.asset('assets/dashboardIcons/assessment.png'),
+                      const Text(
+                        'Assessment',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20.0,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

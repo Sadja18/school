@@ -35,7 +35,9 @@ class DBProvider {
   String _createTeacherTable() {
     return "CREATE TABLE teacher("
         "teacher_id INTEGER PRIMARY KEY,"
-        "teacher_name TEXT);";
+        "teacher_name TEXT,"
+        "userID INTEGER NOT NULL,"
+        ");";
   }
 
   String _createAcademicYearTable() {
@@ -392,7 +394,8 @@ class DBProvider {
 
         Map<String, Object> data = {
           "teacher_id": teacher['teacher_id'],
-          "teacher_name": teacher['teacher_name']
+          "teacher_name": teacher['teacher_name'],
+          "userID": teacher['userID'],
         };
 
         var res = await db.insert(tableName, data,

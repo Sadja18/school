@@ -254,9 +254,17 @@ Future<dynamic> saveLeaveRequestToDB(
     fromDate, toDate, days, leaveType, reason) async {
   try {
     // get teacher Id and use it as leaveTeacherId
+    int leaveRequestTeacherId = 0;
+    String query = "SELECT * FROM teacher WHERE"
+        "userID = (SELECT userID FROM users WHERE loginStatus=1)";
+    List params = [];
+    var teacher = await DBProvider.db.dynamicRead(query, params);
     // get leave type id using sql query to match the selected leave type
     // save to db using dynamic insert
 
+    Map<String, Object> data = {
+      "leaveRequestTeacherId": leaveRequestTeacherId,
+    };
   } catch (e) {
     if (kDebugMode) {
       log(e.toString());

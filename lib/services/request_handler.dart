@@ -316,39 +316,39 @@ Future<void> fetchLeaveTypeAndRequests() async {
       'Persistent': '1',
     };
 
-    // if (kDebugMode) {
-    //   print('sending fetch leave types');
-    // }
-    // var leaveTypesResponse = await http.get(Uri(
-    //     scheme: 'http',
-    //     host: uri_paths.baseURLA,
-    //     path: uri_paths.fetchLeaveTypes,
-    //     queryParameters: queryParams));
+    if (kDebugMode) {
+      print('sending fetch leave types');
+    }
+    var leaveTypesResponse = await http.get(Uri(
+        scheme: 'http',
+        host: uri_paths.baseURLA,
+        path: uri_paths.fetchLeaveTypes,
+        queryParameters: queryParams));
 
-    // if (kDebugMode) {
-    //   // log('response leave type ${leaveTypesResponse.statusCode}');
-    //   // log(leaveTypesResponse.body.toString());
-    // }
-    // if (leaveTypesResponse.statusCode == 200) {
-    //   var respBody = jsonDecode(leaveTypesResponse.body);
-    //   if (respBody['message'] != null &&
-    //       respBody['message'].toString().toLowerCase() == 'success' &&
-    //       respBody['leaveTypes'] != null &&
-    //       respBody['leaveTypes'].isNotEmpty) {
-    //     var leaveTypes = respBody['leaveTypes'];
-    //     for (var leaveType in leaveTypes) {
-    //       var id = leaveType['id'];
-    //       var name = leaveType['name'];
-    //       Map<String, Object> leaveTypeEntry = {
-    //         "leaveTypeId": id,
-    //         "leaveTypeName": name,
-    //       };
+    if (kDebugMode) {
+      // log('response leave type ${leaveTypesResponse.statusCode}');
+      // log(leaveTypesResponse.body.toString());
+    }
+    if (leaveTypesResponse.statusCode == 200) {
+      var respBody = jsonDecode(leaveTypesResponse.body);
+      if (respBody['message'] != null &&
+          respBody['message'].toString().toLowerCase() == 'success' &&
+          respBody['leaveTypes'] != null &&
+          respBody['leaveTypes'].isNotEmpty) {
+        var leaveTypes = respBody['leaveTypes'];
+        for (var leaveType in leaveTypes) {
+          var id = leaveType['id'];
+          var name = leaveType['name'];
+          Map<String, Object> leaveTypeEntry = {
+            "leaveTypeId": id,
+            "leaveTypeName": name,
+          };
 
-    //       await DBProvider.db
-    //           .dynamicInsert("TeacherLeaveAllocation", leaveTypeEntry);
-    //     }
-    //   }
-    // }
+          await DBProvider.db
+              .dynamicInsert("TeacherLeaveAllocation", leaveTypeEntry);
+        }
+      }
+    }
     if (kDebugMode) {
       print('sending fetch leave requests');
       log(queryParams.toString());
@@ -374,6 +374,7 @@ Future<void> fetchLeaveTypeAndRequests() async {
             var leaveRequestId = leaveRequest['id'];
 
             var leaveRequestTeacher = leaveRequest['staff_id'];
+
             int leaveRequestTeacherId = 0;
             String leaveRequestTeacherName = "";
             if (leaveRequestTeacher.isNotEmpty) {
@@ -382,17 +383,22 @@ Future<void> fetchLeaveTypeAndRequests() async {
             }
 
             var leaveType = leaveRequest['name'];
+
             String leaveTypeName = "";
             int leaveTypeId = 0;
             if (leaveType.isNotEmpty && leaveType.length == 2) {
               leaveTypeId = leaveType[0];
               leaveTypeName = leaveType[1].toString();
             }
+            if (kDebugMode) {
+              log('5');
+            }
 
             String leaveFromDate = leaveRequest['start_date'];
-            String leaveToDate = leaveRequests['end_date'];
 
-            String leaveDays = leaveRequest['days'];
+            String leaveToDate = leaveRequest['end_date'];
+
+            String leaveDays = leaveRequest['days'].toString();
 
             String leaveReason = leaveRequest['reason'];
             String leaveRequestStatus = leaveRequest['state'];
@@ -480,8 +486,6 @@ Future<void> attendanceSyncHandler(attendanceRecordQuery) async {
         print(response.statusCode);
         if (response.statusCode == 200 || response.statusCode == '200') {
           print(response.body.runtimeType);
-          // print(response.body.toString());
-
           var resp = jsonDecode(response.body);
           log(resp.toString());
         }
