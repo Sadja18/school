@@ -584,7 +584,11 @@ Future<void> numericSyncHandler(assessmentRecords) async {
         };
 
         var requestBOdy = jsonEncode(body);
-        print('hgh');
+        if (kDebugMode) {
+          print('hgh');
+
+          print(requestBOdy);
+        }
         // print(requestBOdy);
         var response = await http.post(
             Uri.parse('${uri_paths.baseURL}${uri_paths.syncAssessment}'),
@@ -620,7 +624,7 @@ Future<void> numericSyncHandler(assessmentRecords) async {
                 }
                 stringData[i][sId] = [levelName, result];
               }
-              DBProvider.db.updateNumericAssessment(cN, d);
+              await DBProvider.db.updateNumericAssessment(cN, d);
             } else {
               print('fault');
               print(resp);
@@ -782,25 +786,39 @@ Future<void> paceSyncHandler(assessmentRecords) async {
       var mediumName = assessment['medium_name'];
       var qpCode = assessment['qp_code'];
 
+      // if (kDebugMode) {
+      //   print("pace 1");
+      // }
+
       var scheduledDate = assessment['scheduledDate'];
       var uploadDate = assessment['uploadDate'];
       var className = assessment['class_name'];
       var classesQ = await DBProvider.db.getClassId(className);
-
+      // if (kDebugMode) {
+      //   print("pace 11");
+      // }
       var classes = classesQ.toList();
       var classId = classes[0]['class_id'];
-
+      // if (kDebugMode) {
+      //   print("pace 12");
+      // }
       var markSheet = jsonDecode(assessment['marksheet']);
       var result = jsonDecode(assessment['result']);
-
+      // if (kDebugMode) {
+      //   print("pace 13");
+      // }
       var entries = [];
 
       var studentIds = markSheet.keys.toList();
       var keys = assessment.keys.toList();
-
+      // if (kDebugMode) {
+      //   print("pace 14");
+      // }
       var asVal = await DBProvider.db
           .getTotalMarksPace(assessmentName, scheduledDate, qpCode);
-
+      // if (kDebugMode) {
+      //   print("pace 5");
+      // }
       var subjectId = asVal.toList()[0]['subject_id'];
       // print(subjectId);
       var totmarkS = asVal.toList()[0]['totmarks'];
@@ -808,26 +826,55 @@ Future<void> paceSyncHandler(assessmentRecords) async {
       var standardId = asVal.toList()[0]['standard_id'];
 
       var mediumId = asVal.toList()[0]['medium_id'];
-
+      // if (kDebugMode) {
+      //   print("pace 16");
+      // }
       var assessmentId = asVal.toList()[0]['id'];
+      // if (kDebugMode) {
+      //   print("pace 1 $totmarkS");
+      // }
       if (int.tryParse(totmarkS) != null) {
         var totmarks = int.parse(totmarkS);
+        // if (kDebugMode) {
+        //   print("pace 18 $studentIds");
+        // }
         for (var id in studentIds) {
           var res = resultKeyGen(result[id]);
+          // if (kDebugMode) {
+          //   print("pace 1 $res");
+          // }
           var record = {};
+          // int sumOfMarks = int.parse(markSheet[id]);
+
+          if (kDebugMode) {
+            print(('vdbkhsdfjbvjsfd'));
+            print("pres ${totmarks.runtimeType}");
+            // print(int.parse(markSheet[id]));
+            print("more");
+
+            // print("pres ${markSheet[id].runtimeType}");
+          }
 
           if (res == 'acc' || res == 'noacc') {
-            var marks = markSheet[id];
+            var sumOfMarksString = markSheet[id];
+            int sumOfMarks = double.parse(sumOfMarksString).toInt();
+            // var
+            if (kDebugMode) {
+              print("pres ${sumOfMarks <= totmarks}");
+            }
             // print(id);
             // print(marks);
 
-            num sumOfMarks = 0;
-            for (num mark in marks) {
-              sumOfMarks = sumOfMarks + mark;
-            }
+            // num sumOfMarks = 0;
+            // for (num mark in marks) {
+            //   sumOfMarks = sumOfMarks + mark;
+            // }
 
             if (sumOfMarks <= totmarks) {
               var percentage = (sumOfMarks / totmarks) * 100;
+              if (kDebugMode) {
+                print("pace 1 $percentage");
+              }
 
               record['sId'] = id;
               record['res'] = res;
@@ -861,8 +908,11 @@ Future<void> paceSyncHandler(assessmentRecords) async {
         'entries': entries
       };
       var requestBOdy = jsonEncode(body);
-      print(requestBOdy);
-      print('sending body pace');
+
+      if (kDebugMode) {
+        log(requestBOdy.toString());
+        log(assessmentRecords.toString());
+      }
 
       var response = await http.post(
           Uri.parse('${uri_paths.baseURL}${uri_paths.syncAssessment}'),
@@ -881,7 +931,9 @@ Future<void> paceSyncHandler(assessmentRecords) async {
         DBProvider.db.updatePace();
       }
     }
-  } catch (e) {}
+  } catch (e) {
+    log(e.toString());
+  }
 }
 
 Future<void> leaveRequestSyncHandler(leaveRequests) async {

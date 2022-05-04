@@ -249,9 +249,10 @@ class _DashboardState extends State<Dashboard> {
                   child: OutlinedButton(
                     onPressed: () {
                       // DBProvider.db.fetchQuery();
-                      // DBProvider.db.dynamicRead(
-                      //     "Select * FROM TeacherLeaveRequest;", []);
-                      syncLeaveRequest();
+                      DBProvider.db.dynamicRead("Select * FROM pace;", []);
+                      // syncLeaveRequest();
+                      // syncAttendance();
+                      syncPace();
                       // fetchLeaveTypeAndRequests();
                       // Navigator.of(context).pushNamed(PaceAssessmentScreen.routeName );
                     },

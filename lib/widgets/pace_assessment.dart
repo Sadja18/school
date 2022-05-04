@@ -388,7 +388,7 @@ class _PaceAssessmentScreenState extends State<PaceAssessmentScreen> {
     assessmentData['uploadDate'] =
         DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
     assessmentData['result'] = studentIdResultSheet;
-    assessmentData['marksheet'] = studentIdMarksMap;
+    assessmentData['marksheet'] = studentIdTotalSheet;
     /*
 {
   assessmentName: IGUJARATI/ENGLISH/2022-04-07029, 
@@ -1078,7 +1078,7 @@ class _UserInputWidgetState extends State<UserInputWidget> {
                   alignment: Alignment.centerLeft,
                   width: MediaQuery.of(context).size.width * 0.30,
                   child: TextFormField(
-                    initialValue: getTotalMarksInitialValue(),
+                    initialValue: studentTotalMarks.toString(),
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
                       focusColor: Colors.blue,
@@ -1108,10 +1108,10 @@ class _UserInputWidgetState extends State<UserInputWidget> {
                             showAlert(title, message);
                           } else {
                             setState(() {
-                              obtainedMarks[0] = nMark;
+                              studentTotalMarks = nMark;
                             });
 
-                            totalCalculator();
+                            // totalCalculator();
                             resultCalculator();
 
                             if (kDebugMode) {

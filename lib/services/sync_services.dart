@@ -16,19 +16,17 @@ Future<void> syncAttendance() async {
     final todayDate = DateTime.now();
     final lastMonthDate =
         DateTime(todayDate.year, todayDate.month - 1, todayDate.day);
-    DBProvider.db
-        .readAllAttendance(todayDate, lastMonthDate)
-        .then((attendanceEntries) {
-      if (attendanceEntries.isNotEmpty) {
-        // print(attendanceEntries.toString());
-        var attendanceList = attendanceEntries.toList();
-        if (attendanceList.isNotEmpty) {
-          attendanceSyncHandler(attendanceList);
-        }
-      } else {
-        print('no entries attendance');
+    var attendanceEntries =
+        await DBProvider.db.readAllAttendance(todayDate, lastMonthDate);
+    if (attendanceEntries.isNotEmpty) {
+      // print(attendanceEntries.toString());
+      var attendanceList = attendanceEntries.toList();
+      if (attendanceList.isNotEmpty) {
+        attendanceSyncHandler(attendanceList);
       }
-    });
+    } else {
+      print('no entries attendance');
+    }
   } catch (e) {
     if (kDebugMode) {
       print(e.toString());
@@ -49,6 +47,10 @@ Future<void> syncNumeric() async {
       var assessmentList = assessmentRecords.toList();
       if (assessmentList.isNotEmpty) {
         numericSyncHandler(assessmentList);
+      } else {
+        if (kDebugMode) {
+          log(DateTime.now().toString());
+        }
       }
     });
   } catch (e) {
@@ -70,6 +72,11 @@ Future<void> syncBasic() async {
       var assessmentList = assessmentRecords.toList();
       if (assessmentList.isNotEmpty) {
         basicSyncHandler(assessmentList);
+      } else {
+        if (kDebugMode) {
+          print('no entries basic');
+          log(DateTime.now().toString());
+        }
       }
     });
   } catch (e) {
@@ -84,15 +91,20 @@ Future<void> syncPace() async {
     final todayDate = DateTime.now();
     final lastMonthDate =
         DateTime(todayDate.year, todayDate.month - 1, todayDate.day);
-    DBProvider.db
-        .readAllPace(todayDate, lastMonthDate)
-        .then((assessmentRecords) {
-      // print(assessmentRecords.toString());
-      var assessmentRecordsList = assessmentRecords.toList();
-      if (assessmentRecordsList.isNotEmpty) {
-        paceSyncHandler(assessmentRecordsList);
+    var assessmentRecords =
+        await DBProvider.db.readAllPace(todayDate, lastMonthDate);
+    var assessmentRecordsList = assessmentRecords.toList();
+    if (assessmentRecordsList.isNotEmpty) {
+      if (kDebugMode) {
+        // log(assessmentRecords.toString());
       }
-    });
+      paceSyncHandler(assessmentRecordsList);
+    } else {
+      if (kDebugMode) {
+        print("no pace");
+        log(DateTime.now().toString());
+      }
+    }
   } catch (e) {
     if (kDebugMode) {
       print(e.toString());
@@ -128,4 +140,5 @@ Future<void> wrapper() async {
   // await syncBasic();
   // await syncNumeric();
   // await syncPace();
+  // syncLeaveRequest();
 }

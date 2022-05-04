@@ -925,16 +925,35 @@ class DBProvider {
       var result = assessmentData['result'];
       var markSheet = assessmentData['marksheet'];
       if (kDebugMode) {
-        print(assessmentName != null &&
-            subjectName != null &&
-            mediumName != null &&
-            qpCode != null &&
-            qpCodeName != null &&
-            scheduledDate != null &&
-            uploadDate != null &&
-            className != null &&
-            markSheet.isNotEmpty &&
-            result.isNotEmpty);
+        print("assessment name");
+        print(assessmentName != null);
+        print("subject name");
+
+        print(subjectName != null);
+        print("medium name");
+
+        print(mediumName != null);
+        print("qpcode");
+
+        print(qpCode != null);
+        print("qpcode name");
+
+        print(qpCodeName != null);
+        print("scheduled date name");
+
+        print(scheduledDate != null);
+        print("upload date");
+
+        print(uploadDate != null);
+        print("class name");
+
+        print(className != null);
+        print("marksheet");
+
+        print(markSheet.isNotEmpty);
+        print("result");
+
+        print(result.isNotEmpty);
       }
 
       if (assessmentName != null &&
@@ -972,11 +991,17 @@ class DBProvider {
           'result': vResults
         };
 
+        if (kDebugMode) {
+          log(values.toString());
+        }
+
         var res = await batch.insert('pace', values,
             conflictAlgorithm: ConflictAlgorithm.replace);
 
         if (kDebugMode) {
+          log("saving pace");
           log(values.toString());
+          log("res");
           log(res.toString());
         }
       }
@@ -1023,9 +1048,7 @@ class DBProvider {
     final db = await initDB();
     var endDate = format.format(todayDate);
     var startDate = format.format(lastMonthDate);
-    return await db.rawQuery(
-        "Select * FROM pace WHERE uploadDate>=? AND uploadDate<=? AND synced='false';",
-        [startDate, endDate]);
+    return await db.rawQuery("Select * FROM pace WHERE synced='false';", []);
   }
 
   Future<dynamic> getReadingLevels(className, subjectName) async {
@@ -1111,7 +1134,7 @@ class DBProvider {
     dba.then((value) async {
       final db = value.batch();
       await db.rawDelete(
-          'UPDATE numeric SET synced="true", editable="false WHERE class_name=(SELECT class_name FROM classes where class_id=?) AND date=? AND editable="true" AND synced="false";',
+          "UPDATE numeric SET synced='true', editable='false' WHERE class_name=(SELECT class_name FROM classes where class_id=?) AND date=? AND editable='true' AND synced='false';",
           [classId, date]);
       db.commit();
     });
@@ -1126,7 +1149,7 @@ class DBProvider {
     dba.then((d) async {
       final db = d.batch();
       var r = await db.rawDelete(
-          'UPDATE basic SET SET synced="true", editable="false WHERE date=? AND editable="true" AND synced="false";',
+          "UPDATE basic SET synced='true', editable='false' WHERE date=? AND editable='true' AND synced='false';",
           [date]);
 
       db.commit();
@@ -1139,7 +1162,7 @@ class DBProvider {
       final db = await initDB();
 
       var res = await db.rawQuery(
-          'UPDATE pace SET synced="true", editable="false" WHERE SET synced="true", editable="false');
+          "UPDATE pace SET synced='true', editable='false' WHERE synced='false';");
     } catch (e) {
       if (kDebugMode) {
         print(e.toString());
