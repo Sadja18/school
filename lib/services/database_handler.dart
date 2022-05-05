@@ -355,6 +355,26 @@ class DBProvider {
   }
   // dynamic method for inserting data end
 
+  // dynamic method for inserting data ignore
+  Future<dynamic> dynamicInsertIgnore(
+      String tableName, Map<String, Object?> data) async {
+    try {
+      if (kDebugMode) {
+        print(tableName);
+      }
+      final db = await initDB();
+      var res = await db.insert(tableName, data,
+          conflictAlgorithm: ConflictAlgorithm.ignore);
+
+      if (kDebugMode) {
+        print('Inserted in $tableName $res');
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+  // dynamic method for inserting data end ignore
+
   Future<void> saveFetchedData(
       year,
       teacher,
