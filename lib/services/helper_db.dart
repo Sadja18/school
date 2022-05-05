@@ -287,13 +287,33 @@ Future<dynamic> saveLeaveRequestToDB(
         "leaveToDate": toDate.toString(),
         "leaveDays": days.toString(),
         "leaveReason": reason,
-        "leaveRequestStatus": "draft",
+        "leaveRequestStatus": "toapprove",
+        "leaveRequestEditable": 'false',
       };
       if (kDebugMode) {
         log(data.toString());
       }
       await DBProvider.db.dynamicInsert("TeacherLeaveRequest", data);
     }
+  } catch (e) {
+    if (kDebugMode) {
+      log(e.toString());
+    }
+  }
+}
+
+Future<dynamic> readAllLeaveRequest() async {
+  try {
+    var query = "SELECT * FROM TeacherLeaveRequest "
+        "WHERE leaveRequestTeacherId = ("
+        "SELECT teacher_id FROM teacher WHERE userID = ("
+        "SELECT userID FROM users WHERE loginStatus=1"
+        ")"
+        ");";
+    var params = [];
+    var results = await DBProvider.db.dynamicRead(query, params);
+
+    return results;
   } catch (e) {
     if (kDebugMode) {
       log(e.toString());
