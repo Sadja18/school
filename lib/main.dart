@@ -59,10 +59,10 @@ class _MyAppState extends State<MyApp> {
             // return StickyAttendance();
             // return PaceAssessmentScreen();
             // return StickyNumericAbility();
-            return LeaveScreen();
+            // return LeaveScreen();
 
             // return StickyBasicReading();
-            // return Dashboard();
+            return Dashboard();
           } else {
             return Login();
           }
