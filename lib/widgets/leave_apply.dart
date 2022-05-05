@@ -46,7 +46,7 @@ class _ApplyForLeaveWidgetState extends State<ApplyForLeaveWidget> {
 
   String _selectedLeaveType = "";
 
-  void getLeaveTypes() async {
+  Future<dynamic> getLeaveTypes() async {
     String query = "SELECT leaveTypeName FROM TeacherLeaveAllocation;";
     var leaveTypes = await DBProvider.db.dynamicRead(query, []);
     if (kDebugMode) {
@@ -61,8 +61,10 @@ class _ApplyForLeaveWidgetState extends State<ApplyForLeaveWidget> {
     if (tmp.isNotEmpty) {
       setState(() {
         leaveTypeNames = tmp;
+        _selectedLeaveType = tmp[0];
       });
     }
+    return tmp;
   }
 
   void leaveTypeSelector(String selectedLeaveType) {
@@ -378,7 +380,7 @@ class _ApplyForLeaveWidgetState extends State<ApplyForLeaveWidget> {
 
   @override
   void initState() {
-    getLeaveTypes();
+    // getLeaveTypes();
     super.initState();
   }
 
@@ -414,24 +416,25 @@ class _ApplyForLeaveWidgetState extends State<ApplyForLeaveWidget> {
               ),
             ),
             tableViewField(
-              'Leave Type',
+              'Leave Type:',
               Container(
                 decoration: const BoxDecoration(),
-                child: OutlinedButton(
-                  onPressed: () {
-                    getLeaveTypes();
-                    if (leaveTypeNames.isNotEmpty) {
-                      showAlertBoxForLeaveTypeSelection();
-                    }
-                  },
-                  child: Text(
-                    _selectedLeaveType.toString(),
-                    style: const TextStyle(
-                      color: Colors.deepPurpleAccent,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
+                child: FutureBuilder(
+                    future: getLeaveTypes(),
+                    builder: (BuildContext ctx, AsyncSnapshot snapshot) {
+                      if (snapshot.hasData &&
+                          snapshot.data != null &&
+                          snapshot.data.isNotEmpty) {
+                        return LeaveTypeDropdown(
+                            leaveTypeNames: leaveTypeNames,
+                            leaveTypeSelector: leaveTypeSelector);
+                      } else {
+                        return Container(
+                          alignment: Alignment.topCenter,
+                          child: const Text('No leave types found'),
+                        );
+                      }
+                    }),
               ),
             ),
             tableViewField(

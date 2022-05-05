@@ -52,7 +52,7 @@ class _DashboardState extends State<Dashboard> {
   void initState() {
     super.initState();
     fetchPersistent();
-    fetchLeaveTypeAndRequests();
+    // fetchLeaveTypeAndRequests();
     // Workmanager().initialize(callbackDispatcher, isInDebugMode: true);
     // // Workmanager().registerOneOffTask("1", fetchOne);
     // Workmanager().registerPeriodicTask("2",

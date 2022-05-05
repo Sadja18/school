@@ -294,6 +294,7 @@ Future<void> fetchPersistent() async {
         // print(yearResp.statusCode == 200);
       }
     }
+    await fetchLeaveTypeAndRequests();
   } catch (e) {
     // return e;
     if (kDebugMode) {
@@ -928,7 +929,7 @@ Future<void> paceSyncHandler(assessmentRecords) async {
           print(response.body.toString());
         }
 
-        DBProvider.db.updatePace();
+        await DBProvider.db.updatePace();
       }
     }
   } catch (e) {
