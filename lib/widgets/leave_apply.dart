@@ -59,6 +59,9 @@ class _ApplyForLeaveWidgetState extends State<ApplyForLeaveWidget> {
       tmp.add(name);
     }
     if (tmp.isNotEmpty) {
+      if (kDebugMode) {
+        log(tmp.toString());
+      }
       setState(() {
         leaveTypeNames = tmp;
         _selectedLeaveType = tmp[0];
@@ -378,9 +381,13 @@ class _ApplyForLeaveWidgetState extends State<ApplyForLeaveWidget> {
     }
   }
 
+  late final Future? leaveTypeFuture;
   @override
   void initState() {
     // getLeaveTypes();
+    setState(() {});
+    leaveTypeFuture = getLeaveTypes();
+
     super.initState();
   }
 
@@ -420,7 +427,7 @@ class _ApplyForLeaveWidgetState extends State<ApplyForLeaveWidget> {
               Container(
                 decoration: const BoxDecoration(),
                 child: FutureBuilder(
-                    future: getLeaveTypes(),
+                    future: leaveTypeFuture,
                     builder: (BuildContext ctx, AsyncSnapshot snapshot) {
                       if (snapshot.hasData &&
                           snapshot.data != null &&

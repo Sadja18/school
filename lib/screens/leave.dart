@@ -94,6 +94,7 @@ class _LeaveScreenState extends State<LeaveScreen> {
           ),
         ),
         body: TabBarView(
+          // physics: ,
           children: [
             ApplyForLeaveWidget(),
             LeaveViewApplied(),
