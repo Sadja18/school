@@ -221,10 +221,11 @@ class AttendanceDataSource extends CalendarDataSource {
 
   @override
   Color getColor(int index) {
-    if (appointments![index].synced == false) {
-      return Colors.blue;
-    } else {
+    if (appointments![index].synced == "true" ||
+        appointments![index].synced == true) {
       return Colors.green;
+    } else {
+      return Colors.blue;
     }
     // return colorVal;
   }

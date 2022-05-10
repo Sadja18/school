@@ -492,7 +492,7 @@ Future<void> attendanceSyncHandler(attendanceRecordQuery) async {
           log(resp.toString());
         }
       }
-      DBProvider.db.updateAttendance();
+      await DBProvider.db.updateAttendance();
     }
   } catch (e) {}
 }

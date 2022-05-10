@@ -1136,16 +1136,12 @@ class DBProvider {
   }
 
   Future<void> updateAttendance() async {
-    final dba = initDB();
+    final db = await initDB();
 
-    dba.then((value) async {
-      final db = value.batch();
-      await db.rawDelete(
-        'UPDATE attendance SET synced="true", editable="false" WHERE editable="true" AND synced="false";',
-      );
-
-      db.commit();
-    });
+    //  final db = value.batch();
+    await db.rawDelete(
+      "UPDATE attendance SET synced='true', editable='false' WHERE synced='false';",
+    );
   }
 
   Future<void> updateNumericAssessment(classId, date) async {
