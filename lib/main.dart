@@ -47,14 +47,20 @@ class _MyAppState extends State<MyApp> {
   /// else show the login screen
   Widget myWidget(BuildContext context) {
     return FutureBuilder(
-        future: isLoggedIn(),
+        future: isHeadMasterLoggedIn(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           // if (kDebugMode) {
           //   print("is login");
           //   print(snapshot.data.toString());
           // }
-          if (snapshot.hasData &&
-              (snapshot.data == 1 || snapshot.data == "1")) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Scaffold(
+              appBar: AppBar(),
+              body: const SizedBox(
+                child: CircularProgressIndicator(),
+              ),
+            );
+          } else if (snapshot.hasData && (snapshot.data.isNotEmpty)) {
             // print();
             // return StickyAttendance();
             // return PaceAssessmentScreen();
@@ -62,7 +68,25 @@ class _MyAppState extends State<MyApp> {
             // return LeaveScreen();
 
             // return StickyBasicReading();
-            return Dashboard();
+            var login = snapshot.data;
+            if (login['isHeadMaster'] != null && login['isHeadMaster'] != '') {
+              if (login['isHeadMaster'] == 'no') {
+                return Dashboard();
+              } else {
+                if (login['isHeadMaster'] == 'yes') {
+                  return Scaffold(
+                    appBar: AppBar(
+                      centerTitle: true,
+                      title: const Text("HeadMaster Home Screen"),
+                    ),
+                  );
+                } else {
+                  return Login();
+                }
+              }
+            } else {
+              return Login();
+            }
           } else {
             return Login();
           }

@@ -26,19 +26,25 @@ Future<void> saveUserToDB(Map<String, dynamic> userData) async {
 }
 
 Future<dynamic> isLoggedIn() async {
-  String query = "SELECT * FROM users WHERE loginstatus=1 OR loginstatus='1'";
-  var params = [];
+  try {
+    String query = "SELECT * FROM users WHERE loginstatus=1 OR loginstatus='1'";
+    var params = [];
 
-  var result = await DBProvider.db.dynamicRead(query, params);
+    var result = await DBProvider.db.dynamicRead(query, params);
 
-  if (kDebugMode) {
-    print('isLoggedIn()');
-    print(result.toString());
-  }
-  if (result == null || result.isEmpty) {
-    return 0;
-  } else {
-    return '1';
+    if (kDebugMode) {
+      print('isLoggedIn()');
+      print(result.toString());
+    }
+    if (result == null || result.isEmpty) {
+      return 0;
+    } else {
+      return '1';
+    }
+  } catch (e) {
+    if (kDebugMode) {
+      log(e.toString());
+    }
   }
 }
 
@@ -314,6 +320,22 @@ Future<dynamic> readAllLeaveRequest() async {
     var results = await DBProvider.db.dynamicRead(query, params);
 
     return results;
+  } catch (e) {
+    if (kDebugMode) {
+      log(e.toString());
+    }
+  }
+}
+
+Future<dynamic> isHeadMasterLoggedIn() async {
+  try {
+    var query = "SELECT isHeadMaster FROM users WHERE loginStatus=1;";
+    var params = [];
+    var result = await DBProvider.db.dynamicRead(query, params);
+
+    if (result.isNotEmpty) {
+      return result[0];
+    }
   } catch (e) {
     if (kDebugMode) {
       log(e.toString());

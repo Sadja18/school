@@ -57,6 +57,16 @@ class DBProvider {
         ");";
   }
 
+  String _createTeacherProfileTable() {
+    return "CREATE TABLE TeacherProfile("
+        "teacherId INTEGER PRIMARY KEY,"
+        "teacherName TEXT NOT NULL,"
+        "userId INTEGER NOT NULL,"
+        "empId INTEGER NOT NULL,"
+        "schoolId INTEGER NOT NULL"
+        ");";
+  }
+
   String _createStudentTable() {
     return "CREATE TABLE students("
         "student_id INTEGER PRIMARY KEY,"
@@ -223,6 +233,33 @@ class DBProvider {
         ");";
   }
 
+  /// accessible only by headmaster login
+  String _createTableTeacherLeaveType() {
+    return "CREATE TABLE LeaveTypes"
+        "leaveTypeId INTEGER PRIMARY KEY,"
+        "leaveTypeName TEXT NOT NULL"
+        ");";
+  }
+
+  // List<Map<String, String>> attendanceJSONified = [
+  //   {
+  //     "teacherId": "id from school.teacher",
+  //     "isPresent": 'true/false',
+  //     "reasonId": 'id from LeaveTypes table',
+  //   },
+  //   {},
+  // ];
+  String _createTeacherAttendanceTable() {
+    return "CREATE TABLE TeacherAttendance("
+        "date TEXT PRIMARY KEY,"
+        "headMasterUserId INTEGER NOT NULL,"
+        "totalPresent INTEGER NOT NULL,"
+        "totalAbsent INTEGER NOT NULL,"
+        "attendanceJSONified TEXT NOT NULL,"
+        "uploadDate TEXT NOT NULL"
+        ");";
+  }
+
   Future initDB() async {
     String path = join(await getDatabasesPath(), dbname);
     return await openDatabase(path, version: version, onOpen: (db) {},
@@ -232,14 +269,15 @@ class DBProvider {
       var dbBatch = db.batch();
       await db.execute('PRAGMA foreign_keys = ON');
       dbBatch.execute('CREATE TABLE users('
-          'userName TEXT ,'
-          'userPassword TEXT,'
-          'dbname TEXT DEFAULT "doednhdd",'
-          'loginstatus INTEGER DEFAULT 0,'
-          'userID INTEGER,'
-          'isOnline INTEGER DEFAULT 0,'
-          'UNIQUE(userName, userPassword)'
-          ');');
+          "userID INTEGER PRIMARY KEY,"
+          "userName TEXT ,"
+          "userPassword TEXT,"
+          "dbname TEXT DEFAULT 'doednhdd',"
+          "loginstatus INTEGER DEFAULT 0,"
+          "isHeadMaster TEXT DEFAULT 'no',"
+          "isOnline INTEGER DEFAULT 0,"
+          "UNIQUE(userName, userPassword)"
+          ");");
 
       dbBatch.execute(_createSchoolTable());
       dbBatch.execute(_createTeacherTable());
@@ -247,6 +285,7 @@ class DBProvider {
       dbBatch.execute(_createLanguagesTable());
       dbBatch.execute(_createClassTable());
       dbBatch.execute(_createStudentTable());
+      dbBatch.execute(_createTeacherProfileTable());
 
       dbBatch.execute(_createQuestionPaperTable());
 
@@ -262,6 +301,8 @@ class DBProvider {
       dbBatch.execute(_createBasicTable());
       dbBatch.execute(_createNumericTable());
 
+      dbBatch.execute(_createTeacherAttendanceTable());
+      dbBatch.execute(_createTableTeacherLeaveType());
       dbBatch.execute(_createTeacherLeaveTypeAllocationTable());
       dbBatch.execute(_createTeacherLeaveRequestTable());
       await dbBatch.commit(noResult: true);

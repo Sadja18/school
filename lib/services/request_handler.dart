@@ -1006,3 +1006,23 @@ Future<void> leaveRequestSyncHandler(leaveRequests) async {
     log(e.toString());
   }
 }
+
+// headmaster mode
+
+// fetch teacher profile
+Future<void> fetchTeacherProfileFromServerHeadMasterMode() async {
+  try {} catch (e) {
+    if (kDebugMode) {
+      log(e.toString());
+    }
+  }
+}
+
+// fetch leave types
+Future<void> fetchTeacherLeaveTypesFromServerHeadMasterMode() async {
+  try {} catch (e) {
+    if (kDebugMode) {
+      log(e.toString());
+    }
+  }
+}
