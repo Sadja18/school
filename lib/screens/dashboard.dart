@@ -452,7 +452,7 @@ class _DashboardState extends State<Dashboard> {
               );
             } else {
               return DefaultTabController(
-                length: 2,
+                length: 1,
                 child: Scaffold(
                   appBar: AppBar(
                     centerTitle: true,
@@ -483,6 +483,7 @@ class _DashboardState extends State<Dashboard> {
                       tabs: [
                         Tab(
                           child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: const [
                               Icon(
                                 Icons.create_outlined,
@@ -490,7 +491,7 @@ class _DashboardState extends State<Dashboard> {
                                 size: 40,
                               ),
                               Text(
-                                'Apply',
+                                'Mark',
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 15,
@@ -500,25 +501,25 @@ class _DashboardState extends State<Dashboard> {
                             ],
                           ),
                         ),
-                        Tab(
-                          child: Row(
-                            children: const [
-                              Icon(
-                                Icons.view_list_outlined,
-                                semanticLabel: 'View marked attendance',
-                                size: 40,
-                              ),
-                              Text(
-                                'View',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 15,
-                                  letterSpacing: 1.8,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+                        // Tab(
+                        //   child: Row(
+                        //     children: const [
+                        //       Icon(
+                        //         Icons.view_list_outlined,
+                        //         semanticLabel: 'View marked attendance',
+                        //         size: 40,
+                        //       ),
+                        //       Text(
+                        //         'View',
+                        //         style: TextStyle(
+                        //           fontWeight: FontWeight.bold,
+                        //           fontSize: 15,
+                        //           letterSpacing: 1.8,
+                        //         ),
+                        //       ),
+                        //     ],
+                        //   ),
+                        // ),
                       ],
                     ),
                   ),
@@ -625,22 +626,22 @@ class _DashboardState extends State<Dashboard> {
                         height:
                             MediaQuery.of(context).size.height * 0.70 * 0.50,
                         alignment: Alignment.center,
-                        child: MarkTeacherAttendanceWidget(),
+                        child: MarkTeacherAttendanceFuture(),
                       ),
-                      InkWell(
-                        onTap: () {},
-                        child: Card(
-                          elevation: 10.0,
-                          child: Container(
-                            width: MediaQuery.of(context).size.width * 0.50,
-                            height: MediaQuery.of(context).size.height *
-                                0.70 *
-                                0.50,
-                            alignment: Alignment.center,
-                            child: Text("View Attendance"),
-                          ),
-                        ),
-                      ),
+                      // InkWell(
+                      //   onTap: () {},
+                      //   child: Card(
+                      //     elevation: 10.0,
+                      //     child: Container(
+                      //       width: MediaQuery.of(context).size.width * 0.50,
+                      //       height: MediaQuery.of(context).size.height *
+                      //           0.70 *
+                      //           0.50,
+                      //       alignment: Alignment.center,
+                      //       child: Text("View Attendance"),
+                      //     ),
+                      //   ),
+                      // ),
                     ],
                   ),
                 ),

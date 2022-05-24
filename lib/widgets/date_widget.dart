@@ -52,6 +52,7 @@ class _DateShowState extends State<DateShow> {
         ),
         onPressed: () => _selectDate(context),
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Icon(
               Icons.calendar_month,

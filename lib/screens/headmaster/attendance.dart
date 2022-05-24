@@ -10,9 +10,60 @@ import 'package:table_sticky_headers/table_sticky_headers.dart';
 import '../../widgets/assist/image_assist.dart';
 import '../../widgets/date_widget.dart';
 
+class MarkTeacherAttendanceFuture extends StatefulWidget {
+  const MarkTeacherAttendanceFuture({Key? key}) : super(key: key);
+
+  @override
+  State<MarkTeacherAttendanceFuture> createState() =>
+      _MarkTeacherAttendanceFutureState();
+}
+
+class _MarkTeacherAttendanceFutureState
+    extends State<MarkTeacherAttendanceFuture> {
+  late final Future? teacherFuture;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    teacherFuture = fetchTeacherProfileFromServerHeadMasterMode();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.height,
+      decoration: const BoxDecoration(),
+      alignment: Alignment.topCenter,
+      child: FutureBuilder(
+          future: teacherFuture,
+          builder: (BuildContext ctx, AsyncSnapshot snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const CircularProgressIndicator();
+            } else {
+              if (snapshot.hasData &&
+                  snapshot.data != null &&
+                  snapshot.data.isNotEmpty) {
+                var teachers = snapshot.data;
+                return MarkTeacherAttendanceWidget(
+                  teachers: teachers,
+                );
+              } else {
+                return const SizedBox(
+                  height: 0,
+                );
+              }
+            }
+          }),
+    );
+  }
+}
+
 class MarkTeacherAttendanceWidget extends StatefulWidget {
-  static const routeName = "hm-teacher-mark-attendance";
-  const MarkTeacherAttendanceWidget({Key? key}) : super(key: key);
+  // static const routeName = "hm-teacher-mark-attendance";
+  final List teachers;
+  const MarkTeacherAttendanceWidget({Key? key, required this.teachers})
+      : super(key: key);
 
   @override
   State<MarkTeacherAttendanceWidget> createState() =>
@@ -21,6 +72,7 @@ class MarkTeacherAttendanceWidget extends StatefulWidget {
 
 class _MarkTeacherAttendanceWidgetState
     extends State<MarkTeacherAttendanceWidget> {
+  late List teachers;
   int currentRowIndex = 0;
   List absentees = [];
   Map reasonMap = {};
@@ -264,17 +316,28 @@ class _MarkTeacherAttendanceWidgetState
             ),
             actions: [
               InkWell(
-                onTap: () {},
+                onTap: () {
+                  Navigator.of(context).pop();
+                },
                 child: const Text(
                   "Cancel",
-                  style: TextStyle(color: Colors.red),
+                  style: TextStyle(
+                    color: Colors.red,
+                  ),
                 ),
               ),
               InkWell(
-                onTap: () {},
+                onTap: () {
+                  if (kDebugMode) {
+                    print("Saving to local DB");
+                  }
+                  Navigator.of(context).pop();
+                },
                 child: const Text(
                   "Confirm",
-                  style: TextStyle(color: Colors.red),
+                  style: TextStyle(
+                    color: Colors.green,
+                  ),
                 ),
               ),
             ],
@@ -294,109 +357,167 @@ class _MarkTeacherAttendanceWidgetState
   }
 
   @override
+  void initState() {
+    setState(() {
+      teachers = widget.teachers;
+    });
+    super.initState();
+    // teacherFuture = fetchTeacherLeaveTypesFromServerHeadMasterMode();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
-      width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height,
-      decoration: const BoxDecoration(),
-      alignment: Alignment.topCenter,
-      child: FutureBuilder(
-          future: fetchTeacherProfileFromServerHeadMasterMode(),
-          builder: (BuildContext ctx, AsyncSnapshot snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const CircularProgressIndicator();
-            } else {
-              if (snapshot.hasData &&
-                  snapshot.data != null &&
-                  snapshot.data.isNotEmpty) {
-                var teachers = snapshot.data;
-                return Container(
-                  decoration: BoxDecoration(),
-                  height: MediaQuery.of(context).size.height * 0.80,
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.vertical,
-                    child: Column(
-                      children: [
-                        Container(
-                          decoration: const BoxDecoration(),
+      decoration: const BoxDecoration(
+        color: Color.fromARGB(
+          255,
+          208,
+          202,
+          202,
+        ),
+      ),
+      height: MediaQuery.of(context).size.height * 0.80,
+      child: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: Column(
+          children: [
+            Container(
+              decoration: const BoxDecoration(),
+              alignment: Alignment.center,
+              margin: const EdgeInsets.symmetric(
+                horizontal: 0.0,
+                vertical: 0.0,
+              ),
+              child: DateShow(
+                selectedDate: selectedDate,
+              ),
+            ),
+            Container(
+              height: MediaQuery.of(context).size.height * 0.08,
+              width: MediaQuery.of(context).size.width,
+              decoration: BoxDecoration(),
+              alignment: Alignment.center,
+              child: Table(
+                defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+                columnWidths: const {
+                  0: FractionColumnWidth(0.30),
+                  1: FractionColumnWidth(0.30),
+                  2: FractionColumnWidth(0.30),
+                  // 3: FractionColumnWidth(0.24),
+                },
+                children: [
+                  TableRow(
+                    children: [
+                      TableCell(
+                        child: Container(
                           alignment: Alignment.center,
-                          margin: const EdgeInsets.symmetric(
-                            horizontal: 12.0,
-                            vertical: 0.0,
-                          ),
-                          child: DateShow(
-                            selectedDate: selectedDate,
-                          ),
-                        ),
-                        Container(
-                          alignment: Alignment.topCenter,
-                          height: MediaQuery.of(context).size.height * 0.65,
-                          margin: const EdgeInsets.symmetric(
-                            vertical: 6.0,
-                          ),
-                          child: StickyHeadersTable(
-                            cellDimensions:
-                                CellDimensions.variableColumnWidthAndRowHeight(
-                              columnWidths: [],
-                              rowHeights: List<double>.generate(
-                                  teachers.length, (int index) => 80),
-                              stickyLegendWidth:
-                                  MediaQuery.of(context).size.width,
-                              stickyLegendHeight: 0,
-                            ),
-                            initialScrollOffsetX: 0.0,
-                            initialScrollOffsetY: verticalRowScrollOffset(),
-                            scrollControllers: scrollControllers(),
-                            columnsLength: 0,
-                            rowsLength: teachers.length,
-                            columnsTitleBuilder: (i) => const SizedBox(
-                              height: 0,
-                            ),
-                            rowsTitleBuilder: (i) => rowCell(teachers[i], i),
-                            contentCellBuilder: (i, j) => const SizedBox(
-                              height: 0,
-                            ),
-                            legendCell: const SizedBox(
-                              height: 0,
-                            ),
-                          ),
-                        ),
-                        Container(
                           decoration: const BoxDecoration(),
-                          alignment: Alignment.center,
-                          margin: const EdgeInsets.symmetric(
-                            vertical: 5.0,
-                          ),
-                          child: InkWell(
-                            onTap: () {
-                              saveAttendanceDialog();
-                            },
-                            child: Container(
-                              alignment: Alignment.center,
-                              width: MediaQuery.of(context).size.width * 0.30,
-                              height: MediaQuery.of(context).size.height * 0.06,
-                              decoration:
-                                  const BoxDecoration(color: Colors.purple),
-                              child: const Text(
-                                "Submit",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                ),
-                              ),
+                          width: MediaQuery.of(context).size.width,
+                          child: Text(
+                            'Total: ${teachers.length}',
+                            style: const TextStyle(
+                              color: Colors.blue,
                             ),
                           ),
                         ),
-                      ],
+                      ),
+                      TableCell(
+                        child: Container(
+                          alignment: Alignment.center,
+                          decoration: const BoxDecoration(),
+                          width: MediaQuery.of(context).size.width,
+                          child: Text(
+                            'Present: ${teachers.length - absentees.length}',
+                            style: const TextStyle(
+                              color: Color.fromARGB(255, 44, 130, 46),
+                            ),
+                          ),
+                        ),
+                      ),
+                      TableCell(
+                        child: Container(
+                          alignment: Alignment.center,
+                          decoration: const BoxDecoration(),
+                          width: MediaQuery.of(context).size.width,
+                          child: Text(
+                            'Absent: ${absentees.length}',
+                            style: const TextStyle(
+                              color: Colors.red,
+                            ),
+                          ),
+                        ),
+                      ),
+                      // TableCell(
+                      //   child: Container(
+                      //     alignment: Alignment.center,
+                      //     decoration: const BoxDecoration(),
+                      //     width: MediaQuery.of(context).size.width,
+                      //     child: InkWell(),
+                      //   ),
+                      // ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              alignment: Alignment.topCenter,
+              height: MediaQuery.of(context).size.height * 0.58,
+              margin: const EdgeInsets.symmetric(
+                vertical: 6.0,
+              ),
+              child: StickyHeadersTable(
+                cellDimensions: CellDimensions.variableColumnWidthAndRowHeight(
+                  columnWidths: [],
+                  rowHeights:
+                      List<double>.generate(teachers.length, (int index) => 80),
+                  stickyLegendWidth: MediaQuery.of(context).size.width,
+                  stickyLegendHeight: 0,
+                ),
+                initialScrollOffsetX: 0.0,
+                initialScrollOffsetY: verticalRowScrollOffset(),
+                scrollControllers: scrollControllers(),
+                columnsLength: 0,
+                rowsLength: teachers.length,
+                columnsTitleBuilder: (i) => const SizedBox(
+                  height: 0,
+                ),
+                rowsTitleBuilder: (i) => rowCell(teachers[i], i),
+                contentCellBuilder: (i, j) => const SizedBox(
+                  height: 0,
+                ),
+                legendCell: const SizedBox(
+                  height: 0,
+                ),
+              ),
+            ),
+            Container(
+              decoration: const BoxDecoration(),
+              alignment: Alignment.center,
+              margin: const EdgeInsets.symmetric(
+                vertical: 5.0,
+              ),
+              child: InkWell(
+                onTap: () {
+                  saveAttendanceDialog();
+                },
+                child: Container(
+                  alignment: Alignment.center,
+                  width: MediaQuery.of(context).size.width * 0.30,
+                  height: MediaQuery.of(context).size.height * 0.06,
+                  decoration: const BoxDecoration(color: Colors.purple),
+                  child: const Text(
+                    "Submit",
+                    style: TextStyle(
+                      color: Colors.white,
                     ),
                   ),
-                );
-              } else {
-                return const SizedBox(
-                  height: 0,
-                );
-              }
-            }
-          }),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
