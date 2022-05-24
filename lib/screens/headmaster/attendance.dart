@@ -447,14 +447,6 @@ class _MarkTeacherAttendanceWidgetState
                           ),
                         ),
                       ),
-                      // TableCell(
-                      //   child: Container(
-                      //     alignment: Alignment.center,
-                      //     decoration: const BoxDecoration(),
-                      //     width: MediaQuery.of(context).size.width,
-                      //     child: InkWell(),
-                      //   ),
-                      // ),
                     ],
                   ),
                 ],
