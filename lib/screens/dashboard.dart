@@ -19,6 +19,7 @@ import '../services/database_handler.dart';
 import '../services/sync_services.dart';
 import '../widgets/pace_assessment.dart';
 import '../models/urlPaths.dart' as uri_paths;
+import './headmaster/attendance.dart';
 
 const fetchOne = "fetch Persistent";
 
@@ -140,223 +141,514 @@ class _DashboardState extends State<Dashboard> {
   //     print(leaveTypes.toString());
   //   }
   // }
+  void showAlertDialogHeadMaster() async {
+    try {
+      var response = await http.get(
+          Uri.parse(uri_paths.baseURL + uri_paths.checkIfOnline + '?get=1'));
+
+      if (response.statusCode == 200) {
+        showDialog(
+            context: context,
+            builder: (BuildContext ctx) {
+              return AlertDialog(
+                title: SizedBox(
+                  height: 0,
+                ),
+                titlePadding: const EdgeInsets.all(0),
+                content: Container(
+                  height: MediaQuery.of(context).size.height * 0.50,
+                  decoration: BoxDecoration(),
+                  alignment: Alignment.center,
+                  child: Column(
+                    children: [
+                      Container(
+                        width: MediaQuery.of(context).size.width * 0.40,
+                        height: MediaQuery.of(context).size.height * 0.10,
+                        alignment: Alignment.center,
+                        child: CircularProgressIndicator(
+                          color: Colors.purpleAccent,
+                          strokeWidth: 1.0,
+                        ),
+                      ),
+                      Container(
+                        width: MediaQuery.of(context).size.width * 0.40,
+                        height: MediaQuery.of(context).size.height * 0.30,
+                        alignment: Alignment.center,
+                        child:
+                            const Text("Please wait for syncing to complete."),
+                      ),
+                    ],
+                  ),
+                ),
+                contentPadding: const EdgeInsets.all(0),
+              );
+            });
+        await wrapperHeadMaster();
+        Navigator.of(context).pop();
+      } else {
+        offlineSyncPressDialog();
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        log(e.toString());
+        log("offline no sync available");
+        offlineSyncPressDialog();
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     var statusBarHeight = MediaQuery.of(context).padding.top;
     var appBarHeight = kToolbarHeight;
-    return Scaffold(
-      key: scaffoldKey,
-      appBar: AppBar(
-        centerTitle: true,
-        title: const Text('Dashboard'),
-        actions: [
-          Builder(
-            builder: (context) => IconButton(
-              icon: const Icon(Icons.person),
-              onPressed: () => scaffoldKey.currentState?.openEndDrawer(),
-              tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
+    return FutureBuilder(
+      future: isHeadMasterLoggedIn(),
+      builder: (BuildContext ctx, AsyncSnapshot snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Scaffold(
+            appBar: AppBar(
+              title: const Text("Dashboard"),
             ),
-          ),
-        ],
-        backgroundColor: Theme.of(context).primaryColor,
-        flexibleSpace: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: <Color>[
-                Color(0xfff21bce),
-                Color(0xff826cf0),
-              ],
+            body: SizedBox(
+              width: MediaQuery.of(context).size.width,
+              child: const CircularProgressIndicator(),
             ),
-          ),
-        ),
-      ),
-      endDrawer: Container(
-        padding: EdgeInsets.only(top: statusBarHeight + appBarHeight + 1),
-        width: MediaQuery.of(context).size.width * 0.80,
-        height: MediaQuery.of(context).size.height,
-        child: Drawer(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Container(
-                alignment: Alignment.center,
-                margin: const EdgeInsets.symmetric(
-                  horizontal: 10.0,
-                  vertical: 5.0,
-                ),
-                decoration: BoxDecoration(
-                    color: Colors.deepPurpleAccent.shade100,
-                    border: Border.all(),
-                    borderRadius: BorderRadius.circular(10.0)),
-                child: ListTile(
-                  title: Center(
-                    child: Text(
-                      userName!,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18.0,
+          );
+        } else {
+          if (snapshot.hasError ||
+              snapshot.hasData != true ||
+              snapshot.data == null ||
+              snapshot.data.isEmpty) {
+            return Scaffold(
+              appBar: AppBar(
+                title: const Text('Error'),
+              ),
+              body: const Text("No user found"),
+            );
+          } else {
+            var login = snapshot.data;
+            if (kDebugMode) {
+              log('in dashboard');
+              log(login.toString());
+            }
+            if (login['isHeadMaster'] != 'yes') {
+              return Scaffold(
+                key: scaffoldKey,
+                appBar: AppBar(
+                  centerTitle: true,
+                  title: const Text('Dashboard'),
+                  actions: [
+                    Builder(
+                      builder: (context) => IconButton(
+                        icon: const Icon(Icons.person),
+                        onPressed: () =>
+                            scaffoldKey.currentState?.openEndDrawer(),
+                        tooltip: MaterialLocalizations.of(context)
+                            .openAppDrawerTooltip,
                       ),
                     ),
-                  ),
-                  tileColor: Colors.transparent,
-                ),
-              ),
-              Container(
-                width: MediaQuery.of(context).size.width,
-                decoration: BoxDecoration(),
-                alignment: Alignment.center,
-                child: Center(
-                  child: OutlinedButton(
-                    onPressed: () {
-                      if (kDebugMode) {
-                        print('clicked');
-                      }
-                      showAlertDialog();
-                      // wrapper();
-                    },
-                    child: const Text(
-                      'Sync Data',
-                      style: TextStyle(
-                        fontSize: 20.0,
+                  ],
+                  backgroundColor: Theme.of(context).primaryColor,
+                  flexibleSpace: Container(
+                    decoration: const BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: <Color>[
+                          Color(0xfff21bce),
+                          Color(0xff826cf0),
+                        ],
                       ),
                     ),
                   ),
                 ),
-              ),
-              Container(
-                width: MediaQuery.of(context).size.width,
-                decoration: BoxDecoration(),
-                alignment: Alignment.center,
-                child: Center(
-                  child: OutlinedButton(
-                    onPressed: () {
-                      _onLogout();
-                    },
-                    child: const Text(
-                      'Logout',
-                      style: TextStyle(
-                        // fontWeight: FontWeight.bold,
-                        fontSize: 20.0,
-                      ),
+                endDrawer: Container(
+                  padding:
+                      EdgeInsets.only(top: statusBarHeight + appBarHeight + 1),
+                  width: MediaQuery.of(context).size.width * 0.80,
+                  height: MediaQuery.of(context).size.height,
+                  child: Drawer(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Container(
+                          alignment: Alignment.center,
+                          margin: const EdgeInsets.symmetric(
+                            horizontal: 10.0,
+                            vertical: 5.0,
+                          ),
+                          decoration: BoxDecoration(
+                              color: Colors.deepPurpleAccent.shade100,
+                              border: Border.all(),
+                              borderRadius: BorderRadius.circular(10.0)),
+                          child: ListTile(
+                            title: Center(
+                              child: Text(
+                                userName!,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18.0,
+                                ),
+                              ),
+                            ),
+                            tileColor: Colors.transparent,
+                          ),
+                        ),
+                        Container(
+                          width: MediaQuery.of(context).size.width,
+                          decoration: BoxDecoration(),
+                          alignment: Alignment.center,
+                          child: Center(
+                            child: OutlinedButton(
+                              onPressed: () {
+                                if (kDebugMode) {
+                                  print('clicked');
+                                }
+                                showAlertDialog();
+                                // wrapper();
+                              },
+                              child: const Text(
+                                'Sync Data',
+                                style: TextStyle(
+                                  fontSize: 20.0,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Container(
+                          width: MediaQuery.of(context).size.width,
+                          decoration: BoxDecoration(),
+                          alignment: Alignment.center,
+                          child: Center(
+                            child: OutlinedButton(
+                              onPressed: () {
+                                _onLogout();
+                              },
+                              child: const Text(
+                                'Logout',
+                                style: TextStyle(
+                                  // fontWeight: FontWeight.bold,
+                                  fontSize: 20.0,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        // ListTile(
+                        //   title: Center(
+                        //     child: OutlinedButton(
+                        //       onPressed: () {
+                        //         // DBProvider.db.fetchQuery();
+                        //         DBProvider.db.dynamicRead("Select * FROM pace;", []);
+                        //         // syncLeaveRequest();
+                        //         // syncAttendance();
+                        //         syncPace();
+                        //         // fetchLeaveTypeAndRequests();
+                        //         // Navigator.of(context).pushNamed(PaceAssessmentScreen.routeName );
+                        //       },
+                        //       child: const Text('Test'),
+                        //     ),
+                        //   ),
+                        // ),
+                      ],
                     ),
                   ),
                 ),
-              ),
-              // ListTile(
-              //   title: Center(
-              //     child: OutlinedButton(
-              //       onPressed: () {
-              //         // DBProvider.db.fetchQuery();
-              //         DBProvider.db.dynamicRead("Select * FROM pace;", []);
-              //         // syncLeaveRequest();
-              //         // syncAttendance();
-              //         syncPace();
-              //         // fetchLeaveTypeAndRequests();
-              //         // Navigator.of(context).pushNamed(PaceAssessmentScreen.routeName );
-              //       },
-              //       child: const Text('Test'),
-              //     ),
-              //   ),
-              // ),
-            ],
-          ),
-        ),
-      ),
-      body: Container(
-        alignment: Alignment.center,
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/background/img1.jpg'),
-            fit: BoxFit.fill,
-          ),
-          color: Colors.white,
-        ),
-        child: SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    width: 4.0,
+                body: Container(
+                  alignment: Alignment.center,
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height,
+                  decoration: const BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage('assets/background/img1.jpg'),
+                      fit: BoxFit.fill,
+                    ),
+                    color: Colors.white,
                   ),
-                  borderRadius: BorderRadius.circular(
-                    10.0,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.vertical,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              width: 4.0,
+                            ),
+                            borderRadius: BorderRadius.circular(
+                              10.0,
+                            ),
+                          ),
+                          margin: const EdgeInsets.only(
+                            bottom: 4.0,
+                          ),
+                          width: MediaQuery.of(context).size.width * 0.60,
+                          height: MediaQuery.of(context).size.height * 0.30,
+                          child: TextButton(
+                            onPressed: () {
+                              Navigator.of(context)
+                                  .pushNamed(AttedanceLeaveScreen.routeName);
+                              //
+                            },
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Image.asset('assets/dashboardIcons/leave.png'),
+                                const Text(
+                                  'Attendance/Leave',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20.0,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              width: 4.0,
+                            ),
+                            borderRadius: BorderRadius.circular(
+                              10.0,
+                            ),
+                          ),
+                          margin: const EdgeInsets.only(
+                            top: 4.0,
+                          ),
+                          width: MediaQuery.of(context).size.width * 0.60,
+                          height: MediaQuery.of(context).size.height * 0.30,
+                          child: TextButton(
+                            onPressed: () {
+                              // ignore: avoid_print
+                              // print("assesment");
+                              Navigator.of(context)
+                                  .pushNamed(AssessmentScreen.routeName);
+                            },
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Image.asset(
+                                    'assets/dashboardIcons/assessment.png'),
+                                const Text(
+                                  'Assessment',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20.0,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-                margin: const EdgeInsets.only(
-                  bottom: 4.0,
-                ),
-                width: MediaQuery.of(context).size.width * 0.60,
-                height: MediaQuery.of(context).size.height * 0.30,
-                child: TextButton(
-                  onPressed: () {
-                    Navigator.of(context)
-                        .pushNamed(AttedanceLeaveScreen.routeName);
-                    //
-                  },
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
+              );
+            } else {
+              return DefaultTabController(
+                length: 2,
+                child: Scaffold(
+                  appBar: AppBar(
+                    centerTitle: true,
+                    title: const Text('Dashboard'),
+                    actions: [
+                      Builder(
+                        builder: (context) => IconButton(
+                          icon: const Icon(Icons.person),
+                          onPressed: () =>
+                              scaffoldKey.currentState?.openEndDrawer(),
+                          tooltip: MaterialLocalizations.of(context)
+                              .openAppDrawerTooltip,
+                        ),
+                      ),
+                    ],
+                    backgroundColor: Theme.of(context).primaryColor,
+                    flexibleSpace: Container(
+                      decoration: const BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: <Color>[
+                            Color(0xfff21bce),
+                            Color(0xff826cf0),
+                          ],
+                        ),
+                      ),
+                    ),
+                    bottom: TabBar(
+                      tabs: [
+                        Tab(
+                          child: Row(
+                            children: const [
+                              Icon(
+                                Icons.create_outlined,
+                                semanticLabel: 'Mark New Attendance',
+                                size: 40,
+                              ),
+                              Text(
+                                'Apply',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15,
+                                  letterSpacing: 1.8,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Tab(
+                          child: Row(
+                            children: const [
+                              Icon(
+                                Icons.view_list_outlined,
+                                semanticLabel: 'View marked attendance',
+                                size: 40,
+                              ),
+                              Text(
+                                'View',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15,
+                                  letterSpacing: 1.8,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  endDrawer: Container(
+                    padding: EdgeInsets.only(
+                        top: statusBarHeight + appBarHeight + 1),
+                    width: MediaQuery.of(context).size.width * 0.80,
+                    height: MediaQuery.of(context).size.height,
+                    child: Drawer(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Container(
+                            alignment: Alignment.center,
+                            margin: const EdgeInsets.symmetric(
+                              horizontal: 10.0,
+                              vertical: 5.0,
+                            ),
+                            decoration: BoxDecoration(
+                                color: Colors.deepPurpleAccent.shade100,
+                                border: Border.all(),
+                                borderRadius: BorderRadius.circular(10.0)),
+                            child: ListTile(
+                              title: Center(
+                                child: Text(
+                                  userName!,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18.0,
+                                  ),
+                                ),
+                              ),
+                              tileColor: Colors.transparent,
+                            ),
+                          ),
+                          Container(
+                            width: MediaQuery.of(context).size.width,
+                            decoration: BoxDecoration(),
+                            alignment: Alignment.center,
+                            child: Center(
+                              child: OutlinedButton(
+                                onPressed: () {
+                                  if (kDebugMode) {
+                                    print('clicked');
+                                  }
+                                  showAlertDialogHeadMaster();
+                                  // wrapper();
+                                },
+                                child: const Text(
+                                  'Sync Data',
+                                  style: TextStyle(
+                                    fontSize: 20.0,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Container(
+                            width: MediaQuery.of(context).size.width,
+                            decoration: BoxDecoration(),
+                            alignment: Alignment.center,
+                            child: Center(
+                              child: OutlinedButton(
+                                onPressed: () {
+                                  _onLogout();
+                                },
+                                child: const Text(
+                                  'Logout',
+                                  style: TextStyle(
+                                    // fontWeight: FontWeight.bold,
+                                    fontSize: 20.0,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          // ListTile(
+                          //   title: Center(
+                          //     child: OutlinedButton(
+                          //       onPressed: () {
+                          //         // DBProvider.db.fetchQuery();
+                          //         DBProvider.db.dynamicRead("Select * FROM pace;", []);
+                          //         // syncLeaveRequest();
+                          //         // syncAttendance();
+                          //         syncPace();
+                          //         // fetchLeaveTypeAndRequests();
+                          //         // Navigator.of(context).pushNamed(PaceAssessmentScreen.routeName );
+                          //       },
+                          //       child: const Text('Test'),
+                          //     ),
+                          //   ),
+                          // ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  body: TabBarView(
+                    physics: NeverScrollableScrollPhysics(),
                     children: [
-                      Image.asset('assets/dashboardIcons/leave.png'),
-                      const Text(
-                        'Attendance/Leave',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20.0,
+                      Container(
+                        width: MediaQuery.of(context).size.width * 0.50,
+                        height:
+                            MediaQuery.of(context).size.height * 0.70 * 0.50,
+                        alignment: Alignment.center,
+                        child: MarkTeacherAttendanceWidget(),
+                      ),
+                      InkWell(
+                        onTap: () {},
+                        child: Card(
+                          elevation: 10.0,
+                          child: Container(
+                            width: MediaQuery.of(context).size.width * 0.50,
+                            height: MediaQuery.of(context).size.height *
+                                0.70 *
+                                0.50,
+                            alignment: Alignment.center,
+                            child: Text("View Attendance"),
+                          ),
                         ),
                       ),
                     ],
                   ),
                 ),
-              ),
-              Container(
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    width: 4.0,
-                  ),
-                  borderRadius: BorderRadius.circular(
-                    10.0,
-                  ),
-                ),
-                margin: const EdgeInsets.only(
-                  top: 4.0,
-                ),
-                width: MediaQuery.of(context).size.width * 0.60,
-                height: MediaQuery.of(context).size.height * 0.30,
-                child: TextButton(
-                  onPressed: () {
-                    // ignore: avoid_print
-                    // print("assesment");
-                    Navigator.of(context).pushNamed(AssessmentScreen.routeName);
-                  },
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Image.asset('assets/dashboardIcons/assessment.png'),
-                      const Text(
-                        'Assessment',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20.0,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
+              );
+            }
+          }
+        }
+      },
     );
   }
 }

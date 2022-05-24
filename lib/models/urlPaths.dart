@@ -1,9 +1,9 @@
 // ignore_for_file: file_names
 
-const baseURL = 'https://namanpwa.xyz';
-const baseURLA = 'namanpwa.xyz';
-// const baseURL = 'http://10.0.2.2';
-// const baseURLA = '10.0.2.2';
+// const baseURL = 'https://namanpwa.xyz';
+// const baseURLA = 'namanpwa.xyz';
+const baseURL = 'http://10.0.2.2';
+const baseURLA = '10.0.2.2';
 const checkIfOnline = '/online/checkIfOnline.php/';
 const onlineLogin = '/online/login.php';
 const fetchRelevantData = '/online/fetchRelevantData.php';
@@ -25,3 +25,4 @@ const fetchLeaveTypes = '/online/fetchleavetypes.php';
 const fetchLeaveRequests = '/online/fetchleaverequests.php';
 
 const syncLeaveRequest = '/online/syncleaverequest.php';
+const fetchTeacherProfiles = '/online/fetchteacherprofiles.php';

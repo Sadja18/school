@@ -142,3 +142,17 @@ Future<void> wrapper() async {
   await syncPace();
   await syncLeaveRequest();
 }
+
+Future<void> wrapperHeadMaster() async {
+  if (kDebugMode) {
+    print('Fetch Persistent place here');
+  }
+  await fetchPersistentHeadMaster();
+  // await fetchLeaveTypeAndRequests();
+
+  // await syncAttendance();
+  // await syncBasic();
+  // await syncNumeric();
+  // await syncPace();
+  // await syncLeaveRequest();
+}

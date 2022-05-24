@@ -322,7 +322,7 @@ class DBProvider {
     final db = await initDB();
     var res = await db.insert('users', user.toMap(),
         conflictAlgorithm: ConflictAlgorithm.replace);
-    print(res);
+    print("$res jhgfgskjg");
 
     return res;
   }

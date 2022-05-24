@@ -23,6 +23,10 @@ Future<void> saveUserToDB(Map<String, dynamic> userData) async {
         isHeadMaster: userData['headMaster'],
         dbname: 'doednhdd');
 
+    if (kDebugMode) {
+      log(userObject.toString());
+    }
+
     await DBProvider.db.insertUser(userObject);
   } catch (e) {
     log(e.toString());
@@ -333,7 +337,7 @@ Future<dynamic> readAllLeaveRequest() async {
 
 Future<dynamic> isHeadMasterLoggedIn() async {
   try {
-    var query = "SELECT isHeadMaster FROM users WHERE loginStatus=1;";
+    var query = "SELECT * FROM users WHERE loginstatus=1;";
     var params = [];
     var result = await DBProvider.db.dynamicRead(query, params);
 

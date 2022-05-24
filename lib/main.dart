@@ -69,24 +69,7 @@ class _MyAppState extends State<MyApp> {
 
             // return StickyBasicReading();
             var login = snapshot.data;
-            if (login['isHeadMaster'] != null && login['isHeadMaster'] != '') {
-              if (login['isHeadMaster'] == 'no') {
-                return Dashboard();
-              } else {
-                if (login['isHeadMaster'] == 'yes') {
-                  return Scaffold(
-                    appBar: AppBar(
-                      centerTitle: true,
-                      title: const Text("HeadMaster Home Screen"),
-                    ),
-                  );
-                } else {
-                  return Login();
-                }
-              }
-            } else {
-              return Login();
-            }
+            return Dashboard();
           } else {
             return Login();
           }

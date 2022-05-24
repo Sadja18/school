@@ -1011,7 +1011,52 @@ Future<void> leaveRequestSyncHandler(leaveRequests) async {
 
 // fetch teacher profile
 Future<void> fetchTeacherProfileFromServerHeadMasterMode() async {
-  try {} catch (e) {
+  try {
+    var value = await DBProvider.db.getCredentials();
+    final userName = value[0]['userName'];
+    final userPassword = value[0]['userPassword'];
+    final dbname = value[0]['dbname'];
+
+    Map<String, String> queryParams = {
+      'userName': userName as String,
+      'userPassword': userPassword as String,
+      'dbname': dbname as String,
+      'Persistent': '1',
+    };
+    if (kDebugMode) {
+      log(queryParams.toString());
+    }
+    var requestURL = Uri(
+        scheme: 'http',
+        host: uri_paths.baseURLA,
+        path: uri_paths.fetchTeacherProfiles,
+        queryParameters: (queryParams));
+    if (kDebugMode) {
+      print('sending persistent');
+    }
+
+    var response = await http.get(requestURL);
+    if (kDebugMode) {
+      log(response.statusCode.toString());
+      // log(response.body);
+    }
+
+    if (response.statusCode == 200) {
+      if (kDebugMode) {
+        print(requestURL);
+        log("response.bod");
+        print('persistent fetched');
+        // assessments can be empty
+      }
+      var resp = jsonDecode(response.body);
+      var teachers = resp['teachers'];
+      return teachers;
+    } else {
+      if (kDebugMode) {
+        print('some not 200 statuscode');
+      }
+    }
+  } catch (e) {
     if (kDebugMode) {
       log(e.toString());
     }
@@ -1021,6 +1066,53 @@ Future<void> fetchTeacherProfileFromServerHeadMasterMode() async {
 // fetch leave types
 Future<void> fetchTeacherLeaveTypesFromServerHeadMasterMode() async {
   try {} catch (e) {
+    if (kDebugMode) {
+      log(e.toString());
+    }
+  }
+}
+
+Future<void> fetchPersistentHeadMaster() async {
+  try {
+    var value = await DBProvider.db.getCredentials();
+    final userName = value[0]['userName'];
+    final userPassword = value[0]['userPassword'];
+    final dbname = value[0]['dbname'];
+
+    Map<String, String> queryParams = {
+      'userName': userName as String,
+      'userPassword': userPassword as String,
+      'dbname': dbname as String,
+      'Persistent': '1',
+    };
+    var requestURL = Uri(
+        scheme: 'http',
+        host: uri_paths.baseURLA,
+        path: uri_paths.fetchRelevantData,
+        queryParameters: queryParams);
+    if (kDebugMode) {
+      print('sending persistent');
+    }
+
+    var response = await http.post(requestURL);
+
+    if (response.statusCode == 200) {
+      if (kDebugMode) {
+        print('persistent fetched');
+
+        // assessments can be empty
+      }
+      var resp = jsonDecode(response.body);
+      var teachers = resp['teachers'];
+      return teachers;
+    } else {
+      if (kDebugMode) {
+        print('some not 200 statuscode');
+      }
+    }
+    // await fetchLeaveTypeAndRequests();
+  } catch (e) {
+    // return e;
     if (kDebugMode) {
       log(e.toString());
     }
