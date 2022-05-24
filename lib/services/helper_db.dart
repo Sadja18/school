@@ -9,14 +9,18 @@ import '../models/response_struct.dart';
 import '../services/database_handler.dart';
 
 Future<void> saveUserToDB(Map<String, dynamic> userData) async {
-  print(userData);
   try {
+    if (kDebugMode) {
+      log('save user to db');
+      log(userData.toString());
+    }
     var userObject = User(
         userName: userData['user'],
         userPassword: userData['password'],
         userId: userData['userID'],
         loginStatus: userData['login_status'],
         isOnline: userData['isOnline'],
+        isHeadMaster: userData['headMaster'],
         dbname: 'doednhdd');
 
     await DBProvider.db.insertUser(userObject);

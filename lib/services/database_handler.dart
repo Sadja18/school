@@ -235,7 +235,7 @@ class DBProvider {
 
   /// accessible only by headmaster login
   String _createTableTeacherLeaveType() {
-    return "CREATE TABLE LeaveTypes"
+    return "CREATE TABLE LeaveTypes("
         "leaveTypeId INTEGER PRIMARY KEY,"
         "leaveTypeName TEXT NOT NULL"
         ");";

@@ -83,6 +83,7 @@ class _StudentAttendanceCalendarViewState
         String subject = record['class_name'];
         DateTime submissionDateUn = DateTime.parse(record['submission_date']);
         bool synced = (record['synced'] == 'false') ? false : true;
+
         // String subject = DateFormat('MMMM yyyy')
         Attendance entry =
             Attendance(startDateParsed, endDateParsed, subject, true, synced);
