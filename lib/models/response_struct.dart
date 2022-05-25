@@ -6,6 +6,7 @@ class User {
   int? userId;
   int? isOnline;
   String? isHeadMaster;
+  int? schoolId;
 
   User({
     this.userName,
@@ -15,6 +16,7 @@ class User {
     this.userId,
     this.isOnline,
     this.isHeadMaster,
+    this.schoolId,
   });
 
   User.fromMap(Map<String, dynamic> res)
@@ -24,6 +26,7 @@ class User {
         loginStatus = res['loginstatus'],
         userId = res['userID'],
         isOnline = res['isOnline'],
+        schoolId = res['schoolId'],
         isHeadMaster = res['isHeadMaster'];
 
   Map<String, Object?> toMap() {

@@ -1,5 +1,6 @@
 // ignore_for_file: avoid_print
 
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
@@ -13,21 +14,35 @@ Future<void> saveUserToDB(Map<String, dynamic> userData) async {
     if (kDebugMode) {
       log('save user to db');
       log(userData.toString());
+      log(userData['schoolId'].runtimeType.toString());
     }
-    var userObject = User(
-        userName: userData['user'],
-        userPassword: userData['password'],
-        userId: userData['userID'],
-        loginStatus: userData['login_status'],
-        isOnline: userData['isOnline'],
-        isHeadMaster: userData['headMaster'],
-        dbname: 'doednhdd');
+    // var userObject = User(
+    //   userName: userData['user'],
+    //   userPassword: userData['password'],
+    //   userId: userData['userID'],
+    //   loginStatus: userData['login_status'],
+    //   isOnline: userData['isOnline'],
+    //   schoolId: userData['schoolId'],
+    //   isHeadMaster: userData['headMaster'],
+    //   dbname: 'doednhdd',
+    // );
 
-    if (kDebugMode) {
-      log(userObject.toString());
-    }
+    Map<String, Object> data = {
+      "userName": userData['user'],
+      'userPassword': userData['password'],
+      'userId': userData['userID'],
+      'loginstatus': 1,
+      'isOnline': 1,
+      'schoolId': userData['schoolId'],
+      'isHeadMaster': userData['headMaster'],
+      'dbname': 'doednhdd',
+    };
 
-    await DBProvider.db.insertUser(userObject);
+    // if (kDebugMode) {
+    //   log(data.toString());
+    // }
+
+    await DBProvider.db.dynamicInsert("users", data);
   } catch (e) {
     log(e.toString());
   }
@@ -343,6 +358,25 @@ Future<dynamic> isHeadMasterLoggedIn() async {
 
     if (result.isNotEmpty) {
       return result[0];
+    }
+  } catch (e) {
+    if (kDebugMode) {
+      log(e.toString());
+    }
+  }
+}
+
+Future<dynamic> getLeaveTypesFromDB() async {
+  try {
+    var query = "SELECT leaveTypeName FROM LeaveTypes;";
+    var params = [];
+    var resp = await DBProvider.db.dynamicRead(query, params);
+    if (kDebugMode) {
+      log(resp.toString());
+    }
+
+    if (resp.isNotEmpty) {
+      return resp;
     }
   } catch (e) {
     if (kDebugMode) {

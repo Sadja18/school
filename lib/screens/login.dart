@@ -97,6 +97,7 @@ class _LoginState extends State<Login> {
 
         if (kDebugMode) {
           // log(connResponse.toString());
+          log('login');
           log(conn.runtimeType.toString());
         }
 

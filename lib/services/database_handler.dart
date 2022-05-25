@@ -63,7 +63,8 @@ class DBProvider {
         "teacherName TEXT NOT NULL,"
         "userId INTEGER NOT NULL,"
         "empId INTEGER NOT NULL,"
-        "schoolId INTEGER NOT NULL"
+        "schoolId INTEGER NOT NULL,"
+        "profilePic TEXT NOT NULL"
         ");";
   }
 
@@ -276,6 +277,7 @@ class DBProvider {
           "loginstatus INTEGER DEFAULT 0,"
           "isHeadMaster TEXT DEFAULT 'no',"
           "isOnline INTEGER DEFAULT 0,"
+          "schoolId INTEGER NOT NULL,"
           "UNIQUE(userName, userPassword)"
           ");");
 

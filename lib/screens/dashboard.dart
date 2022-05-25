@@ -457,17 +457,17 @@ class _DashboardState extends State<Dashboard> {
                   appBar: AppBar(
                     centerTitle: true,
                     title: const Text('Dashboard'),
-                    actions: [
-                      Builder(
-                        builder: (context) => IconButton(
-                          icon: const Icon(Icons.person),
-                          onPressed: () =>
-                              scaffoldKey.currentState?.openEndDrawer(),
-                          tooltip: MaterialLocalizations.of(context)
-                              .openAppDrawerTooltip,
-                        ),
-                      ),
-                    ],
+                    // actions: [
+                    //   Builder(
+                    //     builder: (context) => IconButton(
+                    //       icon: const Icon(Icons.person),
+                    //       onPressed: () =>
+                    //           scaffoldKey.currentState?.openEndDrawer(),
+                    //       tooltip: MaterialLocalizations.of(context)
+                    //           .openAppDrawerTooltip,
+                    //     ),
+                    //   ),
+                    // ],
                     backgroundColor: Theme.of(context).primaryColor,
                     flexibleSpace: Container(
                       decoration: const BoxDecoration(
