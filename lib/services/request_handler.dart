@@ -1059,9 +1059,9 @@ Future<void> fetchTeacherProfileFromServerHeadMasterMode() async {
       'dbname': dbname as String,
       'Persistent': '1',
     };
-    if (kDebugMode) {
-      log(queryParams.toString());
-    }
+    // if (kDebugMode) {
+    //   log(queryParams.toString());
+    // }
     var requestURL = Uri(
         scheme: 'http',
         host: uri_paths.baseURLA,

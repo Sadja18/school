@@ -257,7 +257,8 @@ class DBProvider {
         "totalPresent INTEGER NOT NULL,"
         "totalAbsent INTEGER NOT NULL,"
         "attendanceJSONified TEXT NOT NULL,"
-        "uploadDate TEXT NOT NULL"
+        "uploadDate TEXT NOT NULL,"
+        "isSynced TEXT DEFAULT 'no'"
         ");";
   }
 
@@ -1438,7 +1439,7 @@ class DBProvider {
         print('user is');
         print(result.toString());
       }
-      query = 'SELECT * FROM user WHERE loginstatus = 1';
+      query = 'SELECT * FROM users WHERE loginstatus = 1';
       var params = [];
       var userQ = await db.rawQuery(query, params);
 
@@ -1467,7 +1468,7 @@ class DBProvider {
 
         if (kDebugMode) {
           print('user is');
-          print(user.toString());
+          print(user.runtimeType.toString());
         }
         return user;
       } else {
@@ -1476,8 +1477,8 @@ class DBProvider {
         var user = userQ.toList();
 
         if (kDebugMode) {
-          print('user is');
-          print(user.toString());
+          log('user is');
+          print(user.runtimeType.toString());
         }
         return user;
       }

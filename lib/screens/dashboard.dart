@@ -4,6 +4,7 @@ import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:syncfusion_flutter_calendar/calendar.dart';
 import './attendance_leave.dart';
 import './leave.dart';
 import '../services/helper_db.dart';
@@ -229,7 +230,7 @@ class _DashboardState extends State<Dashboard> {
             var login = snapshot.data;
             if (kDebugMode) {
               log('in dashboard');
-              log(login.toString());
+              log("login.toString()");
             }
             if (login['isHeadMaster'] != 'yes') {
               return Scaffold(
@@ -452,7 +453,7 @@ class _DashboardState extends State<Dashboard> {
               );
             } else {
               return DefaultTabController(
-                length: 1,
+                length: 2,
                 child: Scaffold(
                   appBar: AppBar(
                     centerTitle: true,
@@ -501,25 +502,25 @@ class _DashboardState extends State<Dashboard> {
                             ],
                           ),
                         ),
-                        // Tab(
-                        //   child: Row(
-                        //     children: const [
-                        //       Icon(
-                        //         Icons.view_list_outlined,
-                        //         semanticLabel: 'View marked attendance',
-                        //         size: 40,
-                        //       ),
-                        //       Text(
-                        //         'View',
-                        //         style: TextStyle(
-                        //           fontWeight: FontWeight.bold,
-                        //           fontSize: 15,
-                        //           letterSpacing: 1.8,
-                        //         ),
-                        //       ),
-                        //     ],
-                        //   ),
-                        // ),
+                        Tab(
+                          child: Row(
+                            children: const [
+                              Icon(
+                                Icons.view_list_outlined,
+                                semanticLabel: 'View marked attendance',
+                                size: 40,
+                              ),
+                              Text(
+                                'View',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15,
+                                  letterSpacing: 1.8,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -623,25 +624,20 @@ class _DashboardState extends State<Dashboard> {
                     children: [
                       Container(
                         width: MediaQuery.of(context).size.width * 0.50,
-                        height:
-                            MediaQuery.of(context).size.height * 0.70 * 0.50,
+                        height: MediaQuery.of(context).size.height,
                         alignment: Alignment.center,
                         child: MarkTeacherAttendanceFuture(),
                       ),
-                      // InkWell(
-                      //   onTap: () {},
-                      //   child: Card(
-                      //     elevation: 10.0,
-                      //     child: Container(
-                      //       width: MediaQuery.of(context).size.width * 0.50,
-                      //       height: MediaQuery.of(context).size.height *
-                      //           0.70 *
-                      //           0.50,
-                      //       alignment: Alignment.center,
-                      //       child: Text("View Attendance"),
-                      //     ),
-                      //   ),
-                      // ),
+                      Card(
+                        elevation: 10.0,
+                        child: Container(
+                          width: MediaQuery.of(context).size.width,
+                          height: MediaQuery.of(context).size.height,
+                          alignment: Alignment.topCenter,
+                          child:
+                              FutureBuilderForTeacherAttendanceCalendarView(),
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -651,5 +647,251 @@ class _DashboardState extends State<Dashboard> {
         }
       },
     );
+  }
+}
+
+class FutureBuilderForTeacherAttendanceCalendarView extends StatelessWidget {
+  const FutureBuilderForTeacherAttendanceCalendarView({Key? key})
+      : super(key: key);
+  Future<dynamic> getAllAttendanceEntries() async {
+    try {
+      var query = "SELECT date, totalPresent, totalAbsent "
+          "FROM TeacherAttendance "
+          "WHERE headMasterUserId = "
+          "("
+          "SELECT userId FROM users WHERE loginstatus=1 AND "
+          "isHeadMaster=?"
+          ");";
+      var params = ['yes'];
+      var records = await DBProvider.db.dynamicRead(query, params);
+      if (records != null && records.isNotEmpty) {
+        return records;
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        log(e.toString());
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+        future: getAllAttendanceEntries(),
+        builder: (BuildContext ctx, AsyncSnapshot snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return SizedBox(
+              child: CircularProgressIndicator(),
+            );
+          } else {
+            if (snapshot.hasError ||
+                snapshot.hasData != true ||
+                snapshot.data == null ||
+                snapshot.data == false ||
+                snapshot.data.isEmpty) {
+              return const SizedBox(
+                child: Text("No attendance entry found for teachers"),
+              );
+            } else {
+              var attendances = snapshot.data;
+              return TeacherAttendanceCalendarView(
+                attendances: attendances,
+              );
+            }
+          }
+        });
+  }
+}
+
+class TeacherAttendanceCalendarView extends StatefulWidget {
+  final List attendances;
+  const TeacherAttendanceCalendarView({Key? key, required this.attendances})
+      : super(key: key);
+
+  @override
+  State<TeacherAttendanceCalendarView> createState() =>
+      _TeacherAttendanceCalendarViewState();
+}
+
+class _TeacherAttendanceCalendarViewState
+    extends State<TeacherAttendanceCalendarView> {
+  final CalendarController _controller = CalendarController();
+  List attendanceData = [];
+
+  Widget monthCellBuilder(BuildContext context, MonthCellDetails details) {
+    return Container(
+      height: MediaQuery.of(context).size.height,
+      decoration: BoxDecoration(
+        // border: Border.all(
+        //   color: Colors.black,
+        // ),
+        // borderRadius: BorderRadius.circular(28.0),
+        color: const Color.fromARGB(255, 255, 255, 255),
+      ),
+      child: Column(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+                // color: Colors.lightBlueAccent,
+                ),
+            margin: const EdgeInsets.symmetric(
+              vertical: 2.5,
+            ),
+            padding: const EdgeInsets.symmetric(
+              vertical: 1.0,
+              horizontal: 4.0,
+            ),
+            child: Text(
+              details.date.day.toString(),
+              textAlign: TextAlign.left,
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  List<Attendance> _getAttendance() {
+    List<Attendance> attendanceViewData = <Attendance>[];
+    if (attendanceData.isNotEmpty) {
+      for (var i = 0; i < attendanceData.length; i++) {
+        var record = attendanceData[i];
+
+        DateTime startDateParsed = DateTime.parse(record['date']);
+        DateTime endDateParsed = DateTime.parse("${record['date']} 23:59:59");
+        String subject =
+            "Present: ${record['totalPresent']}, Absent: ${record['totalAbsent']}";
+        // DateTime submissionDateUn = DateTime.parse(record['submission_date']);
+        bool synced = record['isSynced'] == 'yes' ? true : false;
+
+        // String subject = DateFormat('MMMM yyyy')
+        Attendance entry =
+            Attendance(startDateParsed, endDateParsed, subject, true, synced);
+        attendanceViewData.add(entry);
+      }
+    }
+
+    return attendanceViewData;
+  }
+
+  @override
+  void initState() {
+    // initState();
+    setState(() {
+      attendanceData = widget.attendances;
+    });
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(),
+      ),
+      alignment: Alignment.topCenter,
+      width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.height * 0.80,
+      child: SfCalendar(
+        allowDragAndDrop: false,
+        allowAppointmentResize: false,
+        controller: _controller,
+        view: CalendarView.month,
+        viewHeaderStyle: ViewHeaderStyle(
+          dateTextStyle: TextStyle(),
+          dayTextStyle: TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
+            fontSize: 17.0,
+          ),
+        ),
+        firstDayOfWeek: 1,
+        showNavigationArrow: true,
+        headerStyle: CalendarHeaderStyle(
+          textStyle: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 20.0,
+          ),
+        ),
+        monthViewSettings: MonthViewSettings(
+          dayFormat: 'EE',
+          agendaItemHeight: 40.0,
+          showTrailingAndLeadingDates: false,
+          showAgenda: true,
+          agendaStyle: AgendaStyle(
+            dayTextStyle: TextStyle(
+              color: Colors.blue,
+              fontWeight: FontWeight.bold,
+              fontSize: 20.0,
+            ),
+            dateTextStyle: TextStyle(
+                color: Colors.blue,
+                fontWeight: FontWeight.bold,
+                fontSize: 20.0),
+            appointmentTextStyle: TextStyle(
+              fontSize: 20.0,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ),
+          // dayFormat: 'EE',
+          appointmentDisplayMode: MonthAppointmentDisplayMode.appointment,
+        ),
+        appointmentTextStyle: TextStyle(
+          color: Colors.black,
+          fontSize: 22.0,
+        ),
+        monthCellBuilder: monthCellBuilder,
+        dataSource: AttendanceDataSource(_getAttendance()),
+      ),
+    );
+  }
+}
+
+class Attendance {
+  DateTime startDate;
+  DateTime endDate;
+  String subject;
+  // String className="";
+  bool synced;
+  bool isAllDay = true;
+
+  Attendance(
+      this.startDate, this.endDate, this.subject, this.isAllDay, this.synced);
+}
+
+class AttendanceDataSource extends CalendarDataSource {
+  AttendanceDataSource(List<Attendance> source) {
+    appointments = source;
+  }
+  @override
+  DateTime getStartTime(int index) {
+    return appointments![index].startDate;
+  }
+
+  @override
+  DateTime getEndTime(int index) {
+    return appointments![index].endDate;
+  }
+
+  @override
+  Color getColor(int index) {
+    if (appointments![index].synced == "true" ||
+        appointments![index].synced == true) {
+      return Colors.green;
+    } else {
+      return Colors.blue;
+    }
+    // return colorVal;
+  }
+
+  @override
+  bool isAllDay(int index) {
+    return appointments![index].isAllDay;
+  }
+
+  @override
+  String getSubject(int index) {
+    return appointments![index].subject;
   }
 }

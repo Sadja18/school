@@ -356,7 +356,7 @@ Future<dynamic> isHeadMasterLoggedIn() async {
     var params = [];
     var result = await DBProvider.db.dynamicRead(query, params);
 
-    if (result.isNotEmpty) {
+    if (result != null && result.isNotEmpty) {
       return result[0];
     }
   } catch (e) {
@@ -377,6 +377,42 @@ Future<dynamic> getLeaveTypesFromDB() async {
 
     if (resp.isNotEmpty) {
       return resp;
+    }
+  } catch (e) {
+    if (kDebugMode) {
+      log(e.toString());
+    }
+  }
+}
+
+Future<void> saveTeacherAttendanceToLocalDB(
+    jsonifiedData, attendanceDate, uploadDate, total, present, absent) async {
+  try {
+    var params = [];
+    var query = "SELECT userID FROM users "
+        "WHERE "
+        "loginstatus=1 "
+        "AND "
+        "isHeadMaster='yes'"
+        ";";
+    var headMasterUser = await DBProvider.db.dynamicRead(query, params);
+    if (headMasterUser != null && headMasterUser.isNotEmpty) {
+      var headMasterUserId = headMasterUser[0]['userID'];
+
+      var data = <String, Object>{
+        'date': attendanceDate,
+        'uploadDate': uploadDate,
+        'headMasterUserId': headMasterUserId,
+        'totalPresent': present,
+        'totalAbsent': absent,
+        'attendanceJSONified': jsonifiedData,
+      };
+
+      await DBProvider.db.dynamicInsert("TeacherAttendance", data);
+
+      if (kDebugMode) {
+        log('inserted teacher attendance');
+      }
     }
   } catch (e) {
     if (kDebugMode) {
