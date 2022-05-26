@@ -1133,6 +1133,7 @@ Future<void> fetchTeacherProfileFromServerHeadMasterMode() async {
         print('some not 200 statuscode');
       }
     }
+
     var records = await DBProvider.db.dynamicRead(
         "SELECT * FROM TeacherProfile "
         "WHERE schoolId = (SELECT schoolId FROM users WHERE loginstatus=1);",
@@ -1249,9 +1250,80 @@ Future<void> fetchPersistentHeadMaster() async {
         }
       }
     }
+
+    var timeTableResponse = await http.get(
+      Uri(
+          scheme: 'http',
+          host: uri_paths.baseURLA,
+          path: uri_paths.fetchTeacherTimeTable,
+          queryParameters: queryParams),
+    );
+
+    if (kDebugMode) {
+      log('fetch time table');
+    }
+    if (timeTableResponse.statusCode == 200) {
+      var res = jsonDecode(timeTableResponse.body);
+      if (res['message'].toString().toLowerCase() == 'success') {
+        var timeTable = res['timeTable'];
+        for (var record in timeTable) {
+          if (record['teacher_id'] != null &&
+              record['teacher_id'] != false &&
+              record['teacher_id'].runtimeType == List &&
+              record['period'] != null &&
+              record['period'] != false &&
+              record['week_day'] != null &&
+              record['week_day'] != false &&
+              record['school_id'] != null &&
+              record['school_id'] != false &&
+              record['school_id'].runtimeType == List) {
+            var timeTableId = record['id'];
+            var period = record['period'];
+            var weekDay = record['week_day'];
+            var teacherId = record['teacherId'][0];
+            var schoolId = record['school_id'][0];
+
+            var data = <String, Object>{
+              "timeTableId": timeTableId,
+              "teacherId": teacherId,
+              "schoolId": schoolId,
+              "weekDay": weekDay,
+              "period": period,
+            };
+            await DBProvider.db.dynamicInsert("TeacherTimeTable", data);
+          }
+        }
+      }
+    }
   } catch (e) {
     // return e;
     if (kDebugMode) {
+      log(e.toString());
+    }
+  }
+}
+
+Future<dynamic> fetchTimeTableFromLocalDB(teacherId) async {
+  try {
+    var query = "SELECT timeTableId, weekDay, period "
+        "FROM TeacherTimeTable "
+        "WHERE "
+        "schoolId = ("
+        "SELECT schoolId FROM users WHERE loginstatus=1"
+        ") "
+        "AND "
+        "teacherId=?"
+        ";";
+    var params = [teacherId];
+
+    var res = await DBProvider.db.dynamicRead(query, params);
+
+    if (res != null && res.isNotEmpty) {
+      return res;
+    }
+  } catch (e) {
+    if (kDebugMode) {
+      log("er period");
       log(e.toString());
     }
   }

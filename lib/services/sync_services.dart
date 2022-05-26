@@ -165,76 +165,69 @@ Future<void> syncTeacherAttendance() async {
     final userPassword = value[0]['userPassword'];
     final dbname = value[0]['dbname'];
 
-    // Map requestBodyBase = {
-    //   'userName': userName as String,
-    //   'userPassword': userPassword as String,
-    //   'dbname': dbname as String,
-    //   'Persistent': '2',
-    // };
+    // await DBProvider.db.dynamicRead("DELETE FROM TeacherAttendance;", []);
 
-    // if (kDebugMode) {
-    //   log(requestBodyBase.toString());
+    // var query = "SELECT * FROM TeacherAttendance "
+    //     "WHERE "
+    //     "isSynced=? "
+    //     "AND "
+    //     "headMasterUserId = "
+    //     "("
+    //     "SELECT userId FROM users WHERE loginstatus=1 AND "
+    //     "isHeadMaster=?"
+    //     ");";
+    // var params = ['no', 'yes'];
+
+    // var teacherAttendanceRecords =
+    //     await DBProvider.db.dynamicRead(query, params);
+
+    // if (teacherAttendanceRecords != null &&
+    //     teacherAttendanceRecords.isNotEmpty) {
+    //   var record = teacherAttendanceRecords[0];
+    //   var date = record['date'];
+    //   var submissionDate = record['uploadDate'];
+    //   var present = record['totalPresent'];
+    //   var absent = record['totalAbsent'];
+    //   var attendanceSheet = jsonDecode(record['attendanceJSONified']);
+    //   var headMasterUserId = record['headMasterUserId'];
+
+    //   var requestBody = {
+    //     'userName': userName as String,
+    //     'userPassword': userPassword as String,
+    //     'dbname': dbname as String,
+    //     'Persistent': '1',
+    //     'date': date,
+    //     'submissionDate': submissionDate,
+    //     'present': present,
+    //     'absent': absent,
+    //     'attendanceSheet': attendanceSheet,
+    //     'headMasterUserId': headMasterUserId,
+    //   };
+    //   if (kDebugMode) {
+    //     log('teacher attendance data');
+    //     // log(teacherAttendanceRecords[0].toString());
+    //     log(requestBody.toString());
+    //   }
+    //   // for (var record in teacherAttendanceRecords) {
+    //   //   var date = record['date'];
+    //   //   var submissionDate = record['uploadDate'];
+    //   //   var present = record['totalPresent'];
+    //   //   var absent = record['totalAbsent'];
+    //   //   var attendanceSheet = jsonDecode(record['attendanceJSONified']);
+
+    //   //   var requestBody = {
+    //   //     'userName': userName as String,
+    //   //     'userPassword': userPassword as String,
+    //   //     'dbname': dbname as String,
+    //   //     'Persistent': '1',
+    //   //     'date': date,
+    //   //     'submissionDate': submissionDate,
+    //   //     'present': present,
+    //   //     'absent': absent,
+    //   //     'attendanceSheet': attendanceSheet,
+    //   //   };
+    //   // }
     // }
-
-    var query = "SELECT * FROM TeacherAttendance "
-        "WHERE "
-        "isSynced=? "
-        "AND "
-        "headMasterUserId = "
-        "("
-        "SELECT userId FROM users WHERE loginstatus=1 AND "
-        "isHeadMaster=?"
-        ");";
-    var params = ['no', 'yes'];
-
-    var teacherAttendanceRecords =
-        await DBProvider.db.dynamicRead(query, params);
-
-    if (teacherAttendanceRecords != null &&
-        teacherAttendanceRecords.isNotEmpty) {
-      var record = teacherAttendanceRecords[0];
-      var date = record['date'];
-      var submissionDate = record['uploadDate'];
-      var present = record['totalPresent'];
-      var absent = record['totalAbsent'];
-      var attendanceSheet = jsonDecode(record['attendanceJSONified']);
-
-      var requestBody = {
-        'userName': userName as String,
-        'userPassword': userPassword as String,
-        'dbname': dbname as String,
-        'Persistent': '1',
-        'date': date,
-        'submissionDate': submissionDate,
-        'present': present,
-        'absent': absent,
-        'attendanceSheet': attendanceSheet,
-      };
-      if (kDebugMode) {
-        log('teacher attendance data');
-        // log(teacherAttendanceRecords[0].toString());
-        log(requestBody.toString());
-      }
-      // for (var record in teacherAttendanceRecords) {
-      //   var date = record['date'];
-      //   var submissionDate = record['uploadDate'];
-      //   var present = record['totalPresent'];
-      //   var absent = record['totalAbsent'];
-      //   var attendanceSheet = jsonDecode(record['attendanceJSONified']);
-
-      //   var requestBody = {
-      //     'userName': userName as String,
-      //     'userPassword': userPassword as String,
-      //     'dbname': dbname as String,
-      //     'Persistent': '1',
-      //     'date': date,
-      //     'submissionDate': submissionDate,
-      //     'present': present,
-      //     'absent': absent,
-      //     'attendanceSheet': attendanceSheet,
-      //   };
-      // }
-    }
   } catch (e) {
     if (kDebugMode) {
       log(e.toString());

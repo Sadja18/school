@@ -262,6 +262,17 @@ class DBProvider {
         ");";
   }
 
+  /// teacher time table
+  String _createTableTeacherTimeTable() {
+    return "CREATE TABLE TeacherTimeTable("
+        "timeTableId INTEGER PRIMARY KEY,"
+        "weekDay TEXT NOT NULL,"
+        "period TEXT NOT NULL,"
+        "teacherId INTEGER NOT NULL,"
+        "schoolId INTEGER NOT NULL"
+        ");";
+  }
+
   Future initDB() async {
     String path = join(await getDatabasesPath(), dbname);
     return await openDatabase(path, version: version, onOpen: (db) {},
@@ -289,6 +300,7 @@ class DBProvider {
       dbBatch.execute(_createClassTable());
       dbBatch.execute(_createStudentTable());
       dbBatch.execute(_createTeacherProfileTable());
+      dbBatch.execute(_createTableTeacherTimeTable());
 
       dbBatch.execute(_createQuestionPaperTable());
 

@@ -12,6 +12,16 @@ import 'package:table_sticky_headers/table_sticky_headers.dart';
 // import '../../widgets/assist/image_assist.dart';
 import '../../widgets/date_widget.dart';
 
+const Map<int, String> weekDayMap = {
+  1: 'monday',
+  2: 'tuesday',
+  3: 'wednesday',
+  4: 'thursday',
+  5: 'friday',
+  6: 'saturday',
+  7: 'sunday'
+};
+
 class MarkTeacherAttendanceFuture extends StatefulWidget {
   const MarkTeacherAttendanceFuture({Key? key}) : super(key: key);
 
@@ -81,6 +91,7 @@ class _MarkTeacherAttendanceWidgetState
   int currentRowIndex = 0;
   List absentees = [];
   Map reasonMap = {};
+  Map proxyMap = {};
   // late Map<int, bool> absenteeCheckBox = {};
   late String currentReason = "";
   String? _selectedDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
@@ -123,15 +134,44 @@ class _MarkTeacherAttendanceWidgetState
     }
   }
 
+  void setProxyCallBack(int teacherId, Map periodWiseProxies) {
+    if (kDebugMode) {
+      log('proxies main callback');
+      log(teacherId.toString());
+      log(periodWiseProxies.toString());
+    }
+    setState(() {
+      proxyMap[teacherId] = periodWiseProxies;
+    });
+  }
+
+  List getTeacherIdsAvailableForProxy(teacherId) {
+    List list = [];
+    teachers.forEach((element) {
+      var tId = element['teacherId'];
+      if (tId != teacherId &&
+          absentees.contains(tId) == false &&
+          proxyMap.keys.toList().contains(tId) == false) {
+        // list.add(element);
+        var tempMap = {};
+        tempMap['teacherId'] = tId;
+        tempMap['teacherName'] = element['teacherName'];
+        list.add(tempMap);
+      }
+    });
+    return list;
+  }
+
   void showSelectionDialog(teacherId) async {
     if (kDebugMode) {
       log("teacher id is $teacherId");
     }
+    // var teachersAvailableForProxy = getTeacherIdsAvailableForProxy(teacherId);
     return showDialog(
       context: context,
       builder: (BuildContext _) {
         return AlertDialog(
-          title: const Text("Select Reason"),
+          title: const Text("Manage Attendance"),
           actions: [
             InkWell(
               onTap: () {
@@ -153,11 +193,14 @@ class _MarkTeacherAttendanceWidgetState
                 ? InkWell(
                     onTap: () {
                       var reasonMapTmp = reasonMap;
+                      var proxyMapTmp = proxyMap;
                       reasonMap.removeWhere((key, value) => key == teacherId);
+                      proxyMapTmp.removeWhere((key, value) => key == teacherId);
                       var newAbsentee = reasonMapTmp.keys.toList();
 
                       setState(() {
                         reasonMap = reasonMapTmp;
+                        proxyMap = proxyMapTmp;
                         absentees = newAbsentee;
                       });
                       Navigator.of(context).pop();
@@ -182,38 +225,84 @@ class _MarkTeacherAttendanceWidgetState
           content: Container(
             alignment: Alignment.topCenter,
             decoration: BoxDecoration(color: Colors.grey.shade100),
-            width: MediaQuery.of(context).size.width * 0.50,
-            height: MediaQuery.of(context).size.height * 0.40,
-            child: FutureBuilder(
-                future: getLeaveTypesFromDB(),
-                builder: (BuildContext ctx, AsyncSnapshot snapshot) {
+            width: MediaQuery.of(context).size.width * 0.90,
+            height: MediaQuery.of(context).size.height * 0.60,
+            child: Column(
+              children: [
+                FutureBuilder(
+                    future: getLeaveTypesFromDB(),
+                    builder: (BuildContext ctx, AsyncSnapshot snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const SizedBox(
+                          child: CircularProgressIndicator(),
+                        );
+                      } else {
+                        if (kDebugMode) {
+                          log("snapshot \n ${snapshot.hasData} \n ${snapshot.data} \n ${snapshot.data.runtimeType} ");
+                        }
+                        if (snapshot.hasError ||
+                            snapshot.hasData != true ||
+                            snapshot.data == null ||
+                            snapshot.data.isEmpty) {
+                          return const SizedBox(
+                            child: Text("No Leave Reason found"),
+                          );
+                        } else {
+                          var leaveReasons = snapshot.data;
+                          // String initialReason = reasonMap[teacherId]!=null && reasonMap[teacherId]!=false? reasonMap[teacherId]:
+
+                          return DropdownForReason(
+                            teacherId: teacherId,
+                            leaveReasons: leaveReasons,
+                            leaveReasonCallBack: leaveReasonCallBack,
+                          );
+                        }
+                      }
+                    }),
+
+                /// first fetch all periods for which this teacher needs proxy
+                FutureBuilder(
+                    builder: (BuildContext ctx, AsyncSnapshot snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const SizedBox(
-                      child: CircularProgressIndicator(),
+                      child: CircularProgressIndicator.adaptive(),
                     );
                   } else {
-                    if (kDebugMode) {
-                      log("snapshot \n ${snapshot.hasData} \n ${snapshot.data} \n ${snapshot.data.runtimeType} ");
-                    }
                     if (snapshot.hasError ||
                         snapshot.hasData != true ||
                         snapshot.data == null ||
                         snapshot.data.isEmpty) {
                       return const SizedBox(
-                        child: Text("No Leave Reason found"),
+                        height: 0,
                       );
                     } else {
-                      var leaveReasons = snapshot.data;
-                      // String initialReason = reasonMap[teacherId]!=null && reasonMap[teacherId]!=false? reasonMap[teacherId]:
-
-                      return DropdownForReason(
-                        teacherId: teacherId,
-                        leaveReasons: leaveReasons,
-                        leaveReasonCallBack: leaveReasonCallBack,
+                      var thisTeacherTimeTable = snapshot.data;
+                      // var currentTeacherId = teacherId;
+                      var nonAbsentTeachers = [];
+                      for (var teacher in teachers) {
+                        if (absentees.contains(teacher['teacherId']) &&
+                            teacherId != teacher['teacherId']) {
+                          nonAbsentTeachers.add({
+                            "teacherId": teacher['teacherId'],
+                            "teacherName": teacher['teacherName']
+                          });
+                        }
+                      }
+                      if (kDebugMode) {
+                        log("vnfndflnv d");
+                        log(thisTeacherTimeTable);
+                      }
+                      return ProxySelectionParentWrapper(
+                        thisTeacherTimeTable: thisTeacherTimeTable,
+                        thisTeacherId: teacherId,
+                        nonAbsentTeachers: nonAbsentTeachers,
+                        setProxyCallBack: setProxyCallBack,
                       );
                     }
                   }
                 }),
+              ],
+            ),
           ),
         );
       },
@@ -294,6 +383,29 @@ class _MarkTeacherAttendanceWidgetState
                               textAlign: TextAlign.left,
                             ),
                           ),
+                          (proxyMap[teacherId] != null &&
+                                  proxyMap[teacherId] != false)
+                              ? Container(
+                                  decoration: const BoxDecoration(),
+                                  alignment: Alignment.center,
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.60,
+                                  child: Text(
+                                    "Proxy: ${proxyMap[teacherId]['teacherName']}",
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                      // fontWeight: FontWeight.bold,
+                                      fontSize: 18.0,
+                                      color: Colors.white,
+                                    ),
+                                    maxLines: 1,
+                                    softWrap: false,
+                                    textAlign: TextAlign.left,
+                                  ),
+                                )
+                              : const SizedBox(
+                                  height: 0,
+                                ),
                           (reasonMap[teacherId] != null &&
                                   reasonMap[teacherId] != false)
                               ? Container(
@@ -331,7 +443,7 @@ class _MarkTeacherAttendanceWidgetState
   }
 
   double verticalRowScrollOffset() {
-    double scrollOffset = 80.0;
+    double scrollOffset = 90.0;
     if (currentRowIndex == 0.0) {
       return 0.0;
     } else {
@@ -441,6 +553,9 @@ class _MarkTeacherAttendanceWidgetState
 
   void savingLoader(submissionData) async {
     var jsonifiedData = jsonEncode(submissionData);
+    if (kDebugMode) {
+      log(jsonifiedData);
+    }
     var uploadDate = DateFormat('yyyy-MM-dd hh:mm:ss').format(DateTime.now());
     var total = teachers.length;
     var absent = absentees.length;
@@ -448,7 +563,6 @@ class _MarkTeacherAttendanceWidgetState
     var dateSelected = _selectedDate;
     var attendanceDate = dateSelected;
 
-    // await DBProvider.db.dynamicInsert("TeacherAttendance", data)
     showDialog(
         context: context,
         builder: (BuildContext _) {
@@ -457,8 +571,8 @@ class _MarkTeacherAttendanceWidgetState
             content: CircularProgressIndicator(),
           );
         });
-    await saveTeacherAttendanceToLocalDB(
-        jsonifiedData, attendanceDate, uploadDate, total, present, absent);
+    // await saveTeacherAttendanceToLocalDB(
+    //     jsonifiedData, attendanceDate, uploadDate, total, present, absent);
 
     // Navigator.of(context).pop();
   }
@@ -761,7 +875,7 @@ class _MarkTeacherAttendanceWidgetState
                 cellDimensions: CellDimensions.variableColumnWidthAndRowHeight(
                   columnWidths: [],
                   rowHeights:
-                      List<double>.generate(teachers.length, (int index) => 80),
+                      List<double>.generate(teachers.length, (int index) => 90),
                   stickyLegendWidth: MediaQuery.of(context).size.width,
                   stickyLegendHeight: 0,
                 ),
@@ -848,32 +962,175 @@ class _DropdownForReasonState extends State<DropdownForReason> {
     return Container(
         // width: MediaQuery.of(context).size.width * 0.40,
         alignment: Alignment.topCenter,
-        child: DropdownButton(
-          // value: currentReason,
-          onChanged: (selection) {
-            // List absenteesTmp = absentees;
-            // Map reasonMapTmp = reasonMap;
-            if (kDebugMode) {
-              log("Sekected $selection");
-            }
-            widget.leaveReasonCallBack(teacherId, selection.toString());
-            // }
+        child: Column(
+          children: [
+            DropdownButton(
+              hint: const Text("Select Reason"),
+              // value: currentReason,
+              onChanged: (selection) {
+                // List absenteesTmp = absentees;
+                // Map reasonMapTmp = reasonMap;
+                if (kDebugMode) {
+                  log("Sekected $selection");
+                }
+                widget.leaveReasonCallBack(teacherId, selection.toString());
+                // }
 
-            if (kDebugMode) {
-              // log(absentees.toString());
-              // log(reasonMap.toString());
-              log('piokvdskhb');
-            }
-            Navigator.of(context).pop();
-          },
-          items: widget.leaveReasons.map<DropdownMenuItem<String>>((e) {
-            return DropdownMenuItem(
-              child: Text(
-                e['leaveTypeName'].toString(),
-              ),
-              value: e['leaveTypeName'],
-            );
-          }).toList(),
+                if (kDebugMode) {
+                  // log(absentees.toString());
+                  // log(reasonMap.toString());
+                  log('piokvdskhb');
+                }
+                // Navigator.of(context).pop();
+              },
+              items: widget.leaveReasons.map<DropdownMenuItem<String>>((e) {
+                return DropdownMenuItem(
+                  child: Text(
+                    e['leaveTypeName'].toString(),
+                  ),
+                  value: e['leaveTypeName'],
+                );
+              }).toList(),
+            ),
+          ],
         ));
+  }
+}
+
+class ProxySelectionParentWrapper extends StatefulWidget {
+  final List thisTeacherTimeTable;
+  final int thisTeacherId;
+  final List nonAbsentTeachers;
+
+  /// int currentTeacher Id, map{string periodName, proxyteacherId}
+  final Function(int, Map) setProxyCallBack;
+  const ProxySelectionParentWrapper({
+    Key? key,
+    required this.thisTeacherTimeTable,
+    required this.thisTeacherId,
+    required this.nonAbsentTeachers,
+    required this.setProxyCallBack,
+  }) : super(key: key);
+
+  @override
+  State<ProxySelectionParentWrapper> createState() =>
+      _ProxySelectionParentWrapperState();
+}
+
+class _ProxySelectionParentWrapperState
+    extends State<ProxySelectionParentWrapper> {
+  late List availableTeachers;
+  late List thisTeacherTimeTable;
+  late int thisTeacherId;
+  int currentWidgetView = 0;
+
+  /// {
+  /// periodName: proxyTeacherId
+  /// }
+  late Map periodMap = {};
+  void childCallBack(int thisTeacherId, int periodName, int proxyTeacherId) {
+    var tmpAvail = availableTeachers;
+    tmpAvail.removeWhere((element) => element['teacherId'] == proxyTeacherId);
+    setState(() {
+      periodMap[periodName] = proxyTeacherId;
+      availableTeachers = tmpAvail;
+    });
+    if (kDebugMode) {
+      log(availableTeachers.toString());
+      log(periodMap.toString());
+    }
+  }
+
+  @override
+  void initState() {
+    if (kDebugMode) {
+      log('create wrapper called');
+      log(widget.nonAbsentTeachers.toString());
+      log(availableTeachers.toString());
+      log(periodMap.toString());
+    }
+    setState(() {
+      availableTeachers = widget.nonAbsentTeachers;
+      thisTeacherId = widget.thisTeacherId;
+      thisTeacherTimeTable = widget.thisTeacherTimeTable;
+      periodMap[widget.thisTeacherId] = [];
+    });
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: MediaQuery.of(context).size.width * 0.90,
+      height: MediaQuery.of(context).size.height * 0.30,
+      decoration: const BoxDecoration(),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          const Text("Widget for selecting proxy for one period"),
+          Table(
+            children: [
+              TableRow(
+                children: [
+                  TableCell(
+                    child: (currentWidgetView == 0 &&
+                            currentWidgetView < thisTeacherTimeTable.length)
+                        ? InkWell(
+                            onTap: () {
+                              if (kDebugMode) {
+                                log(currentWidgetView.toString());
+                              }
+                              setState(() {
+                                currentWidgetView = currentWidgetView + 1;
+                              });
+                              if (kDebugMode) {
+                                log(currentWidgetView.toString());
+                              }
+                            },
+                            child: const Icon(
+                              Icons.arrow_forward_sharp,
+                            ),
+                          )
+                        : const SizedBox(
+                            height: 0,
+                          ),
+                  ),
+                  TableCell(
+                    child: (currentWidgetView > 0 &&
+                            currentWidgetView == thisTeacherTimeTable.length)
+                        ? InkWell(
+                            onTap: () {
+                              if (kDebugMode) {
+                                log(currentWidgetView.toString());
+                              }
+                              setState(() {
+                                currentWidgetView = currentWidgetView - 1;
+                              });
+                              if (kDebugMode) {
+                                log(currentWidgetView.toString());
+                              }
+                            },
+                            child: const Icon(
+                              Icons.arrow_back_sharp,
+                            ),
+                          )
+                        : const SizedBox(
+                            height: 0,
+                          ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          InkWell(
+            onTap: () {},
+            child: Container(
+              alignment: Alignment.center,
+              child: const Text('Confirm'),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
