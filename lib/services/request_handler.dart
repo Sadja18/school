@@ -1063,76 +1063,76 @@ Future<void> fetchTeacherProfileFromServerHeadMasterMode() async {
     // if (kDebugMode) {
     //   log(queryParams.toString());
     // }
-    var requestURL = Uri(
-        scheme: 'http',
-        host: uri_paths.baseURLA,
-        path: uri_paths.fetchTeacherProfiles,
-        queryParameters: (queryParams));
-    if (kDebugMode) {
-      print('sending persistent');
-    }
+    // var requestURL = Uri(
+    //     scheme: 'http',
+    //     host: uri_paths.baseURLA,
+    //     path: uri_paths.fetchTeacherProfiles,
+    //     queryParameters: (queryParams));
+    // if (kDebugMode) {
+    //   print('sending persistent');
+    // }
 
-    var response = await http.get(requestURL);
-    if (kDebugMode) {
-      log(response.statusCode.toString());
-      // log(response.body);
-    }
+    // var response = await http.get(requestURL);
+    // if (kDebugMode) {
+    //   log(response.statusCode.toString());
+    //   // log(response.body);
+    // }
 
-    if (response.statusCode == 200) {
-      if (kDebugMode) {
-        print(requestURL);
-        log("response.bod");
-        print('persistent fetched');
-        // assessments can be empty
-      }
-      var resp = jsonDecode(response.body);
-      var teachers = resp['teachers'];
+    // if (response.statusCode == 200) {
+    //   if (kDebugMode) {
+    //     print(requestURL);
+    //     log("response.bod");
+    //     print('persistent fetched');
+    //     // assessments can be empty
+    //   }
+    //   var resp = jsonDecode(response.body);
+    //   var teachers = resp['teachers'];
 
-      if (kDebugMode) {
-        log(teachers[0].toString());
-      }
-      for (var teacher in teachers) {
-        var teacherId = teacher['id'];
-        var teacherName = teacher['name'];
-        var school = teacher['school_id'];
-        // var schoolId = -1;
-        // var schoolName = "";
-        var emp = teacher['employee_id'];
-        var teacherCode = teacher['teacher_code'];
-        var user = teacher['user_id'];
-        var profilePic = teacher['photo'] != null && teacher['photo'] != false
-            ? teacher['photo']
-            : defaultString;
+    //   if (kDebugMode) {
+    //     log(teachers[0].toString());
+    //   }
+    //   for (var teacher in teachers) {
+    //     var teacherId = teacher['id'];
+    //     var teacherName = teacher['name'];
+    //     var school = teacher['school_id'];
+    //     // var schoolId = -1;
+    //     // var schoolName = "";
+    //     var emp = teacher['employee_id'];
+    //     var teacherCode = teacher['teacher_code'];
+    //     var user = teacher['user_id'];
+    //     var profilePic = teacher['photo'] != null && teacher['photo'] != false
+    //         ? teacher['photo']
+    //         : defaultString;
 
-        if (school != null &&
-            school != false &&
-            emp != null &&
-            emp != false &&
-            user != null &&
-            user != false &&
-            user.runtimeType == List &&
-            school.runtimeType == List &&
-            emp.runtimeType == List) {
-          var schoolId = school[0];
-          var empId = emp[0];
-          var userId = user[0];
-          var dbEntry = <String, Object>{
-            "teacherId": teacherId,
-            "teacherName": teacherName,
-            "schoolId": schoolId,
-            "empId": empId,
-            "userId": userId,
-            'profilePic': profilePic,
-          };
+    //     if (school != null &&
+    //         school != false &&
+    //         emp != null &&
+    //         emp != false &&
+    //         user != null &&
+    //         user != false &&
+    //         user.runtimeType == List &&
+    //         school.runtimeType == List &&
+    //         emp.runtimeType == List) {
+    //       var schoolId = school[0];
+    //       var empId = emp[0];
+    //       var userId = user[0];
+    //       var dbEntry = <String, Object>{
+    //         "teacherId": teacherId,
+    //         "teacherName": teacherName,
+    //         "schoolId": schoolId,
+    //         "empId": empId,
+    //         "userId": userId,
+    //         'profilePic': profilePic,
+    //       };
 
-          await DBProvider.db.dynamicInsert("TeacherProfile", dbEntry);
-        }
-      }
-    } else {
-      if (kDebugMode) {
-        print('some not 200 statuscode');
-      }
-    }
+    //       await DBProvider.db.dynamicInsert("TeacherProfile", dbEntry);
+    //     }
+    //   }
+    // } else {
+    //   if (kDebugMode) {
+    //     print('some not 200 statuscode');
+    //   }
+    // }
 
     var records = await DBProvider.db.dynamicRead(
         "SELECT * FROM TeacherProfile "
@@ -1192,109 +1192,111 @@ Future<void> fetchPersistentHeadMaster() async {
       log(queryParams.toString());
     }
 
-    var response = await http.get(requestURL);
+    // var response = await http.get(requestURL);
 
-    if (response.statusCode == 200) {
-      if (kDebugMode) {
-        log('school fetched');
-        log(response.body.toString());
+    // if (response.statusCode == 200) {
+    //   if (kDebugMode) {
+    //     log('school fetched');
+    //     log(response.body.toString());
 
-        log("response can be empty");
-      }
-      var resp = jsonDecode(response.body);
-      if (kDebugMode) {
-        log("kfjehjsgjhdsgvmjgdsmj school ${response.body.runtimeType}");
-      }
-      var school = resp['school'];
-      if (school != null && school != false) {
-        await DBProvider.db.dynamicInsert("school", <String, Object>{
-          'school_id': school['school_id'],
-          'school_name': school['school_name'],
-        });
-      }
-    } else {
-      if (kDebugMode) {
-        print('some not 200 statuscode');
-      }
-    }
+    //     log("response can be empty");
+    //   }
+    //   var resp = jsonDecode(response.body);
+    //   if (kDebugMode) {
+    //     log("kfjehjsgjhdsgvmjgdsmj school ${response.body.runtimeType}");
+    //   }
+    //   var school = resp['school'];
+    //   if (school != null && school != false) {
+    //     await DBProvider.db.dynamicInsert("school", <String, Object>{
+    //       'school_id': school['school_id'],
+    //       'school_name': school['school_name'],
+    //     });
+    //   }
+    // } else {
+    //   if (kDebugMode) {
+    //     print('some not 200 statuscode');
+    //   }
+    // }
 
-    // await fetchLeaveTypeAndRequests();
-    var leaveTypesResponse = await http.get(Uri(
-        scheme: 'http',
-        host: uri_paths.baseURLA,
-        path: uri_paths.fetchLeaveTypes,
-        queryParameters: queryParams));
+    // // await fetchLeaveTypeAndRequests();
+    // var leaveTypesResponse = await http.get(Uri(
+    //     scheme: 'http',
+    //     host: uri_paths.baseURLA,
+    //     path: uri_paths.fetchLeaveTypes,
+    //     queryParameters: queryParams));
 
-    if (kDebugMode) {
-      // log('response leave type ${leaveTypesResponse.statusCode}');
-      // log(leaveTypesResponse.body.toString());
-    }
-    if (leaveTypesResponse.statusCode == 200) {
-      var respBody = jsonDecode(leaveTypesResponse.body);
-      if (respBody['message'] != null &&
-          respBody['message'].toString().toLowerCase() == 'success' &&
-          respBody['leaveTypes'] != null &&
-          respBody['leaveTypes'].isNotEmpty) {
-        var leaveTypes = respBody['leaveTypes'];
-        for (var leaveType in leaveTypes) {
-          var id = leaveType['id'];
-          var name = leaveType['name'];
-          Map<String, Object> leaveTypeEntry = {
-            "leaveTypeId": id,
-            "leaveTypeName": name,
-          };
+    // if (kDebugMode) {
+    //   // log('response leave type ${leaveTypesResponse.statusCode}');
+    //   // log(leaveTypesResponse.body.toString());
+    // }
+    // if (leaveTypesResponse.statusCode == 200) {
+    //   var respBody = jsonDecode(leaveTypesResponse.body);
+    //   if (respBody['message'] != null &&
+    //       respBody['message'].toString().toLowerCase() == 'success' &&
+    //       respBody['leaveTypes'] != null &&
+    //       respBody['leaveTypes'].isNotEmpty) {
+    //     var leaveTypes = respBody['leaveTypes'];
+    //     for (var leaveType in leaveTypes) {
+    //       var id = leaveType['id'];
+    //       var name = leaveType['name'];
+    //       Map<String, Object> leaveTypeEntry = {
+    //         "leaveTypeId": id,
+    //         "leaveTypeName": name,
+    //       };
 
-          await DBProvider.db
-              .dynamicInsert("TeacherLeaveAllocation", leaveTypeEntry);
-          await DBProvider.db.dynamicInsert("LeaveTypes", leaveTypeEntry);
-        }
-      }
-    }
+    //       await DBProvider.db
+    //           .dynamicInsert("TeacherLeaveAllocation", leaveTypeEntry);
+    //       await DBProvider.db.dynamicInsert("LeaveTypes", leaveTypeEntry);
+    //     }
+    //   }
+    // }
 
-    var timeTableResponse = await http.get(
-      Uri(
-          scheme: 'http',
-          host: uri_paths.baseURLA,
-          path: uri_paths.fetchTeacherTimeTable,
-          queryParameters: queryParams),
-    );
+    // var timeTableResponse = await http.get(
+    //   Uri(
+    //       scheme: 'http',
+    //       host: uri_paths.baseURLA,
+    //       path: uri_paths.fetchTeacherTimeTable,
+    //       queryParameters: queryParams),
+    // );
 
-    if (kDebugMode) {
-      log('fetch time table');
-    }
-    if (timeTableResponse.statusCode == 200) {
-      var res = jsonDecode(timeTableResponse.body);
-      if (res['message'].toString().toLowerCase() == 'success') {
-        var timeTable = res['timeTable'];
-        for (var record in timeTable) {
-          if (record['teacher_id'] != null &&
-              record['teacher_id'] != false &&
-              record['teacher_id'].runtimeType == List &&
-              record['period'] != null &&
-              record['period'] != false &&
-              record['week_day'] != null &&
-              record['week_day'] != false &&
-              record['school_id'] != null &&
-              record['school_id'] != false &&
-              record['school_id'].runtimeType == List) {
-            var timeTableId = record['id'];
-            var period = record['period'];
-            var weekDay = record['week_day'];
-            var teacherId = record['teacherId'][0];
-            var schoolId = record['school_id'][0];
+    // if (kDebugMode) {
+    //   log('fetch time table');
+    //   log(timeTableResponse.statusCode.toString());
+    //   log(timeTableResponse.body);
+    // }
+    // if (timeTableResponse.statusCode == 200) {
+    //   var res = jsonDecode(timeTableResponse.body);
+    //   if (res['message'].toString().toLowerCase() == 'success') {
+    //     var timeTable = res['timeTable'];
+    //     for (var record in timeTable) {
+    //       if (record['teacher_id'] != null &&
+    //           record['teacher_id'] != false &&
+    //           record['teacher_id'].runtimeType == List &&
+    //           record['period'] != null &&
+    //           record['period'] != false &&
+    //           record['week_day'] != null &&
+    //           record['week_day'] != false &&
+    //           record['school_id'] != null &&
+    //           record['school_id'] != false &&
+    //           record['school_id'].runtimeType == List) {
+    //         var timeTableId = record['id'];
+    //         var period = record['period'];
+    //         var weekDay = record['week_day'];
+    //         var teacherId = record['teacher_id'][0];
+    //         var schoolId = record['school_id'][0];
 
-            var data = <String, Object>{
-              "timeTableId": timeTableId,
-              "teacherId": teacherId,
-              "schoolId": schoolId,
-              "weekDay": weekDay,
-              "period": period,
-            };
-            await DBProvider.db.dynamicInsert("TeacherTimeTable", data);
-          }
-        }
-      }
-    }
+    //         var data = <String, Object>{
+    //           "timeTableId": timeTableId,
+    //           "teacherId": teacherId,
+    //           "schoolId": schoolId,
+    //           "weekDay": weekDay,
+    //           "period": period,
+    //         };
+    //         await DBProvider.db.dynamicInsert("TeacherTimeTable", data);
+    //       }
+    //     }
+    //   }
+    // }
   } catch (e) {
     // return e;
     if (kDebugMode) {
@@ -1303,7 +1305,7 @@ Future<void> fetchPersistentHeadMaster() async {
   }
 }
 
-Future<dynamic> fetchTimeTableFromLocalDB(teacherId) async {
+Future<dynamic> fetchTimeTableFromLocalDB(teacherId, String weekDay) async {
   try {
     var query = "SELECT timeTableId, weekDay, period "
         "FROM TeacherTimeTable "
@@ -1312,14 +1314,53 @@ Future<dynamic> fetchTimeTableFromLocalDB(teacherId) async {
         "SELECT schoolId FROM users WHERE loginstatus=1"
         ") "
         "AND "
-        "teacherId=?"
+        "teacherId=? "
+        "AND "
+        "weekDay=?"
         ";";
-    var params = [teacherId];
+    var params = [teacherId, weekDay];
 
     var res = await DBProvider.db.dynamicRead(query, params);
 
     if (res != null && res.isNotEmpty) {
       return res;
+    }
+  } catch (e) {
+    if (kDebugMode) {
+      log("er period");
+      log(e.toString());
+    }
+  }
+}
+
+Future<dynamic> getAllTeachersWhoDontHaveSamePeriodOnSameDay(int thisTeacherId,
+    String weekDay, String periodName, List availableTeachers) async {
+  try {
+    var query = "SELECT * FROM TeacherTimeTable "
+        "WHERE "
+        "weekDay = ? AND "
+        // "period != ? AND "
+        "teacherId !=?"
+        ";";
+    // List availableTeacherIds = [];
+    // for (var teacher in availableTeachers) {
+    //   availableTeacherIds.add(teacher['teacherId']);
+    // }
+    // var dumDum = "('" + availableTeacherIds.join(",") + "')";
+    var params = [
+      weekDay,
+      // periodName,
+      thisTeacherId,
+    ];
+
+    var teachers = await DBProvider.db.dynamicRead(query, params);
+    if (kDebugMode) {
+      log("message");
+      log(teachers.toString());
+    }
+
+    if (teachers != null && teachers.isNotEmpty) {
+      return teachers;
     }
   } catch (e) {
     if (kDebugMode) {

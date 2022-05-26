@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+// import 'package:school/models/urlPaths.dart';
 import '../../services/database_handler.dart';
 import '../../services/helper_db.dart';
 import '../../services/request_handler.dart';
@@ -166,6 +167,8 @@ class _MarkTeacherAttendanceWidgetState
     if (kDebugMode) {
       log("teacher id is $teacherId");
     }
+    var weekNum = DateTime.parse(_selectedDate.toString()).weekday;
+    var weekDay = weekDayMap[weekNum].toString();
     // var teachersAvailableForProxy = getTeacherIdsAvailableForProxy(teacherId);
     return showDialog(
       context: context,
@@ -262,45 +265,48 @@ class _MarkTeacherAttendanceWidgetState
 
                 /// first fetch all periods for which this teacher needs proxy
                 FutureBuilder(
+                    future: fetchTimeTableFromLocalDB(teacherId, weekDay),
                     builder: (BuildContext ctx, AsyncSnapshot snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const SizedBox(
-                      child: CircularProgressIndicator.adaptive(),
-                    );
-                  } else {
-                    if (snapshot.hasError ||
-                        snapshot.hasData != true ||
-                        snapshot.data == null ||
-                        snapshot.data.isEmpty) {
-                      return const SizedBox(
-                        height: 0,
-                      );
-                    } else {
-                      var thisTeacherTimeTable = snapshot.data;
-                      // var currentTeacherId = teacherId;
-                      var nonAbsentTeachers = [];
-                      for (var teacher in teachers) {
-                        if (absentees.contains(teacher['teacherId']) &&
-                            teacherId != teacher['teacherId']) {
-                          nonAbsentTeachers.add({
-                            "teacherId": teacher['teacherId'],
-                            "teacherName": teacher['teacherName']
-                          });
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const SizedBox(
+                          child: CircularProgressIndicator.adaptive(),
+                        );
+                      } else {
+                        if (snapshot.hasError ||
+                            snapshot.hasData != true ||
+                            snapshot.data == null ||
+                            snapshot.data.isEmpty) {
+                          return const SizedBox(
+                            height: 0,
+                          );
+                        } else {
+                          var thisTeacherTimeTable = snapshot.data;
+                          // var currentTeacherId = teacherId;
+                          var nonAbsentTeachers = [];
+                          for (var teacher in teachers) {
+                            if (absentees.contains(teacher['teacherId']) ==
+                                    false &&
+                                teacherId != teacher['teacherId']) {
+                              nonAbsentTeachers.add({
+                                "teacherId": teacher['teacherId'],
+                                "teacherName": teacher['teacherName']
+                              });
+                            }
+                          }
+                          if (kDebugMode) {
+                            log("vnfndflnv d");
+                            // log(thisTeacherTimeTable.toString());
+                          }
+                          return ProxySelectionParentWrapper(
+                            thisTeacherTimeTable: thisTeacherTimeTable,
+                            thisTeacherId: teacherId,
+                            nonAbsentTeachers: nonAbsentTeachers,
+                            setProxyCallBack: setProxyCallBack,
+                            weekDay: weekDay,
+                          );
                         }
                       }
-                      if (kDebugMode) {
-                        log("vnfndflnv d");
-                        log(thisTeacherTimeTable);
-                      }
-                      return ProxySelectionParentWrapper(
-                        thisTeacherTimeTable: thisTeacherTimeTable,
-                        thisTeacherId: teacherId,
-                        nonAbsentTeachers: nonAbsentTeachers,
-                        setProxyCallBack: setProxyCallBack,
-                      );
-                    }
-                  }
-                }),
+                    }),
               ],
             ),
           ),
@@ -1001,6 +1007,7 @@ class ProxySelectionParentWrapper extends StatefulWidget {
   final List thisTeacherTimeTable;
   final int thisTeacherId;
   final List nonAbsentTeachers;
+  final String weekDay;
 
   /// int currentTeacher Id, map{string periodName, proxyteacherId}
   final Function(int, Map) setProxyCallBack;
@@ -1010,6 +1017,7 @@ class ProxySelectionParentWrapper extends StatefulWidget {
     required this.thisTeacherId,
     required this.nonAbsentTeachers,
     required this.setProxyCallBack,
+    required this.weekDay,
   }) : super(key: key);
 
   @override
@@ -1045,8 +1053,8 @@ class _ProxySelectionParentWrapperState
   void initState() {
     if (kDebugMode) {
       log('create wrapper called');
-      log(widget.nonAbsentTeachers.toString());
-      log(availableTeachers.toString());
+      // log(widget.nonAbsentTeachers.toString());
+      // log(availableTeachers.toString());
       log(periodMap.toString());
     }
     setState(() {
@@ -1067,66 +1075,187 @@ class _ProxySelectionParentWrapperState
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          const Text("Widget for selecting proxy for one period"),
-          Table(
-            children: [
-              TableRow(
-                children: [
-                  TableCell(
-                    child: (currentWidgetView == 0 &&
-                            currentWidgetView < thisTeacherTimeTable.length)
-                        ? InkWell(
-                            onTap: () {
-                              if (kDebugMode) {
-                                log(currentWidgetView.toString());
-                              }
-                              setState(() {
-                                currentWidgetView = currentWidgetView + 1;
-                              });
-                              if (kDebugMode) {
-                                log(currentWidgetView.toString());
-                              }
-                            },
-                            child: const Icon(
-                              Icons.arrow_forward_sharp,
-                            ),
-                          )
-                        : const SizedBox(
-                            height: 0,
-                          ),
-                  ),
-                  TableCell(
-                    child: (currentWidgetView > 0 &&
-                            currentWidgetView == thisTeacherTimeTable.length)
-                        ? InkWell(
-                            onTap: () {
-                              if (kDebugMode) {
-                                log(currentWidgetView.toString());
-                              }
-                              setState(() {
-                                currentWidgetView = currentWidgetView - 1;
-                              });
-                              if (kDebugMode) {
-                                log(currentWidgetView.toString());
-                              }
-                            },
-                            child: const Icon(
-                              Icons.arrow_back_sharp,
-                            ),
-                          )
-                        : const SizedBox(
-                            height: 0,
-                          ),
-                  ),
-                ],
+          Container(
+            alignment: Alignment.topCenter,
+            margin: const EdgeInsets.only(
+              bottom: 6.0,
+            ),
+            child: FutureBuilder(
+              future: getAllTeachersWhoDontHaveSamePeriodOnSameDay(
+                thisTeacherId,
+                widget.weekDay,
+                thisTeacherTimeTable[currentWidgetView]['period'],
+                availableTeachers,
               ),
-            ],
+              builder: (BuildContext ctx, AsyncSnapshot snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const SizedBox(
+                    child: CircularProgressIndicator.adaptive(),
+                  );
+                } else {
+                  if (snapshot.hasError ||
+                      snapshot.hasData != true ||
+                      snapshot.data == null ||
+                      snapshot.data.isEmpty) {
+                    return SizedBox(
+                      // height: 0,
+                      child: Text(
+                          "No Teachers free for the ${thisTeacherTimeTable[currentWidgetView]['period']} period"),
+                    );
+                  } else {
+                    var availableTeacherValues = snapshot.data;
+
+                    return Text(availableTeacherValues.toString());
+                  }
+                }
+              },
+            ),
           ),
-          InkWell(
-            onTap: () {},
-            child: Container(
-              alignment: Alignment.center,
-              child: const Text('Confirm'),
+          Container(
+            alignment: Alignment.bottomCenter,
+            width: MediaQuery.of(context).size.width * 0.90,
+            child: Table(
+              columnWidths: const {
+                0: FractionColumnWidth(0.30),
+                1: FractionColumnWidth(0.30),
+                2: FractionColumnWidth(0.30),
+              },
+              children: [
+                TableRow(
+                  children: [
+                    TableCell(
+                      child: (currentWidgetView > 0 &&
+                              currentWidgetView <= thisTeacherTimeTable.length)
+                          ? InkWell(
+                              onTap: () {
+                                if (kDebugMode) {
+                                  log(currentWidgetView.toString());
+                                }
+                                setState(() {
+                                  currentWidgetView = currentWidgetView - 1;
+                                });
+                                if (kDebugMode) {
+                                  log(currentWidgetView.toString());
+                                }
+                              },
+                              child: Container(
+                                alignment: Alignment.bottomLeft,
+                                child: const Icon(
+                                  Icons.arrow_back_sharp,
+                                ),
+                              ),
+                            )
+                          : const SizedBox(
+                              height: 0,
+                            ),
+                    ),
+                    TableCell(
+                      child:
+                          (periodMap.keys.length == thisTeacherTimeTable.length)
+                              ? InkWell(
+                                  onTap: () {},
+                                  child: Container(
+                                    alignment: Alignment.bottomCenter,
+                                    decoration: BoxDecoration(
+                                      color: Colors.purple.shade300,
+                                    ),
+                                    child: const Text(
+                                      'Confirm',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              : const SizedBox(
+                                  height: 0,
+                                ),
+                    ),
+                    TableCell(
+                      child: (currentWidgetView >= 0 &&
+                              currentWidgetView <
+                                  thisTeacherTimeTable.length - 1)
+                          ? InkWell(
+                              onTap: () {
+                                if (kDebugMode) {
+                                  log(currentWidgetView.toString());
+                                }
+                                setState(() {
+                                  currentWidgetView = currentWidgetView + 1;
+                                });
+                                if (kDebugMode) {
+                                  log(currentWidgetView.toString());
+                                }
+                              },
+                              child: Container(
+                                alignment: Alignment.bottomRight,
+                                child: const Icon(
+                                  Icons.arrow_forward_sharp,
+                                ),
+                              ),
+                            )
+                          : const SizedBox(
+                              height: 0,
+                            ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class SingleProxyDropdown extends StatefulWidget {
+  final List proxyTeachers;
+  final String periodName;
+  final Function(String, int) parentCallBack;
+  const SingleProxyDropdown({
+    Key? key,
+    required this.proxyTeachers,
+    required this.periodName,
+    required this.parentCallBack,
+  }) : super(key: key);
+
+  @override
+  State<SingleProxyDropdown> createState() => _SingleProxyDropdownState();
+}
+
+class _SingleProxyDropdownState extends State<SingleProxyDropdown> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      alignment: Alignment.topCenter,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Container(
+            margin: const EdgeInsets.only(
+              bottom: 6.0,
+            ),
+            alignment: Alignment.center,
+            child: Text(widget.periodName),
+          ),
+          Container(
+            alignment: Alignment.center,
+            child: DropdownButton(
+              hint: const Text("Assign Teacher"),
+              items: widget.proxyTeachers.map<DropdownMenuItem<String>>((e) {
+                return DropdownMenuItem(
+                  child: Text(
+                    e['teacherName'],
+                  ),
+                  value: e['teacherName'],
+                );
+              }).toList(),
+              onChanged: (selection) {
+                if (kDebugMode) {
+                  log("Selected Teacher $selection");
+                }
+              },
             ),
           ),
         ],

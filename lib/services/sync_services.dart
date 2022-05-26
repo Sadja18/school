@@ -165,8 +165,6 @@ Future<void> syncTeacherAttendance() async {
     final userPassword = value[0]['userPassword'];
     final dbname = value[0]['dbname'];
 
-    // await DBProvider.db.dynamicRead("DELETE FROM TeacherAttendance;", []);
-
     // var query = "SELECT * FROM TeacherAttendance "
     //     "WHERE "
     //     "isSynced=? "
