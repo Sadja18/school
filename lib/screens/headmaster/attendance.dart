@@ -43,7 +43,8 @@ class _MarkTeacherAttendanceFutureState
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const CircularProgressIndicator();
             } else {
-              if (snapshot.hasData &&
+              if (snapshot.hasError == false &&
+                  snapshot.hasData &&
                   snapshot.data != null &&
                   snapshot.data.isNotEmpty) {
                 var teachers = snapshot.data;
@@ -53,7 +54,8 @@ class _MarkTeacherAttendanceFutureState
                 );
               } else {
                 return const SizedBox(
-                  height: 0,
+                  // height: 0,
+                  child: Text("No teacher profiles found"),
                 );
               }
             }
@@ -458,7 +460,7 @@ class _MarkTeacherAttendanceWidgetState
     await saveTeacherAttendanceToLocalDB(
         jsonifiedData, attendanceDate, uploadDate, total, present, absent);
 
-    Navigator.of(context).pop();
+    // Navigator.of(context).pop();
   }
 
   void saveAttendanceDialog() async {
@@ -545,6 +547,111 @@ class _MarkTeacherAttendanceWidgetState
     });
     if (kDebugMode) {
       print('reverse date callback');
+    }
+  }
+
+  void checkIfAttendanceExists() async {
+    try {
+      var query = "SELECT * FROM TeacherAttendance "
+          "WHERE "
+          "date=? AND "
+          "headMasterUserId=("
+          "SELECT userID FROM users WHERE loginstatus=1"
+          ");";
+      var selectionDate = _selectedDate;
+      var data = [selectionDate];
+
+      var isAttendance = await DBProvider.db.dynamicRead(query, data);
+      if (isAttendance != null && isAttendance.isNotEmpty) {
+        var attendanceRecord = isAttendance[0];
+        var absent = attendanceRecord['totalAbsent'];
+        var present = attendanceRecord['totalPresent'];
+        var dateSelection = DateFormat('MMM dd, yyyy')
+            .format(DateTime.parse(_selectedDate.toString()));
+
+        showDialog(
+            context: context,
+            builder: (BuildContext ctx) {
+              return AlertDialog(
+                title: const Text("Record exists"),
+                content: SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.50,
+                  height: MediaQuery.of(context).size.height * 0.35,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Container(
+                        alignment: Alignment.topCenter,
+                        margin: const EdgeInsets.symmetric(
+                          vertical: 6.0,
+                        ),
+                        child: Text(
+                          "Record exists for \n $dateSelection",
+                        ),
+                      ),
+                      Table(
+                        columnWidths: const {
+                          0: FractionColumnWidth(0.50),
+                          1: FractionColumnWidth(0.50),
+                        },
+                        defaultVerticalAlignment:
+                            TableCellVerticalAlignment.middle,
+                        border: TableBorder.all(),
+                        children: [
+                          TableRow(
+                            children: [
+                              TableCell(
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  child: const Text(
+                                    'Present',
+                                  ),
+                                ),
+                              ),
+                              TableCell(
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    present.toString(),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          TableRow(
+                            children: [
+                              TableCell(
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  child: const Text(
+                                    'Absent',
+                                  ),
+                                ),
+                              ),
+                              TableCell(
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    absent.toString(),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            });
+      } else {
+        saveAttendanceDialog();
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        log(e.toString());
+      }
     }
   }
 
@@ -683,7 +790,7 @@ class _MarkTeacherAttendanceWidgetState
               ),
               child: InkWell(
                 onTap: () {
-                  saveAttendanceDialog();
+                  checkIfAttendanceExists();
                 },
                 child: Container(
                   alignment: Alignment.center,

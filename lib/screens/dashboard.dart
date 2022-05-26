@@ -458,17 +458,6 @@ class _DashboardState extends State<Dashboard> {
                   appBar: AppBar(
                     centerTitle: true,
                     title: const Text('Dashboard'),
-                    // actions: [
-                    //   Builder(
-                    //     builder: (context) => IconButton(
-                    //       icon: const Icon(Icons.person),
-                    //       onPressed: () =>
-                    //           scaffoldKey.currentState?.openEndDrawer(),
-                    //       tooltip: MaterialLocalizations.of(context)
-                    //           .openAppDrawerTooltip,
-                    //     ),
-                    //   ),
-                    // ],
                     backgroundColor: Theme.of(context).primaryColor,
                     flexibleSpace: Container(
                       decoration: const BoxDecoration(
@@ -573,6 +562,29 @@ class _DashboardState extends State<Dashboard> {
                                 },
                                 child: const Text(
                                   'Sync Data',
+                                  style: TextStyle(
+                                    fontSize: 20.0,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Container(
+                            width: MediaQuery.of(context).size.width,
+                            decoration: BoxDecoration(),
+                            alignment: Alignment.center,
+                            child: Center(
+                              child: OutlinedButton(
+                                onPressed: () {
+                                  if (kDebugMode) {
+                                    print('clicked');
+                                  }
+                                  syncTeacherAttendance();
+                                  // showAlertDialogHeadMaster();
+                                  // wrapper();
+                                },
+                                child: const Text(
+                                  'Test',
                                   style: TextStyle(
                                     fontSize: 20.0,
                                   ),

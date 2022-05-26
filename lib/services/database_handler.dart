@@ -1467,7 +1467,7 @@ class DBProvider {
         var user = userQ.toList();
 
         if (kDebugMode) {
-          print('user is');
+          print('user is $params');
           print(user.runtimeType.toString());
         }
         return user;
@@ -1477,8 +1477,9 @@ class DBProvider {
         var user = userQ.toList();
 
         if (kDebugMode) {
-          log('user is');
-          print(user.runtimeType.toString());
+          log('user is $params');
+          log(user.runtimeType.toString());
+          log(" f ${user != null} g ${user.isNotEmpty}");
         }
         return user;
       }

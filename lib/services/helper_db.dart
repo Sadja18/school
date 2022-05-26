@@ -408,7 +408,7 @@ Future<void> saveTeacherAttendanceToLocalDB(
         'attendanceJSONified': jsonifiedData,
       };
 
-      await DBProvider.db.dynamicInsert("TeacherAttendance", data);
+      await DBProvider.db.dynamicInsertIgnore("TeacherAttendance", data);
 
       if (kDebugMode) {
         log('inserted teacher attendance');

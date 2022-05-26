@@ -2,6 +2,7 @@
 
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
@@ -1137,12 +1138,22 @@ Future<void> fetchTeacherProfileFromServerHeadMasterMode() async {
         "WHERE schoolId = (SELECT schoolId FROM users WHERE loginstatus=1);",
         []);
 
-    if (records.isNotEmpty) {
+    if (records != null && records.isNotEmpty) {
       return records;
     }
   } catch (e) {
     if (kDebugMode) {
       log(e.toString());
+    }
+    if (e is SocketException) {
+      var records = await DBProvider.db.dynamicRead(
+          "SELECT * FROM TeacherProfile "
+          "WHERE schoolId = (SELECT schoolId FROM users WHERE loginstatus=1);",
+          []);
+
+      if (records != null && records.isNotEmpty) {
+        return records;
+      }
     }
   }
 }
