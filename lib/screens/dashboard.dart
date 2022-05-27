@@ -569,29 +569,29 @@ class _DashboardState extends State<Dashboard> {
                               ),
                             ),
                           ),
-                          Container(
-                            width: MediaQuery.of(context).size.width,
-                            decoration: BoxDecoration(),
-                            alignment: Alignment.center,
-                            child: Center(
-                              child: OutlinedButton(
-                                onPressed: () {
-                                  if (kDebugMode) {
-                                    print('clicked');
-                                  }
-                                  syncTeacherAttendance();
-                                  // showAlertDialogHeadMaster();
-                                  // wrapper();
-                                },
-                                child: const Text(
-                                  'Test',
-                                  style: TextStyle(
-                                    fontSize: 20.0,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
+                          // Container(
+                          //   width: MediaQuery.of(context).size.width,
+                          //   decoration: BoxDecoration(),
+                          //   alignment: Alignment.center,
+                          //   child: Center(
+                          //     child: OutlinedButton(
+                          //       onPressed: () {
+                          //         if (kDebugMode) {
+                          //           print('clicked');
+                          //         }
+                          //         syncTeacherAttendance();
+                          //         // showAlertDialogHeadMaster();
+                          //         // wrapper();
+                          //       },
+                          //       child: const Text(
+                          //         'Test',
+                          //         style: TextStyle(
+                          //           fontSize: 20.0,
+                          //         ),
+                          //       ),
+                          //     ),
+                          //   ),
+                          // ),
                           Container(
                             width: MediaQuery.of(context).size.width,
                             decoration: BoxDecoration(),
