@@ -151,6 +151,7 @@ Future<void> wrapperHeadMaster() async {
     print('Fetch Persistent place here');
   }
   await fetchPersistentHeadMaster();
+  await syncTeacherAttendance();
   // await fetchLeaveTypeAndRequests();
 
   // await syncAttendance();
