@@ -1060,9 +1060,9 @@ Future<void> fetchTeacherProfileFromServerHeadMasterMode() async {
       'dbname': dbname as String,
       'Persistent': '1',
     };
-    // if (kDebugMode) {
-    //   log(queryParams.toString());
-    // }
+    if (kDebugMode) {
+      log(queryParams.toString());
+    }
     // var requestURL = Uri(
     //     scheme: 'http',
     //     host: uri_paths.baseURLA,
@@ -1175,128 +1175,128 @@ Future<void> fetchPersistentHeadMaster() async {
     final userPassword = value[0]['userPassword'];
     final dbname = value[0]['dbname'];
 
-    Map<String, String> queryParams = {
-      'userName': userName as String,
-      'userPassword': userPassword as String,
-      'dbname': dbname as String,
-      'Persistent': '2',
-    };
-    var requestURL = Uri(
-        scheme: 'http',
-        host: uri_paths.baseURLA,
-        path: uri_paths.fetchSchool,
-        queryParameters: queryParams);
-    if (kDebugMode) {
-      log('sending fetch school');
-      log(requestURL.toString());
-      log(queryParams.toString());
-    }
+    // Map<String, String> queryParams = {
+    //   'userName': userName as String,
+    //   'userPassword': userPassword as String,
+    //   'dbname': dbname as String,
+    //   'Persistent': '2',
+    // };
+    // var requestURL = Uri(
+    //     scheme: 'http',
+    //     host: uri_paths.baseURLA,
+    //     path: uri_paths.fetchSchool,
+    //     queryParameters: queryParams);
+    // if (kDebugMode) {
+    //   log('sending fetch school');
+    //   log(requestURL.toString());
+    //   log(queryParams.toString());
+    // }
 
-    var response = await http.get(requestURL);
+    // var response = await http.get(requestURL);
 
-    if (response.statusCode == 200) {
-      if (kDebugMode) {
-        log('school fetched');
-        log(response.body.toString());
+    // if (response.statusCode == 200) {
+    //   if (kDebugMode) {
+    //     log('school fetched');
+    //     log(response.body.toString());
 
-        log("response can be empty");
-      }
-      var resp = jsonDecode(response.body);
-      if (kDebugMode) {
-        log("kfjehjsgjhdsgvmjgdsmj school ${response.body.runtimeType}");
-      }
-      var school = resp['school'];
-      if (school != null && school != false) {
-        await DBProvider.db.dynamicInsert("school", <String, Object>{
-          'school_id': school['school_id'],
-          'school_name': school['school_name'],
-        });
-      }
-    } else {
-      if (kDebugMode) {
-        print('some not 200 statuscode');
-      }
-    }
+    //     log("response can be empty");
+    //   }
+    //   var resp = jsonDecode(response.body);
+    //   if (kDebugMode) {
+    //     log("kfjehjsgjhdsgvmjgdsmj school ${response.body.runtimeType}");
+    //   }
+    //   var school = resp['school'];
+    //   if (school != null && school != false) {
+    //     await DBProvider.db.dynamicInsert("school", <String, Object>{
+    //       'school_id': school['school_id'],
+    //       'school_name': school['school_name'],
+    //     });
+    //   }
+    // } else {
+    //   if (kDebugMode) {
+    //     print('some not 200 statuscode');
+    //   }
+    // }
 
     // await fetchLeaveTypeAndRequests();
-    var leaveTypesResponse = await http.get(Uri(
-        scheme: 'http',
-        host: uri_paths.baseURLA,
-        path: uri_paths.fetchLeaveTypes,
-        queryParameters: queryParams));
+    // var leaveTypesResponse = await http.get(Uri(
+    //     scheme: 'http',
+    //     host: uri_paths.baseURLA,
+    //     path: uri_paths.fetchLeaveTypes,
+    //     queryParameters: queryParams));
 
-    if (kDebugMode) {
-      // log('response leave type ${leaveTypesResponse.statusCode}');
-      // log(leaveTypesResponse.body.toString());
-    }
-    if (leaveTypesResponse.statusCode == 200) {
-      var respBody = jsonDecode(leaveTypesResponse.body);
-      if (respBody['message'] != null &&
-          respBody['message'].toString().toLowerCase() == 'success' &&
-          respBody['leaveTypes'] != null &&
-          respBody['leaveTypes'].isNotEmpty) {
-        var leaveTypes = respBody['leaveTypes'];
-        for (var leaveType in leaveTypes) {
-          var id = leaveType['id'];
-          var name = leaveType['name'];
-          Map<String, Object> leaveTypeEntry = {
-            "leaveTypeId": id,
-            "leaveTypeName": name,
-          };
+    // if (kDebugMode) {
+    //   // log('response leave type ${leaveTypesResponse.statusCode}');
+    //   // log(leaveTypesResponse.body.toString());
+    // }
+    // if (leaveTypesResponse.statusCode == 200) {
+    //   var respBody = jsonDecode(leaveTypesResponse.body);
+    //   if (respBody['message'] != null &&
+    //       respBody['message'].toString().toLowerCase() == 'success' &&
+    //       respBody['leaveTypes'] != null &&
+    //       respBody['leaveTypes'].isNotEmpty) {
+    //     var leaveTypes = respBody['leaveTypes'];
+    //     for (var leaveType in leaveTypes) {
+    //       var id = leaveType['id'];
+    //       var name = leaveType['name'];
+    //       Map<String, Object> leaveTypeEntry = {
+    //         "leaveTypeId": id,
+    //         "leaveTypeName": name,
+    //       };
 
-          await DBProvider.db
-              .dynamicInsert("TeacherLeaveAllocation", leaveTypeEntry);
-          await DBProvider.db.dynamicInsert("LeaveTypes", leaveTypeEntry);
-        }
-      }
-    }
+    //       await DBProvider.db
+    //           .dynamicInsert("TeacherLeaveAllocation", leaveTypeEntry);
+    //       await DBProvider.db.dynamicInsert("LeaveTypes", leaveTypeEntry);
+    //     }
+    //   }
+    // }
 
-    var timeTableResponse = await http.get(
-      Uri(
-          scheme: 'http',
-          host: uri_paths.baseURLA,
-          path: uri_paths.fetchTeacherTimeTable,
-          queryParameters: queryParams),
-    );
+    // var timeTableResponse = await http.get(
+    //   Uri(
+    //       scheme: 'http',
+    //       host: uri_paths.baseURLA,
+    //       path: uri_paths.fetchTeacherTimeTable,
+    //       queryParameters: queryParams),
+    // );
 
-    if (kDebugMode) {
-      log('fetch time table');
-      log(timeTableResponse.statusCode.toString());
-      log(timeTableResponse.body);
-    }
-    if (timeTableResponse.statusCode == 200) {
-      var res = jsonDecode(timeTableResponse.body);
-      if (res['message'].toString().toLowerCase() == 'success') {
-        var timeTable = res['timeTable'];
-        for (var record in timeTable) {
-          if (record['teacher_id'] != null &&
-              record['teacher_id'] != false &&
-              record['teacher_id'].runtimeType == List &&
-              record['period'] != null &&
-              record['period'] != false &&
-              record['week_day'] != null &&
-              record['week_day'] != false &&
-              record['school_id'] != null &&
-              record['school_id'] != false &&
-              record['school_id'].runtimeType == List) {
-            var timeTableId = record['id'];
-            var period = record['period'];
-            var weekDay = record['week_day'];
-            var teacherId = record['teacher_id'][0];
-            var schoolId = record['school_id'][0];
+    // if (kDebugMode) {
+    //   log('fetch time table');
+    //   log(timeTableResponse.statusCode.toString());
+    //   log(timeTableResponse.body);
+    // }
+    // if (timeTableResponse.statusCode == 200) {
+    //   var res = jsonDecode(timeTableResponse.body);
+    //   if (res['message'].toString().toLowerCase() == 'success') {
+    //     var timeTable = res['timeTable'];
+    //     for (var record in timeTable) {
+    //       if (record['teacher_id'] != null &&
+    //           record['teacher_id'] != false &&
+    //           record['teacher_id'].runtimeType == List &&
+    //           record['period'] != null &&
+    //           record['period'] != false &&
+    //           record['week_day'] != null &&
+    //           record['week_day'] != false &&
+    //           record['school_id'] != null &&
+    //           record['school_id'] != false &&
+    //           record['school_id'].runtimeType == List) {
+    //         var timeTableId = record['id'];
+    //         var period = record['period'];
+    //         var weekDay = record['week_day'];
+    //         var teacherId = record['teacher_id'][0];
+    //         var schoolId = record['school_id'][0];
 
-            var data = <String, Object>{
-              "timeTableId": timeTableId,
-              "teacherId": teacherId,
-              "schoolId": schoolId,
-              "weekDay": weekDay,
-              "period": period,
-            };
-            await DBProvider.db.dynamicInsert("TeacherTimeTable", data);
-          }
-        }
-      }
-    }
+    //         var data = <String, Object>{
+    //           "timeTableId": timeTableId,
+    //           "teacherId": teacherId,
+    //           "schoolId": schoolId,
+    //           "weekDay": weekDay,
+    //           "period": period,
+    //         };
+    //         await DBProvider.db.dynamicInsert("TeacherTimeTable", data);
+    //       }
+    //     }
+    //   }
+    // }
   } catch (e) {
     // return e;
     if (kDebugMode) {

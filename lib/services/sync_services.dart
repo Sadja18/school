@@ -4,7 +4,9 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
-
+import 'package:http/http.dart' as http;
+import '../services/database_handler.dart';
+import '../models/urlPaths.dart' as uri_paths;
 import '../services/request_handler.dart';
 
 import './database_handler.dart';
@@ -181,6 +183,12 @@ Future<void> syncTeacherAttendance() async {
 
     if (teacherAttendanceRecords != null &&
         teacherAttendanceRecords.isNotEmpty) {
+      log("teacher attendance read");
+      // log(teacherAttendanceRecords[0].toString());
+    }
+
+    if (teacherAttendanceRecords != null &&
+        teacherAttendanceRecords.isNotEmpty) {
       var record = teacherAttendanceRecords[0];
       var date = record['date'];
       var submissionDate = record['uploadDate'];
@@ -205,6 +213,29 @@ Future<void> syncTeacherAttendance() async {
         log('teacher attendance data');
         // log(teacherAttendanceRecords[0].toString());
         log(requestBody.toString());
+      }
+
+      var response = await http.post(
+        Uri.parse('${uri_paths.baseURL}${uri_paths.pushTeacherAttendance}'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(requestBody),
+      );
+
+      if (response.statusCode == 200) {
+        var res = jsonDecode(response.body);
+        if (kDebugMode) {
+          log(response.body);
+        }
+
+        if (res['message'].toString().toLowerCase() == 'success') {
+          String queryNew = "UPDATE TeacherAttendance SET isSynced=? "
+              "WHERE "
+              "date=?";
+          var paramsNew = ['yes', date];
+          await DBProvider.db.dynamicRead(queryNew, paramsNew);
+        }
       }
       // for (var record in teacherAttendanceRecords) {
       //   var date = record['date'];

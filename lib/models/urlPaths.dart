@@ -27,3 +27,4 @@ const fetchLeaveRequests = '/online/fetchleaverequests.php';
 const syncLeaveRequest = '/online/syncleaverequest.php';
 const fetchTeacherProfiles = '/online/fetchteacherprofiles.php';
 const fetchTeacherTimeTable = "/online/fetchteachertimetable.php";
+const pushTeacherAttendance = '/online/pushteacherattendance.php';

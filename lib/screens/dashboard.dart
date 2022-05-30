@@ -569,29 +569,29 @@ class _DashboardState extends State<Dashboard> {
                               ),
                             ),
                           ),
-                          // Container(
-                          //   width: MediaQuery.of(context).size.width,
-                          //   decoration: BoxDecoration(),
-                          //   alignment: Alignment.center,
-                          //   child: Center(
-                          //     child: OutlinedButton(
-                          //       onPressed: () {
-                          //         if (kDebugMode) {
-                          //           print('clicked');
-                          //         }
-                          //         syncTeacherAttendance();
-                          //         // showAlertDialogHeadMaster();
-                          //         // wrapper();
-                          //       },
-                          //       child: const Text(
-                          //         'Test',
-                          //         style: TextStyle(
-                          //           fontSize: 20.0,
-                          //         ),
-                          //       ),
-                          //     ),
-                          //   ),
-                          // ),
+                          Container(
+                            width: MediaQuery.of(context).size.width,
+                            decoration: BoxDecoration(),
+                            alignment: Alignment.center,
+                            child: Center(
+                              child: OutlinedButton(
+                                onPressed: () {
+                                  if (kDebugMode) {
+                                    print('clicked');
+                                  }
+                                  syncTeacherAttendance();
+                                  // showAlertDialogHeadMaster();
+                                  // wrapper();
+                                },
+                                child: const Text(
+                                  'Test',
+                                  style: TextStyle(
+                                    fontSize: 20.0,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
                           Container(
                             width: MediaQuery.of(context).size.width,
                             decoration: BoxDecoration(),
@@ -667,7 +667,7 @@ class FutureBuilderForTeacherAttendanceCalendarView extends StatelessWidget {
       : super(key: key);
   Future<dynamic> getAllAttendanceEntries() async {
     try {
-      var query = "SELECT date, totalPresent, totalAbsent "
+      var query = "SELECT date, totalPresent, totalAbsent, isSynced "
           "FROM TeacherAttendance "
           "WHERE headMasterUserId = "
           "("
@@ -706,6 +706,10 @@ class FutureBuilderForTeacherAttendanceCalendarView extends StatelessWidget {
               );
             } else {
               var attendances = snapshot.data;
+              if (kDebugMode) {
+                log("teacher attendance calendar view future");
+                log(attendances.toString());
+              }
               return TeacherAttendanceCalendarView(
                 attendances: attendances,
               );
