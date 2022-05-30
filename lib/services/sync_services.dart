@@ -191,72 +191,56 @@ Future<void> syncTeacherAttendance() async {
     if (teacherAttendanceRecords != null &&
         teacherAttendanceRecords.isNotEmpty) {
       var record = teacherAttendanceRecords[0];
-      var date = record['date'];
-      var submissionDate = record['uploadDate'];
-      var present = record['totalPresent'];
-      var absent = record['totalAbsent'];
-      var attendanceSheet = jsonDecode(record['attendanceJSONified']);
-      var headMasterUserId = record['headMasterUserId'];
 
-      var requestBody = {
-        'userName': userName as String,
-        'userPassword': userPassword as String,
-        'dbname': dbname as String,
-        'Persistent': '1',
-        'date': date,
-        'submissionDate': submissionDate,
-        'present': present,
-        'absent': absent,
-        'attendanceSheet': attendanceSheet,
-        'headMasterUserId': headMasterUserId,
-      };
-      if (kDebugMode) {
-        log('teacher attendance data');
-        // log(teacherAttendanceRecords[0].toString());
-        log(requestBody.toString());
-      }
+      for (var record in teacherAttendanceRecords) {
+        var date = record['date'];
+        var submissionDate = record['uploadDate'];
+        var present = record['totalPresent'];
+        var absent = record['totalAbsent'];
+        var attendanceSheet = jsonDecode(record['attendanceJSONified']);
+        var headMasterUserId = record['headMasterUserId'];
 
-      var response = await http.post(
-        Uri.parse('${uri_paths.baseURL}${uri_paths.pushTeacherAttendance}'),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: jsonEncode(requestBody),
-      );
-
-      if (response.statusCode == 200) {
-        var res = jsonDecode(response.body);
+        var requestBody = {
+          'userName': userName as String,
+          'userPassword': userPassword as String,
+          'dbname': dbname as String,
+          'Persistent': '1',
+          'date': date,
+          'submissionDate': submissionDate,
+          'present': present,
+          'absent': absent,
+          'attendanceSheet': attendanceSheet,
+          'headMasterUserId': headMasterUserId,
+        };
         if (kDebugMode) {
-          log(response.body);
+          log('teacher attendance data');
+          // log(teacherAttendanceRecords[0].toString());
+          log(requestBody.toString());
         }
 
-        if (res['message'].toString().toLowerCase() == 'success') {
-          String queryNew = "UPDATE TeacherAttendance SET isSynced=? "
-              "WHERE "
-              "date=?";
-          var paramsNew = ['yes', date];
-          await DBProvider.db.dynamicRead(queryNew, paramsNew);
+        var response = await http.post(
+          Uri.parse('${uri_paths.baseURL}${uri_paths.pushTeacherAttendance}'),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+          body: jsonEncode(requestBody),
+        );
+
+        if (response.statusCode == 200) {
+          var res = jsonDecode(response.body);
+          if (kDebugMode) {
+            log(response.body);
+          }
+
+          if (res['message'].toString().toLowerCase() == 'success') {
+            String queryNew = "UPDATE TeacherAttendance SET isSynced=? "
+                "WHERE "
+                "date=?";
+            var paramsNew = ['yes', date];
+            await DBProvider.db.dynamicRead(queryNew, paramsNew);
+          }
         }
       }
-      // for (var record in teacherAttendanceRecords) {
-      //   var date = record['date'];
-      //   var submissionDate = record['uploadDate'];
-      //   var present = record['totalPresent'];
-      //   var absent = record['totalAbsent'];
-      //   var attendanceSheet = jsonDecode(record['attendanceJSONified']);
-
-      //   var requestBody = {
-      //     'userName': userName as String,
-      //     'userPassword': userPassword as String,
-      //     'dbname': dbname as String,
-      //     'Persistent': '1',
-      //     'date': date,
-      //     'submissionDate': submissionDate,
-      //     'present': present,
-      //     'absent': absent,
-      //     'attendanceSheet': attendanceSheet,
-      //   };
-      // }
     }
   } catch (e) {
     if (kDebugMode) {
