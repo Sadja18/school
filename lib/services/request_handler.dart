@@ -75,9 +75,40 @@ Future<dynamic> tryLogin(String username, String userpassword) async {
         'dbname': 'doednhdd'
       }),
     );
-    return response;
+    // return response;
+    if (response.statusCode == 200) {
+      var data = jsonDecode(response.body);
+      if (data['user'] != null &&
+          data['user'].isNotEmpty &&
+          data['userID'] != null) {
+        Map<String, Object> dbEntry = {
+          "userName": data['user'].toString(),
+          "userPassword": data['password'].toString(),
+          "dbname": data['dbname'].toString(),
+          "loginstatus": data['login_status'],
+          "userID": data['userID'],
+          "isHeadMaster": data['headMaster'].toString(),
+          "schoolId": data['schoolId'],
+          "isOnline": 1,
+        };
+        if (kDebugMode) {
+          log("dbENtry");
+          log(dbEntry.toString());
+        }
+        await DBProvider.db.dynamicInsert("users", dbEntry);
+        return 1;
+      } else {
+        return 0;
+      }
+    } else {
+      return 0;
+    }
   } catch (e) {
-    return e;
+    if (kDebugMode) {
+      log("error in online login");
+      log(e.toString());
+    }
+    return 0;
   }
 }
 

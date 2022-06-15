@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/foundation.dart';
 
 import '../services/database_handler.dart';
@@ -7,45 +9,20 @@ Future<dynamic> offlineLogin(enteredUserName, enteredUserPassword) async {
 //
 
   var user = await DBProvider.db.isUser(enteredUserName, enteredUserPassword);
-  if (user.isNotEmpty) {
+  if (user != null && user.isNotEmpty) {
     if (kDebugMode) {
-      print("printing user data");
-      print(user.toString());
+      log("printing user data");
+      log(user.toString());
     }
     var userID = user[0]['userID'];
     if (kDebugMode) {
-      print(userID.runtimeType);
-      print(userID);
+      log("user Id make User Offline isUser");
+      log(userID.runtimeType.toString());
+      log(userID.toString());
     }
     var login = await DBProvider.db.makeUserOfflineLogin(userID);
-
-    // if (kDebugMode) {
-    //   print("login.toString(");
-    //   print(login.toString());
-    // }
-
-    return {'no_user': 1};
-
-    // return user[0];
+    return {"loggedIn": 1};
   } else {
-    return {'no_user': 1};
+    return {'loggedIn': 0};
   }
-  // return DBProvider.db.readUsers().then((users) {
-  //   if(kDebugMode){
-  //     print("log");
-  //     print(users.toString());
-  //   }
-  //   if (users.isNotEmpty) {
-  //     for (var user in users) {
-  //       if (user.userName == enteredUserName &&
-  //           user.userPassword == enteredUserPassword) {
-  //           var res = await DBProvider.db.makeUserOfflineLogin(user.userName, user.userPassword);
-  //         return {'login_status': '1', 'userID': user.userId};
-  //       }
-  //     }
-  //     return {};
-  //   } else {
-  //     return {'no_user': 1};
-  //   }
-  // });
 }

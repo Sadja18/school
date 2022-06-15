@@ -5,10 +5,11 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
+import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 // import 'package:workmanager/workmanager.dart';
+import '../models/urlPaths.dart' as uri_paths;
 import '../services/offline.dart';
 import '../services/database_handler.dart';
 import '../services/helper_db.dart';
@@ -35,9 +36,10 @@ class _LoginState extends State<Login> {
   String _messageCode = '';
 
   Future<void> _showAlertDialog() {
-    String message = confs[_messageCode] as String;
-    print(_messageCode);
-    print('kijd');
+    String message = 'Login Successful';
+    // if (kDebugMode) {
+    //   log("pushing to dahsboard");
+    // }
     return showDialog<void>(
         context: context,
         barrierDismissible: false,
@@ -51,11 +53,7 @@ class _LoginState extends State<Login> {
                   child: const Text('Okay'),
                   onPressed: () {
                     Navigator.of(context).pop();
-                    if (_messageCode == '1LO200' || _messageCode == '0LO200') {
-                      print('move to dashboard');
-                      Navigator.of(context)
-                          .pushReplacementNamed(Dashboard.routeName);
-                    }
+                    Navigator.of(context).popAndPushNamed(Dashboard.routeName);
                   },
                 ),
               ],
@@ -77,153 +75,88 @@ class _LoginState extends State<Login> {
   }
 
   void _onClickLogin(BuildContext context) async {
-    try {
-      final enteredUserName = usernameController.text;
-      final enteredUserPassword = userPasswordController.text;
+    final enteredUserName = usernameController.text;
+    final enteredUserPassword = userPasswordController.text;
 
-      if (enteredUserPassword.isEmpty ||
-          enteredUserName.isEmpty ||
-          enteredUserName == "" ||
-          enteredUserPassword == "") {
-        var message = "UserName and Password fields cannot be empty";
-        showAlert(message);
-      } else {
+    if (enteredUserPassword.isEmpty ||
+        enteredUserName.isEmpty ||
+        enteredUserName == "" ||
+        enteredUserPassword == "") {
+      var message = "UserName and Password fields cannot be empty";
+      showAlert(message);
+    } else {
+      if (kDebugMode) {
+        log("");
+      }
+      try {
+        // try sending a test request
+        var testResponse = await http.get(
+            Uri.parse(uri_paths.baseURL + uri_paths.checkIfOnline + '?get=1'));
+
         if (kDebugMode) {
-          print('clicked');
+          log("test response");
+          log(testResponse.statusCode.toString());
         }
 
-        var connResponse = await request_handler.sendTestRequest();
-        var conn = connResponse;
-
-        if (kDebugMode) {
-          // log(connResponse.toString());
-          log('login');
-          log(conn.runtimeType.toString());
-        }
-
-        if (connResponse.runtimeType != SocketException) {
-          if (connResponse.statusCode == 200) {
-            var g = jsonDecode(connResponse.body);
-            if (kDebugMode) {
-              print('connection: ' + connResponse.statusCode.toString());
-              print('connection: ' + g['connected'].runtimeType.toString());
-            }
-            if (g != null && g['connected'] == "true") {
-              if (enteredUserPassword.isNotEmpty &&
-                  enteredUserPassword != "" &&
-                  enteredUserName.isNotEmpty &&
-                  enteredUserName != "") {
-                var tryLoginRequest = await request_handler.tryLogin(
-                    enteredUserName, enteredUserPassword);
-                if (kDebugMode) {
-                  print('try login: ' + tryLoginRequest.statusCode.toString());
-                  print('try login: ' + tryLoginRequest.body.toString());
-                }
-
-                if (tryLoginRequest.statusCode == 200) {
-                  var loginRespBody = jsonDecode(tryLoginRequest.body);
-                  if (loginRespBody != null && loginRespBody.isNotEmpty) {
-                    if (kDebugMode) {
-                      print('try login: ' + loginRespBody['user'].toString());
-                      print(
-                          'try login: ' + loginRespBody['password'].toString());
-                      print('try login: ' + loginRespBody['dbname'].toString());
-                      print('try login: ' +
-                          loginRespBody['login_status'].toString());
-                      print('try login: ' + loginRespBody['userID'].toString());
-                      print(
-                          'try login: ' + loginRespBody['isOnline'].toString());
-                    }
-
-                    if (loginRespBody['login_status'] == 1 ||
-                        loginRespBody['login_status'] == '1') {
-                      setState(() {
-                        _messageCode = '1LO200';
-                      });
-                      await saveUserToDB(loginRespBody);
-                      _showAlertDialog();
-                    } else {
-                      setState(() {
-                        _messageCode = '1LO01';
-                      });
-                      _showAlertDialog();
-                    }
-                  }
-                }
-              }
-            }
-          } else {
-            if (kDebugMode) {
-              print('remote server down, offline attempt');
-            }
-            var offlineLoginAttempt =
-                await offlineLogin(enteredUserName, enteredUserPassword);
-            if (kDebugMode) {
-              print(offlineLoginAttempt.toString());
-            }
-            if (offlineLoginAttempt['no_user'] == 1) {
-              // if no user record was found
-              setState(() {
-                _messageCode = '0LO01';
-              });
-              _showAlertDialog();
-            } else {
-              // if user record was found
-              if (offlineLoginAttempt['loginstatus'] == 1 ||
-                  offlineLoginAttempt['loginstatus'] == '1') {
-                setState(() {
-                  _messageCode = '0LO200';
-                });
-                _showAlertDialog();
-
-                print('here 3');
-              } else {
-                setState(() {
-                  _messageCode = '0LO02';
-                });
-                _showAlertDialog();
-
-                print('here 4');
-              }
-            }
-          }
-        } else {
-          if (kDebugMode) {
-            print('remote server down, offline attempt');
-          }
-          var offlineLoginAttempt =
-              await offlineLogin(enteredUserName, enteredUserPassword);
-
-          if (offlineLoginAttempt['no_user'] == 1) {
-            // if no user record was found
-            setState(() {
-              _messageCode = '0LO01';
-            });
+        if (testResponse.statusCode == 200) {
+          var onlineLoginAttempt = await request_handler.tryLogin(
+              enteredUserName, enteredUserPassword);
+          // if (kDebugMode) {
+          //   log("1234");
+          // }
+          if (onlineLoginAttempt == 1) {
+            // if (kDebugMode) {
+            //   log("afdsfgjvh");
+            // }
             _showAlertDialog();
           } else {
-            // if user record was found
-            if (offlineLoginAttempt['loginstatus'] == 1 ||
-                offlineLoginAttempt['loginstatus'] == '1') {
-              setState(() {
-                _messageCode = '0LO200';
-              });
-              _showAlertDialog();
+            // showAlert("message")
+            showAlert("Wrong credentials\nPlease check login credentials");
+          }
+          // if (kDebugMode) {
+          //   log(onlineLoginAttempt.toString());
+          // }
+        } else {
+          if ([404, 500].contains(testResponse.statusCode)) {
+            showAlert("Please try after some time");
+          } else {
+            showAlert("Please check if credentials are correct");
+          }
+        }
+      } catch (e) {
+        if (kDebugMode) {
+          log("error logging user in");
+          log(e.toString());
+        }
+        if (e is SocketException) {
+          var recordCheck =
+              await DBProvider.db.isUser(enteredUserName, enteredUserPassword);
 
-              print('here 3');
+          if (recordCheck != null && recordCheck.isNotEmpty) {
+            // record exists locally
+            // start offline session
+            var entry =
+                await offlineLogin(enteredUserName, enteredUserPassword);
+
+            if (entry != null && entry.isNotEmpty) {
+              if (entry['loggedIn'] != null && entry['loggedIn'] == 1) {
+                _showAlertDialog();
+              } else {
+                showAlert("Wrong credentials.\n"
+                    "Please check your credentials");
+              }
             } else {
-              setState(() {
-                _messageCode = '0LO02';
-              });
-              _showAlertDialog();
-
-              print('here 4');
+              /// error offline login
+              showAlert("Please try to re-login "
+                  "when you are connected to internet");
             }
+          } else {
+            /// no offline user account found
+            showAlert("Please try to re-login "
+                "when you are connected to internet");
           }
         }
       }
-    } catch (e) {
-      log('error');
-      log(e.toString());
     }
   }
 

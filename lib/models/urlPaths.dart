@@ -1,7 +1,7 @@
 // ignore_for_file: file_names
 
-// const baseURL = 'https://namanpwa.xyz';
-// const baseURLA = 'namanpwa.xyz';
+// const baseURL = 'https://62.43.157.49';
+// const baseURLA = '62.43.157.49';
 const baseURL = 'http://10.0.2.2';
 const baseURLA = '10.0.2.2';
 const checkIfOnline = '/online/checkIfOnline.php/';

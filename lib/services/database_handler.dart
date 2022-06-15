@@ -373,8 +373,7 @@ class DBProvider {
   Future<dynamic> logoutUser() async {
     final db = await initDB();
     var updateCount = await db.rawQuery('UPDATE users '
-        'SET loginstatus = 0, isOnline = 0 '
-        'WHERE loginstatus=1;');
+        'SET loginstatus = 0, isOnline = 0 ;');
 
     if (kDebugMode) {
       log("update count");
@@ -403,7 +402,7 @@ class DBProvider {
           conflictAlgorithm: ConflictAlgorithm.replace);
 
       if (kDebugMode) {
-        print('Inserted in $tableName $res');
+        log('Inserted in $tableName $res');
       }
     } catch (e) {
       log(e.toString());
