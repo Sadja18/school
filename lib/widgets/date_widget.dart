@@ -43,8 +43,8 @@ class _DateShowState extends State<DateShow> {
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.height * 0.06,
       decoration: BoxDecoration(
-        color: Colors.deepPurpleAccent,
-      ),
+          // color: Colors.red,
+          ),
       child: TextButton(
         style: TextButton.styleFrom(
           alignment: Alignment.center,

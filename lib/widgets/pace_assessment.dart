@@ -189,7 +189,7 @@ class _PaceAssessmentScreenState extends State<PaceAssessmentScreen> {
     return Container(
       decoration: const BoxDecoration(),
       width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height * 0.06,
+      height: MediaQuery.of(context).size.height * 0.08,
       child: Table(
         border: TableBorder.symmetric(
           inside: BorderSide(
@@ -202,13 +202,14 @@ class _PaceAssessmentScreenState extends State<PaceAssessmentScreen> {
           0: FractionColumnWidth(0.350),
           1: FractionColumnWidth(0.620),
         },
+        defaultVerticalAlignment: TableCellVerticalAlignment.middle,
         children: [
           TableRow(
             children: [
               TableCell(
                 verticalAlignment: TableCellVerticalAlignment.middle,
                 child: Container(
-                  height: MediaQuery.of(context).size.height * 0.06,
+                  height: MediaQuery.of(context).size.height * 0.08,
                   decoration: const BoxDecoration(),
                   margin: const EdgeInsets.symmetric(
                     horizontal: 0.0,
@@ -232,8 +233,10 @@ class _PaceAssessmentScreenState extends State<PaceAssessmentScreen> {
                           horizontal: 0.0,
                           vertical: 0.0,
                         ),
-                        height: MediaQuery.of(context).size.height * 0.06,
-
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 5.0,
+                        ),
+                        height: MediaQuery.of(context).size.height * 0.08,
                         child: SingleChildScrollView(
                           scrollDirection: Axis.horizontal,
                           child: AssessmentsDropDown(
@@ -254,8 +257,7 @@ class _PaceAssessmentScreenState extends State<PaceAssessmentScreen> {
                           horizontal: 0.0,
                           vertical: 0.0,
                         ),
-                        height: MediaQuery.of(context).size.height * 0.06,
-
+                        height: MediaQuery.of(context).size.height * 0.08,
                         child: Center(
                           child: const Text(
                             "Select Assessment",
@@ -282,13 +284,16 @@ class _PaceAssessmentScreenState extends State<PaceAssessmentScreen> {
               color: Colors.deepPurpleAccent,
             ),
             width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height * 0.08,
             child: Table(
+              defaultVerticalAlignment: TableCellVerticalAlignment.middle,
               border: TableBorder.symmetric(
                 inside: BorderSide(
-                  width: 3.0,
-                  color: Color.fromARGB(255, 204, 204, 204),
+                  color: Colors.white,
                 ),
-                outside: BorderSide.none,
+                outside: BorderSide(
+                  color: Colors.white,
+                ),
               ),
               columnWidths: const <int, TableColumnWidth>{
                 0: FractionColumnWidth(0.30),
@@ -299,47 +304,59 @@ class _PaceAssessmentScreenState extends State<PaceAssessmentScreen> {
                 TableRow(
                   children: [
                     TableCell(
-                      child: Container(
-                        alignment: Alignment.center,
-                        // width: MediaQuery.of(context).size.width * 0.80,
-                        // height: MediaQuery.of(context).size.height * 0.06,
-                        decoration: BoxDecoration(),
-                        child: Text(
-                          displayDate(_selectedAssessment['date'].toString()),
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
+                      child: Card(
+                        borderOnForeground: true,
+                        // shape: ShapeBorder,
+                        color: Colors.deepPurpleAccent,
+                        elevation: 18.0,
+                        child: Container(
+                          alignment: Alignment.center,
+                          child: Text(
+                            displayDate(_selectedAssessment['date'].toString()),
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                            maxLines: 2,
                           ),
-                          maxLines: 2,
                         ),
                       ),
                     ),
                     TableCell(
-                      child: Container(
-                        alignment: Alignment.center,
-                        // width: MediaQuery.of(context).size.width * 0.80,
-                        // height: MediaQuery.of(context).size.height * 0.06,
-                        decoration: BoxDecoration(),
-                        child: Text(
-                          _selectedAssessment['subject_name'].toString(),
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
+                      child: Card(
+                        color: Colors.deepPurpleAccent,
+                        borderOnForeground: true,
+                        elevation: 18.0,
+                        child: Container(
+                          alignment: Alignment.center,
+                          // width: MediaQuery.of(context).size.width * 0.80,
+                          // height: MediaQuery.of(context).size.height * 0.06,
+
+                          decoration: BoxDecoration(),
+                          child: Text(
+                            _selectedAssessment['subject_name'].toString(),
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                            maxLines: 2,
                           ),
-                          maxLines: 2,
                         ),
                       ),
                     ),
                     TableCell(
-                      child: Container(
-                        alignment: Alignment.center,
-                        width: MediaQuery.of(context).size.width,
-                        // height: MediaQuery.of(context).size.height * 0.06,
-                        decoration: BoxDecoration(),
-                        child: SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
+                      child: Card(
+                        color: Colors.deepPurpleAccent,
+                        elevation: 18.0,
+                        child: Container(
+                          alignment: Alignment.center,
+                          width: MediaQuery.of(context).size.width,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 2.0,
+                          ),
+                          decoration: BoxDecoration(),
                           child: Text(
                             _selectedAssessment['qp_code_name'].toString(),
                             style: const TextStyle(
@@ -347,7 +364,7 @@ class _PaceAssessmentScreenState extends State<PaceAssessmentScreen> {
                               fontWeight: FontWeight.bold,
                               color: Colors.white,
                             ),
-                            maxLines: 1,
+                            maxLines: 2,
                           ),
                         ),
                       ),
@@ -362,10 +379,14 @@ class _PaceAssessmentScreenState extends State<PaceAssessmentScreen> {
 
   Widget widgetTop(context) {
     return Container(
-      alignment: Alignment.center,
+      alignment: Alignment.topCenter,
+      decoration: BoxDecoration(
+          // color: Colors.green,
+          ),
       width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.height * 0.16,
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           topRow(context),
           (_selectedClass == "" || _selectedAssessment.isEmpty)
@@ -452,8 +473,12 @@ class _PaceAssessmentScreenState extends State<PaceAssessmentScreen> {
   Widget widgetSubmitButton() {
     return Container(
       alignment: Alignment.center,
+      height: MediaQuery.of(context).size.height * 0.05,
       decoration: BoxDecoration(),
       child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          primary: Color.fromARGB(255, 245, 97, 220),
+        ),
         onPressed: () {
           saveDataToDB();
         },
@@ -795,9 +820,6 @@ class _PaceAssessmentScreenState extends State<PaceAssessmentScreen> {
 
   Widget assessmentTable() {
     return Container(
-      decoration: BoxDecoration(
-        border: Border.all(),
-      ),
       child: StickyHeadersTable(
           initialScrollOffsetX: 0.0,
           initialScrollOffsetY: 0.0,
@@ -812,7 +834,7 @@ class _PaceAssessmentScreenState extends State<PaceAssessmentScreen> {
                 MediaQuery.of(context).size.width * 0.12,
               ],
               rowHeights:
-                  List<double>.generate(studentList.length, (int index) => 68),
+                  List<double>.generate(studentList.length, (int index) => 100),
               stickyLegendWidth: MediaQuery.of(context).size.width * 0.85,
               stickyLegendHeight: 0),
           columnsLength: 1,
@@ -867,29 +889,27 @@ class _PaceAssessmentScreenState extends State<PaceAssessmentScreen> {
         decoration: BoxDecoration(
           color: Colors.grey.shade300,
         ),
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              // widgetSelectorFields(),
-              widgetTop(context),
-              (_selectedClass!.isEmpty || _selectedAssessment.isEmpty)
-                  ? const Text("")
-                  : Container(
-                      margin: const EdgeInsets.symmetric(
-                        vertical: 12.0,
-                      ),
-                      width: MediaQuery.of(context).size.width,
-                      height: MediaQuery.of(context).size.height * 0.68,
-                      child: assessmentTable(),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            // widgetSelectorFields(),
+            widgetTop(context),
+            (_selectedClass!.isEmpty || _selectedAssessment.isEmpty)
+                ? const Text("")
+                : Container(
+                    margin: const EdgeInsets.symmetric(
+                      vertical: 6.0,
                     ),
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height * 0.63,
+                    child: assessmentTable(),
+                  ),
 
-              (_selectedClass!.isEmpty || _selectedAssessment.isEmpty)
-                  ? const Text("")
-                  : widgetSubmitButton(),
-            ],
-          ),
+            (_selectedClass!.isEmpty || _selectedAssessment.isEmpty)
+                ? const Text("")
+                : widgetSubmitButton(),
+          ],
         ),
       ),
     );

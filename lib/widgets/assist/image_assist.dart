@@ -25,7 +25,7 @@ class _AvatarGeneratorNewState extends State<AvatarGeneratorNew> {
           ),
       alignment: Alignment.topCenter,
       // width: MediaQuery.of(context).size.width*0.0001,
-      height: MediaQuery.of(context).size.height * 0.067,
+      height: MediaQuery.of(context).size.height * 0.12,
       child: ClipOval(
         child: Image(
           image: Image.memory(Base64Decoder().convert(widget.base64Code)).image,

@@ -480,20 +480,27 @@ class _ApplyForLeaveWidgetState extends State<ApplyForLeaveWidget> {
                 vertical: 15.0,
               ),
               child: InkWell(
-                child: Container(
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    color: Colors.purpleAccent,
-                    borderRadius: BorderRadius.circular(
-                      10.0,
+                child: Card(
+                  elevation: 18.0,
+                  borderOnForeground: true,
+                  color: const Color.fromARGB(255, 251, 66, 220),
+                  shadowColor: Colors.blueGrey,
+                  child: Container(
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(255, 237, 67, 208),
+                      borderRadius: BorderRadius.circular(
+                        25.0,
+                      ),
                     ),
-                  ),
-                  width: MediaQuery.of(context).size.width * 0.30,
-                  child: const Text(
-                    "Submit",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
+                    width: MediaQuery.of(context).size.width * 0.30,
+                    height: MediaQuery.of(context).size.height * 0.06,
+                    child: const Text(
+                      "Submit",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ),

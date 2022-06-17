@@ -178,95 +178,98 @@ class _EditAttendanceState extends State<EditAttendance> {
     var isEven = index % 2 == 0;
     String studentId = studentList[index]['studentId'].toString();
 
-    return Card(
-      color: Colors.transparent,
-      shadowColor: Colors.purple.shade200,
-      elevation: 8.0,
-      child: Container(
-        // alignment: Alignment.centerLeft,
-        decoration: BoxDecoration(
-          border: Border.all(
-            color: Colors.transparent,
+    return SizedBox(
+      height: MediaQuery.of(context).size.height,
+      child: Card(
+        color: Colors.transparent,
+        shadowColor: Colors.purple.shade200,
+        elevation: 8.0,
+        child: Container(
+          // alignment: Alignment.centerLeft,
+          decoration: BoxDecoration(
+            // border: Border.all(
+            //   color: Colors.transparent,
+            // ),
+            borderRadius: BorderRadius.circular(
+              8.0,
+            ),
+            // borderRadius: BorderRadius.circular(4.0),
+            color: Colors.white,
           ),
-          borderRadius: BorderRadius.circular(
-            8.0,
+          margin: const EdgeInsets.symmetric(
+            vertical: 2.5,
           ),
-          // borderRadius: BorderRadius.circular(4.0),
-          color: Colors.white,
-        ),
-        margin: const EdgeInsets.symmetric(
-          vertical: 2.5,
-        ),
-        padding: const EdgeInsets.only(
-          left: 8.0,
-        ),
-        height: MediaQuery.of(context).size.height,
-        width: MediaQuery.of(context).size.width,
-        child: Table(
-          columnWidths: const <int, TableColumnWidth>{
-            0: FixedColumnWidth(3),
-            1: FixedColumnWidth(200),
-          },
-          children: [
-            TableRow(children: [
-              TableCell(
-                child: AvatarGeneratorNew(
-                    base64Code: studentList[index]['profilePic']),
-              ),
-              TableCell(
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 10.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(),
-                        width: MediaQuery.of(context).size.width * 0.60,
-                        child: Text(
-                          nameForamtter(studentList[index]['studentName']),
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            // fontWeight: FontWeight.bold,
-                            fontSize: 15.0,
-                            color: Colors.black,
+          padding: const EdgeInsets.only(
+            left: 8.0,
+          ),
+          height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
+          child: Table(
+            columnWidths: const <int, TableColumnWidth>{
+              0: FixedColumnWidth(3),
+              1: FixedColumnWidth(200),
+            },
+            children: [
+              TableRow(children: [
+                TableCell(
+                  child: AvatarGeneratorNew(
+                      base64Code: studentList[index]['profilePic']),
+                ),
+                TableCell(
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 10.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(),
+                          width: MediaQuery.of(context).size.width * 0.60,
+                          child: Text(
+                            nameForamtter(studentList[index]['studentName']),
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              // fontWeight: FontWeight.bold,
+                              fontSize: 15.0,
+                              color: Colors.black,
+                            ),
+                            maxLines: 1,
+                            softWrap: false,
+                            textAlign: TextAlign.left,
                           ),
-                          maxLines: 1,
-                          softWrap: false,
-                          textAlign: TextAlign.left,
                         ),
-                      ),
-                      Container(
-                        alignment: Alignment.bottomRight,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Roll: ",
-                              style: TextStyle(
-                                fontSize: 15.0,
+                        Container(
+                          alignment: Alignment.bottomRight,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Roll: ",
+                                style: TextStyle(
+                                  fontSize: 15.0,
+                                ),
                               ),
-                            ),
-                            Text(
-                              studentList[index]['rollNo'],
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                // fontWeight: FontWeight.bold,
-                                fontSize: 15.0,
-                                color: Colors.black,
+                              Text(
+                                studentList[index]['rollNo'],
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  // fontWeight: FontWeight.bold,
+                                  fontSize: 15.0,
+                                  color: Colors.black,
+                                ),
+                                softWrap: false,
+                                textAlign: TextAlign.left,
                               ),
-                              softWrap: false,
-                              textAlign: TextAlign.left,
-                            ),
-                          ],
-                        ),
-                      )
-                    ],
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ]),
-          ],
+              ]),
+            ],
+          ),
         ),
       ),
     );
@@ -408,7 +411,8 @@ class _EditAttendanceState extends State<EditAttendance> {
 
   Widget attendanceTableEdit() {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 2.0),
+      // margin: const EdgeInsets.symmetric(horizontal: 2.0),
+      alignment: Alignment.topCenter,
       height: MediaQuery.of(context).size.height * 0.635,
       width: MediaQuery.of(context).size.width,
       // padding: const EdgeInsets.fromLTRB(4.0, 4.0, 4.0, 4.0),
@@ -416,7 +420,7 @@ class _EditAttendanceState extends State<EditAttendance> {
         cellDimensions: CellDimensions.variableColumnWidthAndRowHeight(
           columnWidths: [MediaQuery.of(context).size.width * 0.12],
           rowHeights:
-              List<double>.generate(studentList.length, (int index) => 75),
+              List<double>.generate(studentList.length, (int index) => 100),
           stickyLegendWidth: MediaQuery.of(context).size.width * 0.85,
           stickyLegendHeight: 0,
         ),
@@ -1090,6 +1094,9 @@ class _EditAttendanceState extends State<EditAttendance> {
                         width: MediaQuery.of(context).size.width * 0.30,
                         height: MediaQuery.of(context).size.height * 0.05,
                         child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            primary: Color.fromARGB(255, 245, 97, 220),
+                          ),
                           onPressed: () {
                             if (studentList.isNotEmpty) {
                               var title = "";

@@ -437,7 +437,7 @@ class _StickyNumericAbilityState extends State<StickyNumericAbility> {
                       MediaQuery.of(context).size.width * 0,
                     ],
                     rowHeights: List<double>.generate(
-                        studentList.length, (int index) => 68),
+                        studentList.length, (int index) => 100),
                     stickyLegendWidth: MediaQuery.of(context).size.width,
                     stickyLegendHeight: 0),
                 initialScrollOffsetX: 0.0,
@@ -787,6 +787,9 @@ class _StickyNumericAbilityState extends State<StickyNumericAbility> {
                   ? Container(
                       margin: const EdgeInsets.only(top: 6.0),
                       child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          primary: Color.fromARGB(255, 245, 97, 220),
+                        ),
                         onPressed: () {
                           if (studentList.isEmpty ||
                               levelSheet.isEmpty ||

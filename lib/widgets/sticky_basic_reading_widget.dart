@@ -242,9 +242,6 @@ class _StickyBasicReadingState extends State<StickyBasicReading> {
         child: Container(
           // alignment: Alignment.centerLeft,
           decoration: BoxDecoration(
-            // border: Border.all(
-            //   color: Colors.transparent,
-            // ),
             borderRadius: BorderRadius.circular(
               8.0,
             ),
@@ -274,11 +271,12 @@ class _StickyBasicReadingState extends State<StickyBasicReading> {
                   child: Padding(
                     padding: const EdgeInsets.only(left: 10.0),
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Container(
                           decoration: const BoxDecoration(),
+                          alignment: Alignment.center,
                           width: MediaQuery.of(context).size.width * 0.60,
                           child: SingleChildScrollView(
                             scrollDirection: Axis.horizontal,
@@ -297,6 +295,7 @@ class _StickyBasicReadingState extends State<StickyBasicReading> {
                           ),
                         ),
                         Container(
+                          alignment: Alignment.center,
                           decoration: BoxDecoration(
                               // border: Border.all(),
                               ),
@@ -314,7 +313,7 @@ class _StickyBasicReadingState extends State<StickyBasicReading> {
                                       decoration: BoxDecoration(
                                           // border: Border.all(),
                                           ),
-                                      alignment: Alignment.topLeft,
+                                      alignment: Alignment.center,
                                       child: Table(
                                         columnWidths: const {
                                           0: FractionColumnWidth(0.40),
@@ -324,7 +323,7 @@ class _StickyBasicReadingState extends State<StickyBasicReading> {
                                           TableRow(
                                             children: [
                                               Container(
-                                                alignment: Alignment.centerLeft,
+                                                alignment: Alignment.center,
                                                 decoration: BoxDecoration(),
                                                 child: const Text(
                                                   "Roll: ",
@@ -452,6 +451,7 @@ class _StickyBasicReadingState extends State<StickyBasicReading> {
 
   Widget topRow(BuildContext context) {
     return Container(
+      // alignment: Alignment.topCenter,
       decoration: const BoxDecoration(),
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.height * 0.06,
@@ -471,7 +471,13 @@ class _StickyBasicReadingState extends State<StickyBasicReading> {
               TableCell(
                 verticalAlignment: TableCellVerticalAlignment.middle,
                 child: Container(
-                  decoration: const BoxDecoration(),
+                  decoration: BoxDecoration(
+                    color: Colors.deepPurpleAccent,
+                    border: Border.all(
+                      color: Colors.white,
+                    ),
+                  ),
+                  height: MediaQuery.of(context).size.height * 0.075,
                   margin: const EdgeInsets.symmetric(
                     horizontal: 0.0,
                     vertical: 0.0,
@@ -485,7 +491,12 @@ class _StickyBasicReadingState extends State<StickyBasicReading> {
                 verticalAlignment: TableCellVerticalAlignment.middle,
                 child: Container(
                   // width: MediaQuery.of(context).size.width * 0.20,
-                  decoration: const BoxDecoration(),
+                  height: MediaQuery.of(context).size.height * 0.078,
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Colors.white,
+                    ),
+                  ),
                   margin: const EdgeInsets.symmetric(
                     horizontal: 0.0,
                     vertical: 0.0,
@@ -502,9 +513,12 @@ class _StickyBasicReadingState extends State<StickyBasicReading> {
                   ? TableCell(
                       child: Container(
                         width: MediaQuery.of(context).size.width,
-                        height: MediaQuery.of(context).size.height * 0.05,
+                        height: MediaQuery.of(context).size.height * 0.078,
                         decoration: BoxDecoration(
                           color: Colors.deepPurpleAccent,
+                          border: Border.all(
+                            color: Colors.white,
+                          ),
                         ),
                         child: const Text(
                           "Select Language",
@@ -519,9 +533,12 @@ class _StickyBasicReadingState extends State<StickyBasicReading> {
                         decoration: BoxDecoration(
                           // border: Border.all(),
                           color: Colors.deepPurpleAccent,
+                          border: Border.all(
+                            color: Colors.white,
+                          ),
                         ),
                         width: MediaQuery.of(context).size.width,
-                        height: MediaQuery.of(context).size.height * 0.06,
+                        height: MediaQuery.of(context).size.height * 0.078,
                         child: LanguageDropDown(
                           className: _selectedClass!,
                           selectLanguage: selectLanguage,
@@ -536,35 +553,33 @@ class _StickyBasicReadingState extends State<StickyBasicReading> {
   }
 
   Widget assessmentTable() {
-    return Center(
-      child: Container(
-        alignment: Alignment.topCenter,
-        width: MediaQuery.of(context).size.width,
-        decoration: const BoxDecoration(),
-        child: StickyHeadersTable(
-          cellAlignments: CellAlignments.fixed(
-              contentCellAlignment: Alignment.topCenter,
-              stickyColumnAlignment: Alignment.topCenter,
-              stickyRowAlignment: Alignment.topCenter,
-              stickyLegendAlignment: Alignment.topCenter),
-          cellDimensions: CellDimensions.variableColumnWidthAndRowHeight(
-              columnWidths: [],
-              rowHeights:
-                  List<double>.generate(studentList.length, (int index) => 68),
-              stickyLegendWidth: MediaQuery.of(context).size.width,
-              stickyLegendHeight: 0),
-          initialScrollOffsetX: 0.0,
-          initialScrollOffsetY: verticalRowScrollOffset(),
-          scrollControllers: scrollControllers(),
-          columnsLength: columnsLengthCalculator(),
-          rowsLength: rowsLengthCalculator(),
-          columnsTitleBuilder: columnsTitleBuilder,
-          rowsTitleBuilder: rowsTitleBuilder,
-          contentCellBuilder: (i, j) => Container(
-            height: 0,
-          ),
-          legendCell: legendCellBuilder(),
+    return Container(
+      alignment: Alignment.topCenter,
+      width: MediaQuery.of(context).size.width,
+      decoration: const BoxDecoration(),
+      child: StickyHeadersTable(
+        cellAlignments: CellAlignments.fixed(
+            contentCellAlignment: Alignment.topCenter,
+            stickyColumnAlignment: Alignment.topCenter,
+            stickyRowAlignment: Alignment.topCenter,
+            stickyLegendAlignment: Alignment.topCenter),
+        cellDimensions: CellDimensions.variableColumnWidthAndRowHeight(
+            columnWidths: [],
+            rowHeights:
+                List<double>.generate(studentList.length, (int index) => 98),
+            stickyLegendWidth: MediaQuery.of(context).size.width,
+            stickyLegendHeight: 0),
+        initialScrollOffsetX: 0.0,
+        initialScrollOffsetY: verticalRowScrollOffset(),
+        scrollControllers: scrollControllers(),
+        columnsLength: columnsLengthCalculator(),
+        rowsLength: rowsLengthCalculator(),
+        columnsTitleBuilder: columnsTitleBuilder,
+        rowsTitleBuilder: rowsTitleBuilder,
+        contentCellBuilder: (i, j) => Container(
+          height: 0,
         ),
+        legendCell: legendCellBuilder(),
       ),
     );
   }
@@ -836,23 +851,21 @@ class _StickyBasicReadingState extends State<StickyBasicReading> {
         width: MediaQuery.of(context).size.width,
         child: SingleChildScrollView(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
             mainAxisSize: MainAxisSize.max,
             children: [
-              Container(
-                decoration: BoxDecoration(
-                  border: Border.all(),
-                ),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.079,
+                // decoration: BoxDecoration(
+                //   border: Border.all(),
+                // ),
                 child: topRow(context),
               ),
               (studentList.isNotEmpty &&
                       (_selectedLanguage != null && _selectedLanguage != ''))
                   ? Container(
                       alignment: Alignment.topCenter,
-                      // decoration: BoxDecoration(
-                      //     // border: Border.all(),
-                      //     ),
                       height: MediaQuery.of(context).size.height * 0.74,
                       width: MediaQuery.of(context).size.width,
                       child: assessmentTable(),
@@ -861,8 +874,13 @@ class _StickyBasicReadingState extends State<StickyBasicReading> {
               (studentList.isNotEmpty &&
                       (_selectedLanguage != null && _selectedLanguage != ''))
                   ? Container(
+                      alignment: Alignment.center,
                       margin: const EdgeInsets.only(top: 6.0),
+                      height: MediaQuery.of(context).size.height * 0.05,
                       child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          primary: Color.fromARGB(255, 245, 97, 220),
+                        ),
                         onPressed: () {
                           if (studentList.isEmpty ||
                               levelSheet.isEmpty ||
