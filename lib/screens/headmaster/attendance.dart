@@ -1181,9 +1181,8 @@ class _ProxySelectionParentWrapperState
             width: MediaQuery.of(context).size.width * 0.90,
             child: Table(
               columnWidths: const {
-                0: FractionColumnWidth(0.30),
-                1: FractionColumnWidth(0.30),
-                2: FractionColumnWidth(0.30),
+                0: FractionColumnWidth(0.50),
+                2: FractionColumnWidth(0.50),
               },
               children: [
                 TableRow(
@@ -1191,22 +1190,26 @@ class _ProxySelectionParentWrapperState
                     TableCell(
                       child: (currentWidgetView > 0 &&
                               currentWidgetView <= thisTeacherTimeTable.length)
-                          ? InkWell(
-                              onTap: () {
-                                if (kDebugMode) {
-                                  log(currentWidgetView.toString());
-                                }
-                                setState(() {
-                                  currentWidgetView = currentWidgetView - 1;
-                                });
-                                if (kDebugMode) {
-                                  log(currentWidgetView.toString());
-                                }
-                              },
-                              child: Container(
-                                alignment: Alignment.bottomLeft,
-                                child: const Icon(
-                                  Icons.arrow_back_sharp,
+                          ? Container(
+                              width: MediaQuery.of(context).size.width * 0.50,
+                              alignment: Alignment.centerLeft,
+                              child: InkWell(
+                                onTap: () {
+                                  if (kDebugMode) {
+                                    log(currentWidgetView.toString());
+                                  }
+                                  setState(() {
+                                    currentWidgetView = currentWidgetView - 1;
+                                  });
+                                  if (kDebugMode) {
+                                    log(currentWidgetView.toString());
+                                  }
+                                },
+                                child: Container(
+                                  alignment: Alignment.bottomLeft,
+                                  child: const Icon(
+                                    Icons.arrow_back_sharp,
+                                  ),
                                 ),
                               ),
                             )
@@ -1215,55 +1218,29 @@ class _ProxySelectionParentWrapperState
                             ),
                     ),
                     TableCell(
-                      child:
-                          (periodMap.keys.length == thisTeacherTimeTable.length)
-                              ? InkWell(
-                                  onTap: () {
-                                    if (kDebugMode) {
-                                      log('final sending to parent periodmap wrapper');
-                                      log(periodMap.toString());
-                                    }
-                                    widget.setProxyCallBack(
-                                        widget.thisTeacherId, periodMap);
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: Container(
-                                    alignment: Alignment.bottomCenter,
-                                    decoration: BoxDecoration(
-                                      color: Colors.purple.shade300,
-                                    ),
-                                    child: const Text(
-                                      'Confirm',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ),
-                                )
-                              : const SizedBox(
-                                  height: 0,
-                                ),
-                    ),
-                    TableCell(
                       child: (currentWidgetView >= 0 &&
                               currentWidgetView <
                                   thisTeacherTimeTable.length - 1)
-                          ? InkWell(
-                              onTap: () {
-                                if (kDebugMode) {
-                                  log(currentWidgetView.toString());
-                                }
-                                setState(() {
-                                  currentWidgetView = currentWidgetView + 1;
-                                });
-                                if (kDebugMode) {
-                                  log(currentWidgetView.toString());
-                                }
-                              },
-                              child: Container(
-                                alignment: Alignment.bottomRight,
-                                child: const Icon(
-                                  Icons.arrow_forward_sharp,
+                          ? Container(
+                              width: MediaQuery.of(context).size.width * 0.50,
+                              alignment: Alignment.centerRight,
+                              child: InkWell(
+                                onTap: () {
+                                  if (kDebugMode) {
+                                    log(currentWidgetView.toString());
+                                  }
+                                  setState(() {
+                                    currentWidgetView = currentWidgetView + 1;
+                                  });
+                                  if (kDebugMode) {
+                                    log(currentWidgetView.toString());
+                                  }
+                                },
+                                child: Container(
+                                  alignment: Alignment.bottomRight,
+                                  child: const Icon(
+                                    Icons.arrow_forward_sharp,
+                                  ),
                                 ),
                               ),
                             )
@@ -1276,6 +1253,41 @@ class _ProxySelectionParentWrapperState
               ],
             ),
           ),
+          (periodMap.keys.length == thisTeacherTimeTable.length)
+              ? Center(
+                  child: InkWell(
+                    onTap: () {
+                      if (kDebugMode) {
+                        log('final sending to parent periodmap wrapper');
+                        log(periodMap.toString());
+                      }
+                      widget.setProxyCallBack(widget.thisTeacherId, periodMap);
+                      Navigator.of(context).pop();
+                    },
+                    child: Card(
+                      elevation: 18.0,
+                      color: const Color.fromARGB(255, 204, 101, 222),
+                      borderOnForeground: true,
+                      // shape: ShapeBorder.le,
+                      child: Container(
+                        alignment: Alignment.center,
+                        width: MediaQuery.of(context).size.width * 0.80,
+                        decoration: const BoxDecoration(
+                          color: Color.fromARGB(255, 204, 101, 222),
+                        ),
+                        child: const Text(
+                          'Confirm',
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                )
+              : const SizedBox(
+                  height: 0,
+                ),
         ],
       ),
     );
