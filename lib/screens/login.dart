@@ -75,8 +75,8 @@ class _LoginState extends State<Login> {
   }
 
   void _onClickLogin(BuildContext context) async {
-    final enteredUserName = usernameController.text;
-    final enteredUserPassword = userPasswordController.text;
+    final enteredUserName = usernameController.text.trim();
+    final enteredUserPassword = userPasswordController.text.trim();
 
     if (enteredUserPassword.isEmpty ||
         enteredUserName.isEmpty ||
@@ -91,7 +91,7 @@ class _LoginState extends State<Login> {
       try {
         // try sending a test request
         var testResponse = await http.get(
-            Uri.parse(uri_paths.baseURL + uri_paths.checkIfOnline + '?get=1'));
+            Uri.parse('${uri_paths.baseURL}${uri_paths.checkIfOnline}?get=1'));
 
         if (kDebugMode) {
           log("test response");
