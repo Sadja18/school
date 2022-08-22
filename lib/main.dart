@@ -79,6 +79,8 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      // debugShowMaterialGrid: true,
       title: 'School Erp',
       theme: ThemeData(
         primaryColor: Colors.purpleAccent,
