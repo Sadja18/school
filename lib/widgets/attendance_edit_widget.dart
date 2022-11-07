@@ -156,7 +156,7 @@ class _EditAttendanceState extends State<EditAttendance> {
   }
 
   double verticalRowScrollOffset() {
-    double scrollOffset = 75.0;
+    double scrollOffset = 112.0;
     if (currentRowIndex == 0.0) {
       return 0.0;
     } else {
@@ -226,7 +226,8 @@ class _EditAttendanceState extends State<EditAttendance> {
                           decoration: BoxDecoration(),
                           width: MediaQuery.of(context).size.width * 0.60,
                           child: Text(
-                            nameForamtter(studentList[index]['studentName']),
+                            nameFormatter(
+                                studentList[index]['studentName']),
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
                               // fontWeight: FontWeight.bold,
@@ -275,12 +276,13 @@ class _EditAttendanceState extends State<EditAttendance> {
     );
   }
 
-  String nameForamtter(studentName) {
+  String nameFormatter(studentName) {
     String formattedName = "";
 
     for (var i = 0; i < studentName.split(" ").length; i++) {
       String word = studentName.split(" ")[i];
-      String newWord = toBeginningOfSentenceCase(word.toLowerCase()).toString();
+      String newWord =
+          toBeginningOfSentenceCase(word.toLowerCase()).toString();
       formattedName = formattedName + newWord;
       if (i < studentName.split(" ").length - 1) {
         formattedName = formattedName + " ";
@@ -325,7 +327,8 @@ class _EditAttendanceState extends State<EditAttendance> {
                 setState(() {
                   currentRowIndex = studentRowIndex;
                 });
-                if (widget.isSynced == 'false' || widget.isSynced == false) {
+                if (widget.isSynced == 'false' ||
+                    widget.isSynced == false) {
                   if (checkBoxVals[studentId] == true ||
                       _absentees.contains(studentId) == false) {
                     // if student was marked present previously
@@ -357,7 +360,8 @@ class _EditAttendanceState extends State<EditAttendance> {
                       totalPresent = totalPresent + 1;
                     });
                     setState(() {
-                      rowColor[studentId] = Color.fromARGB(255, 46, 122, 116);
+                      rowColor[studentId] =
+                          Color.fromARGB(255, 46, 122, 116);
                       checkBoxVals[studentId] = true;
                     });
                   }
@@ -419,8 +423,8 @@ class _EditAttendanceState extends State<EditAttendance> {
       child: StickyHeadersTable(
         cellDimensions: CellDimensions.variableColumnWidthAndRowHeight(
           columnWidths: [MediaQuery.of(context).size.width * 0.12],
-          rowHeights:
-              List<double>.generate(studentList.length, (int index) => 100),
+          rowHeights: List<double>.generate(
+              studentList.length, (int index) => 112),
           stickyLegendWidth: MediaQuery.of(context).size.width * 0.85,
           stickyLegendHeight: 0,
         ),
@@ -467,12 +471,26 @@ class _EditAttendanceState extends State<EditAttendance> {
     });
     return showDialog(
         context: context,
+        barrierDismissible: false,
         builder: (BuildContext ctx) {
           return AlertDialog(
             title: SizedBox(
               height: 0,
             ),
-            titlePadding: const EdgeInsets.all(0),
+            // titlePadding: const EdgeInsets.all(0),
+            actions: [
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text(
+                  "Close",
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+              )
+            ],
             content: Container(
               height: MediaQuery.of(context).size.height * 0.20,
               alignment: Alignment.center,
@@ -651,7 +669,11 @@ class _EditAttendanceState extends State<EditAttendance> {
   }
 
   Map<String, String> dataReturner(index) {
-    var details = {"studentName": "", "studentRoll": "", "studentPhoto": ""};
+    var details = {
+      "studentName": "",
+      "studentRoll": "",
+      "studentPhoto": ""
+    };
     for (var student in studentList) {
       if (student['studentId'] == _absentees[index]) {
         details['studentName'] = student['studentName'];
@@ -702,7 +724,7 @@ class _EditAttendanceState extends State<EditAttendance> {
                       decoration: BoxDecoration(),
                       alignment: Alignment.centerRight,
                       child: Text(
-                        nameForamtter(studentName),
+                        nameFormatter(studentName),
                         style: const TextStyle(
                           fontSize: 15.0,
                         ),
@@ -860,7 +882,7 @@ class _EditAttendanceState extends State<EditAttendance> {
                   ),
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    nameForamtter(studentName),
+                    nameFormatter(studentName),
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
                       color: Colors.black,
@@ -938,7 +960,7 @@ class _EditAttendanceState extends State<EditAttendance> {
 
                 for (var student in studentList) {
                   if (studentId == student['studentId'].toString()) {
-                    studentName = nameForamtter(student['studentName']);
+                    studentName = nameFormatter(student['studentName']);
                     rollNo = student['rollNo'];
                   }
                 }
@@ -1056,7 +1078,8 @@ class _EditAttendanceState extends State<EditAttendance> {
                             Color.fromARGB(238, 95, 61, 247)),
                         countBoxWidget("Present: ", totalPresent,
                             Color.fromARGB(255, 46, 122, 116)),
-                        countBoxWidget("Absent: ", totalAbsent, Colors.red),
+                        countBoxWidget(
+                            "Absent: ", totalAbsent, Colors.red),
                         Container(
                           decoration: BoxDecoration(
                             // color: Colors.deepPurpleAccent,
@@ -1115,7 +1138,8 @@ class _EditAttendanceState extends State<EditAttendance> {
                                 print(submissionDate);
                               }
                               title = "Absent Students";
-                              showAlertFinal(title, message, submissionDate);
+                              showAlertFinal(
+                                  title, message, submissionDate);
                             } else {
                               var title = "No Records";
                               var message =

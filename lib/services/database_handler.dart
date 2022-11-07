@@ -359,8 +359,8 @@ class DBProvider {
   Future<dynamic> readUserName() async {
     try {
       final db = await initDB();
-      var result =
-          await db.rawQuery('SELECT userName FROM users WHERE loginStatus=1');
+      var result = await db
+          .rawQuery('SELECT userName FROM users WHERE loginStatus=1');
 
       return result;
     } catch (e) {
@@ -558,7 +558,8 @@ class DBProvider {
                 student['middle'] != null &&
                 student['middle'] != false &&
                 student['middle'] != "false") {
-              studentName = studentName + " " + student['middle'].toString();
+              studentName =
+                  studentName + " " + student['middle'].toString();
             }
             if (student['last'] != "" &&
                 student['last'] != null &&
@@ -592,7 +593,9 @@ class DBProvider {
       // insert student
 
       //insert languages
-      if (languages.isNotEmpty && languages != null && languages.length > 0) {
+      if (languages.isNotEmpty &&
+          languages != null &&
+          languages.length > 0) {
         await db.rawQuery("DELETE FROM languages;");
 
         tableName = "languages";
@@ -829,8 +832,15 @@ class DBProvider {
 
   Future getStudents(String className) async {
     final db = await initDB();
-    var students = await db
-        .query('students', where: 'class_name=?', whereArgs: [className]);
+    var students = await db.rawQuery(
+        'SELECT * FROM students '
+        'WHERE class_name = ? '
+        'ORDER BY '
+        'student_roll_no ASC,'
+        'student_name ASC ;',
+        [className]);
+    // await db
+    //     .query('students', where: 'class_name=?', whereArgs: [className]);
     return students.toList();
   }
 
@@ -1123,7 +1133,8 @@ class DBProvider {
     final db = await initDB();
     var endDate = format.format(todayDate);
     var startDate = format.format(lastMonthDate);
-    return await db.rawQuery("Select * FROM pace WHERE synced='false';", []);
+    return await db
+        .rawQuery("Select * FROM pace WHERE synced='false';", []);
   }
 
   Future<dynamic> getReadingLevels(className, subjectName) async {
@@ -1170,12 +1181,13 @@ class DBProvider {
 
   Future<dynamic> getNumericLevelName(levelId) async {
     final db = await initDB();
-    var result = await db
-        .rawQuery("Select name From numericLevels WHERE levelId=?;", [levelId]);
+    var result = await db.rawQuery(
+        "Select name From numericLevels WHERE levelId=?;", [levelId]);
     return result;
   }
 
-  Future<dynamic> getBasicLevelId(className, subjectName, levelName) async {
+  Future<dynamic> getBasicLevelId(
+      className, subjectName, levelName) async {
     final db = await initDB();
     var result = await db.rawQuery(
         "Select levelId From basicLevels WHERE name=? AND subject_name=? AND standard_id=(SELECT standard_id FROM classes WHERE class_name=?);",
@@ -1185,8 +1197,8 @@ class DBProvider {
 
   Future<dynamic> getBasicLevelName(levelId) async {
     final db = await initDB();
-    var result = await db
-        .rawQuery("Select name From basicLevels WHERE levelId=?;", [levelId]);
+    var result = await db.rawQuery(
+        "Select name From basicLevels WHERE levelId=?;", [levelId]);
     return result;
   }
 
@@ -1282,8 +1294,8 @@ class DBProvider {
   Future<dynamic> allEditableAttendance() async {
     try {
       final db = await initDB();
-      var resQ =
-          await db.rawQuery('SELECT * FROM attendance WHERE editable="true";');
+      var resQ = await db
+          .rawQuery('SELECT * FROM attendance WHERE editable="true";');
 
       return resQ;
     } catch (e) {
@@ -1313,7 +1325,7 @@ class DBProvider {
   // read isExists and isEditable attendance on selected date end
 
   // read isExists and isEditable Numeric Assessment on selected date
-  Future<dynamic> isEditableNumericeDate(
+  Future<dynamic> isEditableNumericDate(
       String selectedDate, String className) async {
     try {
       final db = await initDB();
@@ -1413,7 +1425,8 @@ class DBProvider {
   Future<dynamic> isUser(enteredUserName, enteredPassword) async {
     try {
       final db = await initDB();
-      var query = "SELECT * FROM users WHERE userName = ? AND userPassword=?;";
+      var query =
+          "SELECT * FROM users WHERE userName = ? AND userPassword=?;";
 
       var params = [enteredUserName, enteredPassword];
 

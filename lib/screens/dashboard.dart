@@ -80,12 +80,13 @@ class _DashboardState extends State<Dashboard> {
 
   void showAlertDialog() async {
     try {
-      var response = await http.get(
-          Uri.parse(uri_paths.baseURL + uri_paths.checkIfOnline + '?get=1'));
+      var response = await http.get(Uri.parse(
+          uri_paths.baseURL + uri_paths.checkIfOnline + '?get=1'));
 
       if (response.statusCode == 200) {
         showDialog(
             context: context,
+            // barrierDismissible: false,
             builder: (BuildContext ctx) {
               return AlertDialog(
                 title: SizedBox(
@@ -111,8 +112,8 @@ class _DashboardState extends State<Dashboard> {
                         width: MediaQuery.of(context).size.width * 0.40,
                         height: MediaQuery.of(context).size.height * 0.30,
                         alignment: Alignment.center,
-                        child:
-                            const Text("Please wait for syncing to complete."),
+                        child: const Text(
+                            "Please wait for syncing to complete."),
                       ),
                     ],
                   ),
@@ -121,7 +122,36 @@ class _DashboardState extends State<Dashboard> {
               );
             });
         await wrapper();
-        Navigator.of(context).pop();
+        // Navigator.of(context).pop();
+
+        showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (BuildContext ctx) {
+              return AlertDialog(
+                title: const Text("Data Syncing Complete"),
+                actions: [
+                  InkWell(
+                    child: Card(
+                      color: Colors.blue,
+                      child: Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: const Text(
+                          "Close",
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                    onTap: () {
+                      Navigator.of(context).pop();
+                    },
+                  )
+                ],
+              );
+            });
+        // Navigator.of(context).pop();
       } else {
         offlineSyncPressDialog();
       }
@@ -144,8 +174,8 @@ class _DashboardState extends State<Dashboard> {
   // }
   void showAlertDialogHeadMaster() async {
     try {
-      var response = await http.get(
-          Uri.parse(uri_paths.baseURL + uri_paths.checkIfOnline + '?get=1'));
+      var response = await http.get(Uri.parse(
+          uri_paths.baseURL + uri_paths.checkIfOnline + '?get=1'));
 
       if (response.statusCode == 200) {
         showDialog(
@@ -175,8 +205,8 @@ class _DashboardState extends State<Dashboard> {
                         width: MediaQuery.of(context).size.width * 0.40,
                         height: MediaQuery.of(context).size.height * 0.30,
                         alignment: Alignment.center,
-                        child:
-                            const Text("Please wait for syncing to complete."),
+                        child: const Text(
+                            "Please wait for syncing to complete."),
                       ),
                     ],
                   ),
@@ -230,7 +260,7 @@ class _DashboardState extends State<Dashboard> {
             var login = snapshot.data;
             if (kDebugMode) {
               log('in dashboard');
-              log("login.toString()");
+              // log("login.toString()");
             }
             if (login['isHeadMaster'] != 'yes') {
               return Scaffold(
@@ -262,8 +292,8 @@ class _DashboardState extends State<Dashboard> {
                   ),
                 ),
                 endDrawer: Container(
-                  padding:
-                      EdgeInsets.only(top: statusBarHeight + appBarHeight + 1),
+                  padding: EdgeInsets.only(
+                      top: statusBarHeight + appBarHeight + 1),
                   width: MediaQuery.of(context).size.width * 0.80,
                   height: MediaQuery.of(context).size.height,
                   child: Drawer(
@@ -385,18 +415,21 @@ class _DashboardState extends State<Dashboard> {
                             bottom: 4.0,
                           ),
                           width: MediaQuery.of(context).size.width * 0.60,
-                          height: MediaQuery.of(context).size.height * 0.30,
+                          height:
+                              MediaQuery.of(context).size.height * 0.30,
                           child: TextButton(
                             onPressed: () {
-                              Navigator.of(context)
-                                  .pushNamed(AttedanceLeaveScreen.routeName);
+                              Navigator.of(context).pushNamed(
+                                  AttedanceLeaveScreen.routeName);
                               //
                             },
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
+                              crossAxisAlignment:
+                                  CrossAxisAlignment.center,
                               children: [
-                                Image.asset('assets/dashboardIcons/leave.png'),
+                                Image.asset(
+                                    'assets/dashboardIcons/leave.png'),
                                 const Text(
                                   'Attendance/Leave',
                                   style: TextStyle(
@@ -421,7 +454,8 @@ class _DashboardState extends State<Dashboard> {
                             top: 4.0,
                           ),
                           width: MediaQuery.of(context).size.width * 0.60,
-                          height: MediaQuery.of(context).size.height * 0.30,
+                          height:
+                              MediaQuery.of(context).size.height * 0.30,
                           child: TextButton(
                             onPressed: () {
                               // ignore: avoid_print
@@ -431,7 +465,8 @@ class _DashboardState extends State<Dashboard> {
                             },
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
+                              crossAxisAlignment:
+                                  CrossAxisAlignment.center,
                               children: [
                                 Image.asset(
                                     'assets/dashboardIcons/assessment.png'),
@@ -662,7 +697,8 @@ class _DashboardState extends State<Dashboard> {
   }
 }
 
-class FutureBuilderForTeacherAttendanceCalendarView extends StatelessWidget {
+class FutureBuilderForTeacherAttendanceCalendarView
+    extends StatelessWidget {
   const FutureBuilderForTeacherAttendanceCalendarView({Key? key})
       : super(key: key);
   Future<dynamic> getAllAttendanceEntries() async {
@@ -721,7 +757,8 @@ class FutureBuilderForTeacherAttendanceCalendarView extends StatelessWidget {
 
 class TeacherAttendanceCalendarView extends StatefulWidget {
   final List attendances;
-  const TeacherAttendanceCalendarView({Key? key, required this.attendances})
+  const TeacherAttendanceCalendarView(
+      {Key? key, required this.attendances})
       : super(key: key);
 
   @override
@@ -774,15 +811,16 @@ class _TeacherAttendanceCalendarViewState
         var record = attendanceData[i];
 
         DateTime startDateParsed = DateTime.parse(record['date']);
-        DateTime endDateParsed = DateTime.parse("${record['date']} 23:59:59");
+        DateTime endDateParsed =
+            DateTime.parse("${record['date']} 23:59:59");
         String subject =
             "Present: ${record['totalPresent']}, Absent: ${record['totalAbsent']}";
         // DateTime submissionDateUn = DateTime.parse(record['submission_date']);
         bool synced = record['isSynced'] == 'yes' ? true : false;
 
         // String subject = DateFormat('MMMM yyyy')
-        Attendance entry =
-            Attendance(startDateParsed, endDateParsed, subject, true, synced);
+        Attendance entry = Attendance(
+            startDateParsed, endDateParsed, subject, true, synced);
         attendanceViewData.add(entry);
       }
     }
@@ -872,8 +910,8 @@ class Attendance {
   bool synced;
   bool isAllDay = true;
 
-  Attendance(
-      this.startDate, this.endDate, this.subject, this.isAllDay, this.synced);
+  Attendance(this.startDate, this.endDate, this.subject, this.isAllDay,
+      this.synced);
 }
 
 class AttendanceDataSource extends CalendarDataSource {

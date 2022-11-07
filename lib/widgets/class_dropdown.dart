@@ -47,9 +47,10 @@ class _ClassDropDownState extends State<ClassDropDown> {
             return Container(
               alignment: Alignment.center,
               width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height * 0.06,
+              height: MediaQuery.of(context).size.height * 0.055,
               decoration: BoxDecoration(
                 color: Colors.deepPurpleAccent,
+                borderRadius: BorderRadius.circular(8.0),
               ),
               child: DropdownButton<String>(
                 dropdownColor: Color.fromARGB(255, 209, 37, 201),
@@ -67,20 +68,20 @@ class _ClassDropDownState extends State<ClassDropDown> {
                 items: classNames.map<DropdownMenuItem<String>>(
                   (String element) {
                     return DropdownMenuItem<String>(
+                      value: element,
                       child: Container(
                         decoration: const BoxDecoration(
-                          // color: Colors.white,
-                        ),
+                            // color: Colors.white,
+                            ),
                         child: Text(
                           element,
                           style: const TextStyle(
                             fontSize: 18.0,
-                            fontWeight: FontWeight.bold,
+                            fontWeight: FontWeight.normal,
                             color: Colors.white,
                           ),
                         ),
                       ),
-                      value: element,
                     );
                   },
                 ).toList(),

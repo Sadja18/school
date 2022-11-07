@@ -39,8 +39,11 @@ void numericAssessmentProcessor(
   }
 }
 
-Future<void> basicAssessmentProcessor(List assessedResult, String? selectedDate,
-    String? selectedLanguage, String? submissionDate) async {
+Future<void> basicAssessmentProcessor(
+    List assessedResult,
+    String? selectedDate,
+    String? selectedLanguage,
+    String? submissionDate) async {
   if (assessedResult.isNotEmpty) {
     print('here');
     print(selectedDate.toString());
@@ -84,7 +87,8 @@ void paceAssessmentProcessor(List studentList, String selectedDate,
   processedRecord['qp_code'] = selectedAssesment['qp_code'];
   processedRecord['qp_code_name'] = selectedAssesment['qp_code_name'];
   processedRecord['scheduledDate'] = selectedAssesment['date'];
-  processedRecord['uploadDate'] = format.format(format.parse(selectedDate));
+  processedRecord['uploadDate'] =
+      format.format(format.parse(selectedDate));
 
   processedRecord['className'] = studentList[0]['className'];
 

@@ -126,7 +126,8 @@ class _StickyNumericAbilityState extends State<StickyNumericAbility> {
 
     for (var i = 0; i < studentName.split(" ").length; i++) {
       String word = studentName.split(" ")[i];
-      String newWord = toBeginningOfSentenceCase(word.toLowerCase()).toString();
+      String newWord =
+          toBeginningOfSentenceCase(word.toLowerCase()).toString();
       formattedName = formattedName + newWord;
       if (i < studentName.split(" ").length - 1) {
         formattedName = formattedName + " ";
@@ -141,7 +142,8 @@ class _StickyNumericAbilityState extends State<StickyNumericAbility> {
     if (kDebugMode) {
       print("Student Row $studentRowIndex $result $selectedLevel");
     }
-    var studentIdString = studentList[studentRowIndex]['studentId'].toString();
+    var studentIdString =
+        studentList[studentRowIndex]['studentId'].toString();
     setState(() {
       studentList[studentRowIndex]['level'] = selectedLevel.toString();
       studentList[studentRowIndex]['result'] = result.toString();
@@ -156,25 +158,29 @@ class _StickyNumericAbilityState extends State<StickyNumericAbility> {
   Future<void> showUserInputWidget(int studentRowIndex) async {
     String studentIdString =
         studentList[studentRowIndex]['studentId'].toString();
-    String studentName = studentList[studentRowIndex]['studentName'].toString();
+    String studentName =
+        studentList[studentRowIndex]['studentName'].toString();
     String rollNo = studentList[studentRowIndex]['rollNo'].toString();
     String selectedLevel = levelSheet[studentIdString].toString();
     String result = resultSheet[studentIdString]!;
-    String profilePic = studentList[studentRowIndex]['profilePic'] == null ||
-            studentList[studentRowIndex]['profilePic'] == null
-        ? ""
-        : studentList[studentRowIndex]['profilePic'].toString();
+    String profilePic =
+        studentList[studentRowIndex]['profilePic'] == null ||
+                studentList[studentRowIndex]['profilePic'] == null
+            ? ""
+            : studentList[studentRowIndex]['profilePic'].toString();
     List<String> levelNames = _levelNames;
-    return showDialog(
-        context: context,
-        builder: (BuildContext ctx) {
-          return AlertDialog(
-            titlePadding: const EdgeInsets.all(0),
-            contentPadding: const EdgeInsets.all(0),
-            title: SizedBox(
-              height: 0,
-            ),
-            content: UserInputWidget(
+
+    if (levelNames.isNotEmpty) {
+      return showDialog(
+          context: context,
+          builder: (BuildContext ctx) {
+            return AlertDialog(
+              titlePadding: const EdgeInsets.all(0),
+              contentPadding: const EdgeInsets.all(0),
+              title: SizedBox(
+                height: 0,
+              ),
+              content: UserInputWidget(
                 studentName: studentName,
                 rollNo: rollNo,
                 studentRowIndex: studentRowIndex,
@@ -182,203 +188,233 @@ class _StickyNumericAbilityState extends State<StickyNumericAbility> {
                 result: result,
                 userInputHandler: userInputHandler,
                 levelNames: levelNames,
-                profilePic: profilePic),
-          );
-        });
+                profilePic: profilePic,
+              ),
+            );
+          });
+    } else {
+      return showDialog(
+          context: context,
+          builder: (BuildContext ctx) {
+            return AlertDialog(
+              title: const Text("No Numeric Levels"),
+              content: const Text(
+                  "The assessment cannot be marked as no numeric levels are configured for this class.\nPlease contact Dept Admin"),
+            );
+          });
+    }
   }
 
   Widget rowsTitleBuilder(int index) {
-    return Card(
-      color: Colors.transparent,
-      shadowColor: Colors.purple.shade200,
-      elevation: 8.0,
-      child: InkWell(
-        onTap: () {
-          if (kDebugMode) {
-            print(bgColorSheet.toString());
-          }
-          setState(() {
-            currentRowIndex = index;
-          });
-          showUserInputWidget(index);
-        },
-        child: Container(
-          // alignment: Alignment.centerLeft,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(
-              8.0,
+    return SizedBox(
+      height: MediaQuery.of(context).size.height,
+      child: Card(
+        color: Colors.transparent,
+        shadowColor: Colors.purple.shade200,
+        elevation: 8.0,
+        child: InkWell(
+          onTap: () {
+            if (kDebugMode) {
+              print(bgColorSheet.toString());
+            }
+            setState(() {
+              currentRowIndex = index;
+            });
+            showUserInputWidget(index);
+          },
+          child: Container(
+            // alignment: Alignment.centerLeft,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(
+                8.0,
+              ),
+              color:
+                  bgColorSheet[studentList[index]['studentId'].toString()],
             ),
-            color: bgColorSheet[studentList[index]['studentId'].toString()],
-          ),
-          margin: const EdgeInsets.symmetric(
-            vertical: 2.5,
-          ),
-          padding: const EdgeInsets.only(
-            left: 8.0,
-          ),
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
-          child: Table(
-            columnWidths: const <int, TableColumnWidth>{
-              0: FixedColumnWidth(3),
-              1: FixedColumnWidth(200),
-            },
-            children: [
-              TableRow(children: [
-                TableCell(
-                  child: AvatarGeneratorNew(
-                      base64Code: studentList[index]['profilePic']),
-                ),
-                TableCell(
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 10.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          decoration: const BoxDecoration(),
-                          width: MediaQuery.of(context).size.width * 0.60,
-                          child: SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Text(
-                              nameForamtter(studentList[index]['studentName']),
-                              overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                // fontWeight: FontWeight.bold,
-                                fontSize: 15.0,
-                                color: Colors.white,
+            margin: const EdgeInsets.symmetric(
+              vertical: 2.5,
+            ),
+            padding: const EdgeInsets.only(
+              left: 8.0,
+            ),
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
+            child: Table(
+              columnWidths: const <int, TableColumnWidth>{
+                0: FixedColumnWidth(3),
+                1: FixedColumnWidth(200),
+              },
+              children: [
+                TableRow(children: [
+                  TableCell(
+                    child: AvatarGeneratorNew(
+                        base64Code: studentList[index]['profilePic']),
+                  ),
+                  TableCell(
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 10.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            decoration: const BoxDecoration(),
+                            width:
+                                MediaQuery.of(context).size.width * 0.60,
+                            child: SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Text(
+                                nameForamtter(
+                                    studentList[index]['studentName']),
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  // fontWeight: FontWeight.bold,
+                                  fontSize: 15.0,
+                                  color: Colors.white,
+                                ),
+                                maxLines: 1,
+                                softWrap: false,
+                                textAlign: TextAlign.left,
                               ),
-                              maxLines: 1,
-                              softWrap: false,
-                              textAlign: TextAlign.left,
                             ),
                           ),
-                        ),
-                        Container(
-                          decoration: BoxDecoration(
-                              // border: Border.all(),
-                              ),
-                          width: MediaQuery.of(context).size.width * 0.80,
-                          child: Table(
-                            columnWidths: const {
-                              0: FractionColumnWidth(0.35),
-                              1: FractionColumnWidth(0.65),
-                            },
-                            children: [
-                              TableRow(
-                                children: [
-                                  TableCell(
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                          // border: Border.all(),
-                                          ),
-                                      alignment: Alignment.topLeft,
-                                      child: Table(
-                                        columnWidths: const {
-                                          0: FractionColumnWidth(0.40),
-                                          1: FractionColumnWidth(0.40),
-                                        },
-                                        children: [
-                                          TableRow(
-                                            children: [
-                                              Container(
-                                                alignment: Alignment.centerLeft,
-                                                decoration: BoxDecoration(),
-                                                child: const Text(
-                                                  "Roll: ",
-                                                  style: TextStyle(
-                                                    color: Colors.white,
-                                                  ),
-                                                ),
-                                              ),
-                                              Container(
-                                                alignment: Alignment.centerLeft,
-                                                decoration: BoxDecoration(
-                                                    // border: Border.all(),
-                                                    ),
-                                                child: Text(
-                                                  studentList[index]['rollNo']
-                                                      .toString(),
-                                                  style: TextStyle(
-                                                    color: Colors.white,
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                  (levelSheet[studentList[index]['studentId']
-                                              .toString()] !=
-                                          "")
-                                      ? TableCell(
-                                          child: Container(
-                                            alignment: Alignment.topLeft,
-                                            decoration: BoxDecoration(
-                                                // border: Border.all(),
-                                                ),
-                                            child: Table(
-                                              columnWidths: const {
-                                                0: FractionColumnWidth(0.30),
-                                                1: FractionColumnWidth(0.40),
-                                              },
+                          Container(
+                            decoration: BoxDecoration(
+                                // border: Border.all(),
+                                ),
+                            width:
+                                MediaQuery.of(context).size.width * 0.80,
+                            child: Table(
+                              columnWidths: const {
+                                0: FractionColumnWidth(0.35),
+                                1: FractionColumnWidth(0.65),
+                              },
+                              children: [
+                                TableRow(
+                                  children: [
+                                    TableCell(
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                            // border: Border.all(),
+                                            ),
+                                        alignment: Alignment.topLeft,
+                                        child: Table(
+                                          columnWidths: const {
+                                            0: FractionColumnWidth(0.40),
+                                            1: FractionColumnWidth(0.40),
+                                          },
+                                          children: [
+                                            TableRow(
                                               children: [
-                                                TableRow(
-                                                  children: [
-                                                    TableCell(
-                                                      child: Container(
-                                                        alignment: Alignment
-                                                            .centerLeft,
-                                                        decoration:
-                                                            BoxDecoration(),
-                                                        child: const Text(
-                                                          "Level: ",
-                                                          style: TextStyle(
-                                                            color: Colors.white,
-                                                          ),
-                                                        ),
-                                                      ),
+                                                Container(
+                                                  alignment:
+                                                      Alignment.centerLeft,
+                                                  decoration:
+                                                      BoxDecoration(),
+                                                  child: const Text(
+                                                    "Roll: ",
+                                                    style: TextStyle(
+                                                      color: Colors.white,
                                                     ),
-                                                    TableCell(
-                                                      child: Container(
-                                                        alignment: Alignment
-                                                            .centerLeft,
-                                                        decoration:
-                                                            BoxDecoration(),
-                                                        child: Text(
-                                                          levelSheet[studentList[
-                                                                          index]
-                                                                      [
-                                                                      'studentId']
-                                                                  .toString()]
-                                                              .toString(),
-                                                          style: TextStyle(
-                                                            color: Colors.white,
-                                                          ),
-                                                        ),
+                                                  ),
+                                                ),
+                                                Container(
+                                                  alignment:
+                                                      Alignment.centerLeft,
+                                                  decoration: BoxDecoration(
+                                                      // border: Border.all(),
                                                       ),
+                                                  child: Text(
+                                                    studentList[index]
+                                                            ['rollNo']
+                                                        .toString(),
+                                                    style: TextStyle(
+                                                      color: Colors.white,
                                                     ),
-                                                  ],
+                                                  ),
                                                 ),
                                               ],
                                             ),
-                                          ),
-                                        )
-                                      : SizedBox(),
-                                ],
-                              ),
-                            ],
-                          ),
-                        )
-                      ],
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    (levelSheet[studentList[index]
+                                                    ['studentId']
+                                                .toString()] !=
+                                            "")
+                                        ? TableCell(
+                                            child: Container(
+                                              alignment: Alignment.topLeft,
+                                              decoration: BoxDecoration(
+                                                  // border: Border.all(),
+                                                  ),
+                                              child: Table(
+                                                columnWidths: const {
+                                                  0: FractionColumnWidth(
+                                                      0.30),
+                                                  1: FractionColumnWidth(
+                                                      0.40),
+                                                },
+                                                children: [
+                                                  TableRow(
+                                                    children: [
+                                                      TableCell(
+                                                        child: Container(
+                                                          alignment: Alignment
+                                                              .centerLeft,
+                                                          decoration:
+                                                              BoxDecoration(),
+                                                          child:
+                                                              const Text(
+                                                            "Level: ",
+                                                            style:
+                                                                TextStyle(
+                                                              color: Colors
+                                                                  .white,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      TableCell(
+                                                        child: Container(
+                                                          alignment: Alignment
+                                                              .centerLeft,
+                                                          decoration:
+                                                              BoxDecoration(),
+                                                          child: Text(
+                                                            levelSheet[studentList[index]
+                                                                        [
+                                                                        'studentId']
+                                                                    .toString()]
+                                                                .toString(),
+                                                            style:
+                                                                TextStyle(
+                                                              color: Colors
+                                                                  .white,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          )
+                                        : SizedBox(),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ]),
-            ],
+                ]),
+              ],
+            ),
           ),
         ),
       ),
@@ -418,7 +454,7 @@ class _StickyNumericAbilityState extends State<StickyNumericAbility> {
   }
 
   double verticalRowScrollOffset() {
-    double scrollOffset = 68.0;
+    double scrollOffset = 112.0;
     if (currentRowIndex == 0.0) {
       return 0.0;
     } else {
@@ -432,14 +468,16 @@ class _StickyNumericAbilityState extends State<StickyNumericAbility> {
         child: (1 == 2)
             ? const Text("")
             : StickyHeadersTable(
-                cellDimensions: CellDimensions.variableColumnWidthAndRowHeight(
-                    columnWidths: [
+                cellDimensions:
+                    CellDimensions.variableColumnWidthAndRowHeight(
+                        columnWidths: [
                       MediaQuery.of(context).size.width * 0,
                     ],
-                    rowHeights: List<double>.generate(
-                        studentList.length, (int index) => 100),
-                    stickyLegendWidth: MediaQuery.of(context).size.width,
-                    stickyLegendHeight: 0),
+                        rowHeights: List<double>.generate(
+                            studentList.length, (int index) => 112),
+                        stickyLegendWidth:
+                            MediaQuery.of(context).size.width,
+                        stickyLegendHeight: 0),
                 initialScrollOffsetX: 0.0,
                 initialScrollOffsetY: verticalRowScrollOffset(),
                 scrollControllers: scrollControllers(),
@@ -472,10 +510,11 @@ class _StickyNumericAbilityState extends State<StickyNumericAbility> {
     );
   }
 
-  Future<void> showAlertFinal(
+  void showAlertFinal(
       String title, String message, String submissionDate) {
-    return showDialog(
+    showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (BuildContext ctx) => AlertDialog(
         title: Container(
           decoration: BoxDecoration(
@@ -508,7 +547,35 @@ class _StickyNumericAbilityState extends State<StickyNumericAbility> {
               }
               numericAssessmentProcessor(
                   studentList, _selectedDate, submissionDate);
-              Navigator.of(context).pop();
+              showDialog(
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (BuildContext ctx) {
+                    return AlertDialog(
+                      title: Center(
+                        child: const Text("Data Saved Successfully"),
+                      ),
+                      actions: [
+                        InkWell(
+                          child: Card(
+                            color: Colors.blue,
+                            child: Padding(
+                              padding: const EdgeInsets.all(5.0),
+                              child: const Text(
+                                "Close",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ),
+                          onTap: () {
+                            Navigator.of(context).pop();
+                          },
+                        )
+                      ],
+                    );
+                  });
             },
             child: const Text('Confirm'),
           ),
@@ -608,8 +675,8 @@ class _StickyNumericAbilityState extends State<StickyNumericAbility> {
                             left: 12.0,
                           ),
                           child: Text(
-                            nameForamtter(
-                                studentList[index]['studentName'].toString()),
+                            nameForamtter(studentList[index]['studentName']
+                                .toString()),
                             style: const TextStyle(
                                 // fontWeight: FontWeight.bold,
                                 ),
@@ -732,8 +799,8 @@ class _StickyNumericAbilityState extends State<StickyNumericAbility> {
           ),
           IconButton(
             onPressed: () {
-              Navigator.of(context)
-                  .pushNamedAndRemoveUntil(Login.routeName, (route) => false);
+              Navigator.of(context).pushNamedAndRemoveUntil(
+                  Login.routeName, (route) => false);
             },
             icon: const Icon(Icons.logout),
           ),
@@ -867,7 +934,8 @@ class _UserInputWidgetState extends State<UserInputWidget> {
 
     for (var i = 0; i < studentName.split(" ").length; i++) {
       String word = studentName.split(" ")[i];
-      String newWord = toBeginningOfSentenceCase(word.toLowerCase()).toString();
+      String newWord =
+          toBeginningOfSentenceCase(word.toLowerCase()).toString();
       formattedName = formattedName + newWord;
       if (i < studentName.split(" ").length - 1) {
         formattedName = formattedName + " ";

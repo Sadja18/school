@@ -20,7 +20,8 @@ class PaceAssessmentScreen extends StatefulWidget {
   const PaceAssessmentScreen({Key? key}) : super(key: key);
 
   @override
-  State<PaceAssessmentScreen> createState() => _PaceAssessmentScreenState();
+  State<PaceAssessmentScreen> createState() =>
+      _PaceAssessmentScreenState();
 }
 
 class _PaceAssessmentScreenState extends State<PaceAssessmentScreen> {
@@ -32,6 +33,7 @@ class _PaceAssessmentScreenState extends State<PaceAssessmentScreen> {
 
   var currentStudentId = -10;
   int currentStudentIndex = 0;
+  int currentRowIndex = 0;
 
   int totQues = 0;
   List<double> zeroMarksList = [];
@@ -60,7 +62,8 @@ class _PaceAssessmentScreenState extends State<PaceAssessmentScreen> {
     setState(() {
       studentIdResultSheet[studentId] = 'NE';
       studentIdCheckboxVal[studentId] = false;
-      studentIdMarksMap[studentId] = List.generate(totQues, (index) => 0.0);
+      studentIdMarksMap[studentId] =
+          List.generate(totQues, (index) => 0.0);
       studentIdTotalSheet[studentId] = "0.0";
     });
     if (kDebugMode) {
@@ -312,7 +315,8 @@ class _PaceAssessmentScreenState extends State<PaceAssessmentScreen> {
                         child: Container(
                           alignment: Alignment.center,
                           child: Text(
-                            displayDate(_selectedAssessment['date'].toString()),
+                            displayDate(
+                                _selectedAssessment['date'].toString()),
                             style: const TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
@@ -445,29 +449,34 @@ class _PaceAssessmentScreenState extends State<PaceAssessmentScreen> {
     // assessmentData
     await DBProvider.db.savePaceAssessment(assessmentData);
 
-    // return showDialog(
-    //     context: context,
-    //     builder: (BuildContext ctx) {
-    //       return AlertDialog(
-    //         title: SizedBox(
-    //           height: 0,
-    //         ),
-    //         titlePadding: const EdgeInsets.all(0),
-    //         content: Container(
-    //           height: MediaQuery.of(context).size.height * 0.10,
-    //           alignment: Alignment.center,
-    //           child: const Text("Assessment Saved Successfully"),
-    //         ),
-    //         actions: [
-    //           TextButton(
-    //             onPressed: () {
-    //               Navigator.of(context).pop();
-    //             },
-    //             child: const Text("close"),
-    //           ),
-    //         ],
-    //       );
-    //     });
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext ctx) {
+          return AlertDialog(
+            title: SizedBox(
+              height: 0,
+            ),
+            titlePadding: const EdgeInsets.all(0),
+            content: Container(
+              height: MediaQuery.of(context).size.height * 0.10,
+              alignment: Alignment.center,
+              child: const Text(
+                "Assessment Saved Successfully",
+                maxLines: 2,
+                textAlign: TextAlign.center,
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text("OK"),
+              ),
+            ],
+          );
+        });
   }
 
   Widget widgetSubmitButton() {
@@ -504,12 +513,13 @@ class _PaceAssessmentScreenState extends State<PaceAssessmentScreen> {
             ));
   }
 
-  String nameForamtter(studentName) {
+  String nameFormatter(studentName) {
     String formattedName = "";
 
     for (var i = 0; i < studentName.split(" ").length; i++) {
       String word = studentName.split(" ")[i];
-      String newWord = toBeginningOfSentenceCase(word.toLowerCase()).toString();
+      String newWord =
+          toBeginningOfSentenceCase(word.toLowerCase()).toString();
       formattedName = formattedName + newWord;
       if (i < studentName.split(" ").length - 1) {
         formattedName = formattedName + " ";
@@ -612,15 +622,15 @@ class _PaceAssessmentScreenState extends State<PaceAssessmentScreen> {
               totalQuestions: totQues,
               userInputHandler: userInputHandler,
               studentTotalMarks: 0.0,
-              formatterStudentName:
-                  nameForamtter(studentList[studentRowIndex]['studentName']!),
+              formatterStudentName: nameFormatter(
+                  studentList[studentRowIndex]['studentName']!),
               profilePic: studentList[studentRowIndex]['profilePic']!,
               rollNo: studentList[studentRowIndex]['rollNo']!,
-              obtainedMarksList:
-                  studentIdMarksMap[studentList[studentRowIndex]['studentId']]!,
+              obtainedMarksList: studentIdMarksMap[
+                  studentList[studentRowIndex]['studentId']]!,
               studentGrading: _grading,
-              isEvaluated: studentIdCheckboxVal[studentList[studentRowIndex]
-                  ['studentId']]!,
+              isEvaluated: studentIdCheckboxVal[
+                  studentList[studentRowIndex]['studentId']]!,
             ),
             actions: [
               TextButton(
@@ -639,7 +649,8 @@ class _PaceAssessmentScreenState extends State<PaceAssessmentScreen> {
   }
 
   Widget rowsTitleBuilder(int studentRowIndex) {
-    return Container(
+    return SizedBox(
+      height: MediaQuery.of(context).size.height,
       width: MediaQuery.of(context).size.width,
       child: Card(
         color: Colors.transparent,
@@ -653,6 +664,10 @@ class _PaceAssessmentScreenState extends State<PaceAssessmentScreen> {
               print('this student');
               // print(_totmarks);
             }
+
+            setState(() {
+              currentRowIndex = studentRowIndex;
+            });
 
             showUserInputWidget(studentRowIndex);
           },
@@ -698,9 +713,10 @@ class _PaceAssessmentScreenState extends State<PaceAssessmentScreen> {
                           children: [
                             Container(
                               decoration: const BoxDecoration(),
-                              width: MediaQuery.of(context).size.width * 0.60,
+                              width:
+                                  MediaQuery.of(context).size.width * 0.60,
                               child: Text(
-                                nameForamtter(studentList[studentRowIndex]
+                                nameFormatter(studentList[studentRowIndex]
                                     ['studentName']),
                                 overflow: TextOverflow.ellipsis,
                                 style: const TextStyle(
@@ -787,21 +803,22 @@ class _PaceAssessmentScreenState extends State<PaceAssessmentScreen> {
           borderRadius: BorderRadius.circular(
             8.0,
           ),
-          color:
-              studentIdResultSheet[studentList[studentRowIndex]['studentId']] ==
-                      'NE'
-                  ? Colors.blue
-                  : studentIdResultSheet[studentList[studentRowIndex]
-                              ['studentId']] ==
-                          'Not Achieved'
-                      ? Colors.red
-                      : Colors.green,
+          color: studentIdResultSheet[studentList[studentRowIndex]
+                      ['studentId']] ==
+                  'NE'
+              ? Colors.blue
+              : studentIdResultSheet[studentList[studentRowIndex]
+                          ['studentId']] ==
+                      'Not Achieved'
+                  ? Colors.red
+                  : Colors.green,
         ),
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
         child: Center(
           child: Text(
-            studentIdResultSheet[studentList[studentRowIndex]['studentId']] ==
+            studentIdResultSheet[studentList[studentRowIndex]
+                        ['studentId']] ==
                     'NE'
                 ? studentIdResultSheet[studentList[studentRowIndex]
                         ['studentId']]!
@@ -818,30 +835,40 @@ class _PaceAssessmentScreenState extends State<PaceAssessmentScreen> {
     );
   }
 
+  double verticalRowScrollOffset() {
+    double scrollOffset = 112.0;
+    if (currentRowIndex == 0.0) {
+      return 0.0;
+    } else {
+      return scrollOffset * currentRowIndex;
+    }
+  }
+
   Widget assessmentTable() {
     return Container(
       child: StickyHeadersTable(
-          initialScrollOffsetX: 0.0,
-          initialScrollOffsetY: 0.0,
-          scrollControllers: ScrollControllers(
-            verticalBodyController: verticalBodyController,
-            verticalTitleController: verticalTitleController,
-            horizontalBodyController: horizontalBodyController,
-            horizontalTitleController: horizontalTitleController,
-          ),
-          cellDimensions: CellDimensions.variableColumnWidthAndRowHeight(
-              columnWidths: [
-                MediaQuery.of(context).size.width * 0.12,
-              ],
-              rowHeights:
-                  List<double>.generate(studentList.length, (int index) => 100),
-              stickyLegendWidth: MediaQuery.of(context).size.width * 0.85,
-              stickyLegendHeight: 0),
-          columnsLength: 1,
-          rowsLength: studentList.length,
-          columnsTitleBuilder: (i) => const Text(""),
-          rowsTitleBuilder: (i) => rowsTitleBuilder(i),
-          contentCellBuilder: (i, j) => contentCellBuilder(i, j)),
+        initialScrollOffsetX: 0.0,
+        initialScrollOffsetY: verticalRowScrollOffset(),
+        scrollControllers: ScrollControllers(
+          verticalBodyController: verticalBodyController,
+          verticalTitleController: verticalTitleController,
+          horizontalBodyController: horizontalBodyController,
+          horizontalTitleController: horizontalTitleController,
+        ),
+        cellDimensions: CellDimensions.variableColumnWidthAndRowHeight(
+            columnWidths: [
+              MediaQuery.of(context).size.width * 0.12,
+            ],
+            rowHeights: List<double>.generate(
+                studentList.length, (int index) => 112),
+            stickyLegendWidth: MediaQuery.of(context).size.width * 0.85,
+            stickyLegendHeight: 0),
+        columnsLength: 1,
+        rowsLength: studentList.length,
+        columnsTitleBuilder: (i) => const Text(""),
+        rowsTitleBuilder: (i) => rowsTitleBuilder(i),
+        contentCellBuilder: (i, j) => contentCellBuilder(i, j),
+      ),
     );
   }
 
@@ -864,8 +891,8 @@ class _PaceAssessmentScreenState extends State<PaceAssessmentScreen> {
           ),
           IconButton(
             onPressed: () {
-              Navigator.of(context)
-                  .pushNamedAndRemoveUntil(Login.routeName, (route) => false);
+              Navigator.of(context).pushNamedAndRemoveUntil(
+                  Login.routeName, (route) => false);
             },
             icon: const Icon(Icons.logout),
           ),
@@ -984,7 +1011,8 @@ class _UserInputWidgetState extends State<UserInputWidget> {
       var gradeEntry = _grading[i];
       // print(gradeEntry['from_marks'].runtimeType);
 
-      if (gradeEntry['from_marks'] != null && gradeEntry['to_marks'] != null) {
+      if (gradeEntry['from_marks'] != null &&
+          gradeEntry['to_marks'] != null) {
         var fromMarks = gradeEntry['from_marks'];
         var toMarks = gradeEntry['to_marks'];
 
@@ -1113,7 +1141,8 @@ class _UserInputWidgetState extends State<UserInputWidget> {
                         if (nMark < 0) {
                           // show error marks cannot be ;less than zero
                           var title = "Invalid marks";
-                          var message = "Marks should not be less than zero";
+                          var message =
+                              "Marks should not be less than zero";
                           showAlert(title, message);
                         } else {
                           // double totaltmp = nMark;
@@ -1137,8 +1166,11 @@ class _UserInputWidgetState extends State<UserInputWidget> {
                             if (kDebugMode) {
                               print("send tot user input handler");
                             }
-                            widget.userInputHandler(studentId, obtainedMarks,
-                                studentResult, nMark.toString());
+                            widget.userInputHandler(
+                                studentId,
+                                obtainedMarks,
+                                studentResult,
+                                nMark.toString());
                           }
                         }
                       }
@@ -1320,7 +1352,8 @@ class _UserInputWidgetState extends State<UserInputWidget> {
                   TableRow(
                     children: [
                       TableCell(
-                        child: AvatarGeneratorNewTwo(base64Code: profilePic),
+                        child:
+                            AvatarGeneratorNewTwo(base64Code: profilePic),
                       ),
                       TableCell(
                         child: Padding(
@@ -1331,7 +1364,8 @@ class _UserInputWidgetState extends State<UserInputWidget> {
                             children: [
                               Container(
                                 decoration: const BoxDecoration(),
-                                width: MediaQuery.of(context).size.width * 0.60,
+                                width: MediaQuery.of(context).size.width *
+                                    0.60,
                                 child: Text(
                                   studentName,
                                   overflow: TextOverflow.ellipsis,
@@ -1348,7 +1382,8 @@ class _UserInputWidgetState extends State<UserInputWidget> {
                               Container(
                                 alignment: Alignment.bottomRight,
                                 child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.start,
                                   children: [
                                     const Text(
                                       "Roll: ",
@@ -1445,7 +1480,8 @@ class _UserInputWidgetState extends State<UserInputWidget> {
                                 TableCell(
                                   child: Container(
                                     alignment: Alignment.centerLeft,
-                                    child: const Text('Enter total marks:'),
+                                    child:
+                                        const Text('Enter total marks:'),
                                   ),
                                 ),
                                 TableCell(
@@ -1470,7 +1506,8 @@ class _UserInputWidgetState extends State<UserInputWidget> {
                             : Container(
                                 width: MediaQuery.of(context).size.width,
                                 height:
-                                    MediaQuery.of(context).size.height * 0.190,
+                                    MediaQuery.of(context).size.height *
+                                        0.190,
                                 decoration: BoxDecoration(
                                   color: Colors.white,
                                 ),

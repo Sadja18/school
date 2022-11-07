@@ -50,7 +50,8 @@ Future<void> saveUserToDB(Map<String, dynamic> userData) async {
 
 Future<dynamic> isLoggedIn() async {
   try {
-    String query = "SELECT * FROM users WHERE loginstatus=1 OR loginstatus='1'";
+    String query =
+        "SELECT * FROM users WHERE loginstatus=1 OR loginstatus='1'";
     var params = [];
 
     var result = await DBProvider.db.dynamicRead(query, params);
@@ -117,8 +118,8 @@ Future<dynamic> editOrCreateNewAttendance(
       // print(r0.toString());
     }
 
-    var resQ =
-        await DBProvider.db.isEditableAttendanceDate(selectedDate, className);
+    var resQ = await DBProvider.db
+        .isEditableAttendanceDate(selectedDate, className);
 
     if (kDebugMode) {
       // print(resQ.toString());
@@ -158,7 +159,7 @@ Future<dynamic> editOrCreateNewNumeric(
 
   try {
     var resQ =
-        await DBProvider.db.isEditableNumericeDate(selectedDate, className);
+        await DBProvider.db.isEditableNumericDate(selectedDate, className);
 
     if (resQ.isNotEmpty) {
       var resL = resQ.toList();
@@ -307,7 +308,9 @@ Future<dynamic> saveLeaveRequestToDB(
     }
 
     // save to db using dynamic insert
-    if (leaveTypeId != 0 && leaveRequestTeacherId != 0 && leaveTypeName != "") {
+    if (leaveTypeId != 0 &&
+        leaveRequestTeacherId != 0 &&
+        leaveTypeName != "") {
       Map<String, Object> data = {
         "leaveRequestTeacherId": leaveRequestTeacherId,
         "leaveTypeId": leaveTypeId,
@@ -385,8 +388,8 @@ Future<dynamic> getLeaveTypesFromDB() async {
   }
 }
 
-Future<void> saveTeacherAttendanceToLocalDB(
-    jsonifiedData, attendanceDate, uploadDate, total, present, absent) async {
+Future<void> saveTeacherAttendanceToLocalDB(jsonifiedData, attendanceDate,
+    uploadDate, total, present, absent) async {
   try {
     var params = [];
     var query = "SELECT userID FROM users "
