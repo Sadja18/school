@@ -88,6 +88,10 @@ class _DashboardState extends State<Dashboard> {
             context: context,
             // barrierDismissible: false,
             builder: (BuildContext ctx) {
+              Future.delayed(Duration(seconds: 8), () {
+                Navigator.of(context).pop();
+              });
+
               return AlertDialog(
                 title: SizedBox(
                   height: 0,
@@ -121,8 +125,8 @@ class _DashboardState extends State<Dashboard> {
                 contentPadding: const EdgeInsets.all(0),
               );
             });
+
         await wrapper();
-        // Navigator.of(context).pop();
 
         showDialog(
             context: context,
@@ -151,7 +155,6 @@ class _DashboardState extends State<Dashboard> {
                 ],
               );
             });
-        // Navigator.of(context).pop();
       } else {
         offlineSyncPressDialog();
       }
@@ -175,12 +178,15 @@ class _DashboardState extends State<Dashboard> {
   void showAlertDialogHeadMaster() async {
     try {
       var response = await http.get(Uri.parse(
-          uri_paths.baseURL + uri_paths.checkIfOnline + '?get=1'));
+          '${uri_paths.baseURL}${uri_paths.checkIfOnline}?get=1'));
 
       if (response.statusCode == 200) {
         showDialog(
             context: context,
             builder: (BuildContext ctx) {
+              Future.delayed(Duration(seconds: 8), () {
+                Navigator.of(context).pop();
+              });
               return AlertDialog(
                 title: SizedBox(
                   height: 0,
@@ -215,7 +221,34 @@ class _DashboardState extends State<Dashboard> {
               );
             });
         await wrapperHeadMaster();
-        Navigator.of(context).pop();
+
+        showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (BuildContext ctx) {
+              return AlertDialog(
+                title: const Text("Data Syncing Complete"),
+                actions: [
+                  InkWell(
+                    child: Card(
+                      color: Colors.blue,
+                      child: Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: const Text(
+                          "Close",
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                    onTap: () {
+                      Navigator.of(context).pop();
+                    },
+                  )
+                ],
+              );
+            });
       } else {
         offlineSyncPressDialog();
       }
