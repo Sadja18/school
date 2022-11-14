@@ -53,8 +53,8 @@ const defaultString =
 
 Future<dynamic> sendTestRequest() async {
   try {
-    var response = await http
-        .get(Uri.parse(uri_paths.baseURL + uri_paths.checkIfOnline + '?get=1'));
+    var response = await http.get(
+        Uri.parse(uri_paths.baseURL + uri_paths.checkIfOnline + '?get=1'));
 
     return response;
   } on Exception catch (e) {
@@ -627,8 +627,8 @@ Future<void> numericSyncHandler(assessmentRecords) async {
           var resultName = entry[studentID][1];
           var result = resultKeyGen(resultName);
           if (levelName != '0' && resultName != 'Not Evaluated') {
-            var levelIdQ =
-                await DBProvider.db.getNumericLevelId(className, levelName);
+            var levelIdQ = await DBProvider.db
+                .getNumericLevelId(className, levelName);
             var levelId = levelIdQ.toList()[0]['levelId'];
 
             decodedEntries[index][studentID][0] = levelId;
@@ -1101,6 +1101,7 @@ Future<void> fetchTeacherProfileFromServerHeadMasterMode() async {
         queryParameters: (queryParams));
     if (kDebugMode) {
       print('sending persistent');
+      // log()
     }
 
     var response = await http.get(requestURL);
@@ -1114,6 +1115,7 @@ Future<void> fetchTeacherProfileFromServerHeadMasterMode() async {
         print(requestURL);
         log("response.bod");
         print('persistent fetched');
+        log(response.body);
         // assessments can be empty
       }
       var resp = jsonDecode(response.body);
@@ -1131,9 +1133,10 @@ Future<void> fetchTeacherProfileFromServerHeadMasterMode() async {
         var emp = teacher['employee_id'];
         var teacherCode = teacher['teacher_code'];
         var user = teacher['user_id'];
-        var profilePic = teacher['photo'] != null && teacher['photo'] != false
-            ? teacher['photo']
-            : defaultString;
+        var profilePic =
+            teacher['photo'] != null && teacher['photo'] != false
+                ? teacher['photo']
+                : defaultString;
 
         if (school != null &&
             school != false &&
@@ -1295,6 +1298,10 @@ Future<void> fetchPersistentHeadMaster() async {
       log(timeTableResponse.statusCode.toString());
       log(timeTableResponse.body);
     }
+    if (kDebugMode) {
+      log(response.statusCode.toString());
+      log(response.body);
+    }
     if (timeTableResponse.statusCode == 200) {
       var res = jsonDecode(timeTableResponse.body);
       if (res['message'].toString().toLowerCase() == 'success') {
@@ -1336,7 +1343,8 @@ Future<void> fetchPersistentHeadMaster() async {
   }
 }
 
-Future<dynamic> fetchTimeTableFromLocalDB(teacherId, String weekDay) async {
+Future<dynamic> fetchTimeTableFromLocalDB(
+    teacherId, String weekDay) async {
   try {
     var query = "SELECT timeTableId, weekDay, period "
         "FROM TeacherTimeTable "
@@ -1373,8 +1381,11 @@ Future<dynamic> fetchTimeTableFromLocalDB(teacherId, String weekDay) async {
   }
 }
 
-Future<dynamic> getAllTeachersWhoDontHaveSamePeriodOnSameDay(int thisTeacherId,
-    String weekDay, String periodName, List availableTeachers) async {
+Future<dynamic> getAllTeachersWhoDontHaveSamePeriodOnSameDay(
+    int thisTeacherId,
+    String weekDay,
+    String periodName,
+    List availableTeachers) async {
   try {
     var query = "SELECT teacherId, teacherName FROM TeacherProfile WHERE "
         "teacherId=("

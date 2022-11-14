@@ -36,9 +36,8 @@ class _MarkTeacherAttendanceFutureState
   late final Future? teacherFuture;
   @override
   void initState() {
-    // TODO: implement initState
-    super.initState();
     teacherFuture = fetchTeacherProfileFromServerHeadMasterMode();
+    super.initState();
   }
 
   @override
@@ -105,7 +104,8 @@ class _MarkTeacherAttendanceWidgetState
 
     for (var i = 0; i < studentName.split(" ").length; i++) {
       String word = studentName.split(" ")[i];
-      String newWord = toBeginningOfSentenceCase(word.toLowerCase()).toString();
+      String newWord =
+          toBeginningOfSentenceCase(word.toLowerCase()).toString();
       formattedName = formattedName + newWord;
       if (i < studentName.split(" ").length - 1) {
         formattedName = formattedName + " ";
@@ -199,8 +199,10 @@ class _MarkTeacherAttendanceWidgetState
                     onTap: () {
                       var reasonMapTmp = reasonMap;
                       var proxyMapTmp = proxyMap;
-                      reasonMap.removeWhere((key, value) => key == teacherId);
-                      proxyMapTmp.removeWhere((key, value) => key == teacherId);
+                      reasonMap
+                          .removeWhere((key, value) => key == teacherId);
+                      proxyMapTmp
+                          .removeWhere((key, value) => key == teacherId);
                       var newAbsentee = reasonMapTmp.keys.toList();
 
                       setState(() {
@@ -237,7 +239,8 @@ class _MarkTeacherAttendanceWidgetState
                 FutureBuilder(
                     future: getLeaveTypesFromDB(),
                     builder: (BuildContext ctx, AsyncSnapshot snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
+                      if (snapshot.connectionState ==
+                          ConnectionState.waiting) {
                         return const SizedBox(
                           child: CircularProgressIndicator(),
                         );
@@ -269,7 +272,8 @@ class _MarkTeacherAttendanceWidgetState
                 FutureBuilder(
                     future: fetchTimeTableFromLocalDB(teacherId, weekDay),
                     builder: (BuildContext ctx, AsyncSnapshot snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
+                      if (snapshot.connectionState ==
+                          ConnectionState.waiting) {
                         return const SizedBox(
                           child: CircularProgressIndicator.adaptive(),
                         );
@@ -335,8 +339,9 @@ class _MarkTeacherAttendanceWidgetState
           height: MediaQuery.of(context).size.height,
           width: MediaQuery.of(context).size.width,
           decoration: BoxDecoration(
-            color:
-                (proxyMap.keys.contains(teacherId)) ? Colors.red : Colors.green,
+            color: (proxyMap.keys.contains(teacherId))
+                ? Colors.red
+                : Colors.green,
             border: Border.all(
               color: Colors.white,
             ),
@@ -364,7 +369,8 @@ class _MarkTeacherAttendanceWidgetState
                           ).image,
                           fit: BoxFit.fill,
                           width: MediaQuery.of(context).size.width,
-                          height: MediaQuery.of(context).size.height * 0.10,
+                          height:
+                              MediaQuery.of(context).size.height * 0.10,
                         ),
                       ),
                     ),
@@ -380,7 +386,8 @@ class _MarkTeacherAttendanceWidgetState
                           Container(
                             decoration: const BoxDecoration(),
                             alignment: Alignment.center,
-                            width: MediaQuery.of(context).size.width * 0.60,
+                            width:
+                                MediaQuery.of(context).size.width * 0.60,
                             child: Text(
                               nameForamtter(teacherProfile['teacherName']),
                               overflow: TextOverflow.ellipsis,
@@ -423,7 +430,8 @@ class _MarkTeacherAttendanceWidgetState
                                   decoration: const BoxDecoration(),
                                   alignment: Alignment.center,
                                   width:
-                                      MediaQuery.of(context).size.width * 0.60,
+                                      MediaQuery.of(context).size.width *
+                                          0.60,
                                   child: Text(
                                     "Reason: ${reasonMap[teacherId]}",
                                     overflow: TextOverflow.ellipsis,
@@ -495,7 +503,8 @@ class _MarkTeacherAttendanceWidgetState
       if (reasonData.isNotEmpty) {
         var reason = reasonData[0];
         // reasonId = reason['leaveTypeId'];
-        if (reason['leaveTypeId'] != null && reason['leaveTypeId'] != false) {
+        if (reason['leaveTypeId'] != null &&
+            reason['leaveTypeId'] != false) {
           reasonId = reason['leaveTypeId'];
         } else {
           continue;
@@ -599,7 +608,8 @@ class _MarkTeacherAttendanceWidgetState
     if (kDebugMode) {
       log(jsonifiedData);
     }
-    var uploadDate = DateFormat('yyyy-MM-dd hh:mm:ss').format(DateTime.now());
+    var uploadDate =
+        DateFormat('yyyy-MM-dd hh:mm:ss').format(DateTime.now());
     var total = teachers.length;
     var absent = absentees.length;
     var present = teachers.length - absentees.length;
@@ -863,7 +873,8 @@ class _MarkTeacherAttendanceWidgetState
               decoration: BoxDecoration(),
               alignment: Alignment.center,
               child: Table(
-                defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+                defaultVerticalAlignment:
+                    TableCellVerticalAlignment.middle,
                 columnWidths: const {
                   0: FractionColumnWidth(0.30),
                   1: FractionColumnWidth(0.30),
@@ -924,10 +935,11 @@ class _MarkTeacherAttendanceWidgetState
                 vertical: 6.0,
               ),
               child: StickyHeadersTable(
-                cellDimensions: CellDimensions.variableColumnWidthAndRowHeight(
+                cellDimensions:
+                    CellDimensions.variableColumnWidthAndRowHeight(
                   columnWidths: [],
-                  rowHeights:
-                      List<double>.generate(teachers.length, (int index) => 90),
+                  rowHeights: List<double>.generate(
+                      teachers.length, (int index) => 90),
                   stickyLegendWidth: MediaQuery.of(context).size.width,
                   stickyLegendHeight: 0,
                 ),
@@ -1025,7 +1037,8 @@ class _DropdownForReasonState extends State<DropdownForReason> {
                 if (kDebugMode) {
                   log("Sekected $selection");
                 }
-                widget.leaveReasonCallBack(teacherId, selection.toString());
+                widget.leaveReasonCallBack(
+                    teacherId, selection.toString());
                 // }
 
                 if (kDebugMode) {
@@ -1035,7 +1048,8 @@ class _DropdownForReasonState extends State<DropdownForReason> {
                 }
                 // Navigator.of(context).pop();
               },
-              items: widget.leaveReasons.map<DropdownMenuItem<String>>((e) {
+              items:
+                  widget.leaveReasons.map<DropdownMenuItem<String>>((e) {
                 return DropdownMenuItem(
                   child: Text(
                     e['leaveTypeName'].toString(),
@@ -1082,9 +1096,11 @@ class _ProxySelectionParentWrapperState
   /// periodName: proxyTeacherId
   /// }
   late Map periodMap = {};
-  void childCallBack(int thisTeacherId, int periodName, int proxyTeacherId) {
+  void childCallBack(
+      int thisTeacherId, int periodName, int proxyTeacherId) {
     var tmpAvail = availableTeachers;
-    tmpAvail.removeWhere((element) => element['teacherId'] == proxyTeacherId);
+    tmpAvail
+        .removeWhere((element) => element['teacherId'] == proxyTeacherId);
     setState(() {
       periodMap[periodName] = proxyTeacherId;
       availableTeachers = tmpAvail;
@@ -1166,7 +1182,8 @@ class _ProxySelectionParentWrapperState
 
                     return SingleProxyDropdown(
                       proxyTeachers: availableTeacherValues,
-                      periodName: widget.thisTeacherTimeTable[currentWidgetView]
+                      periodName: widget
+                          .thisTeacherTimeTable[currentWidgetView]
                               ['period']
                           .toString(),
                       parentCallBack: singleProxyDropdownCallBack,
@@ -1189,9 +1206,11 @@ class _ProxySelectionParentWrapperState
                   children: [
                     TableCell(
                       child: (currentWidgetView > 0 &&
-                              currentWidgetView <= thisTeacherTimeTable.length)
+                              currentWidgetView <=
+                                  thisTeacherTimeTable.length)
                           ? Container(
-                              width: MediaQuery.of(context).size.width * 0.50,
+                              width:
+                                  MediaQuery.of(context).size.width * 0.50,
                               alignment: Alignment.centerLeft,
                               child: InkWell(
                                 onTap: () {
@@ -1199,7 +1218,8 @@ class _ProxySelectionParentWrapperState
                                     log(currentWidgetView.toString());
                                   }
                                   setState(() {
-                                    currentWidgetView = currentWidgetView - 1;
+                                    currentWidgetView =
+                                        currentWidgetView - 1;
                                   });
                                   if (kDebugMode) {
                                     log(currentWidgetView.toString());
@@ -1222,7 +1242,8 @@ class _ProxySelectionParentWrapperState
                               currentWidgetView <
                                   thisTeacherTimeTable.length - 1)
                           ? Container(
-                              width: MediaQuery.of(context).size.width * 0.50,
+                              width:
+                                  MediaQuery.of(context).size.width * 0.50,
                               alignment: Alignment.centerRight,
                               child: InkWell(
                                 onTap: () {
@@ -1230,7 +1251,8 @@ class _ProxySelectionParentWrapperState
                                     log(currentWidgetView.toString());
                                   }
                                   setState(() {
-                                    currentWidgetView = currentWidgetView + 1;
+                                    currentWidgetView =
+                                        currentWidgetView + 1;
                                   });
                                   if (kDebugMode) {
                                     log(currentWidgetView.toString());
@@ -1261,7 +1283,8 @@ class _ProxySelectionParentWrapperState
                         log('final sending to parent periodmap wrapper');
                         log(periodMap.toString());
                       }
-                      widget.setProxyCallBack(widget.thisTeacherId, periodMap);
+                      widget.setProxyCallBack(
+                          widget.thisTeacherId, periodMap);
                       Navigator.of(context).pop();
                     },
                     child: Card(
@@ -1340,7 +1363,8 @@ class _SingleProxyDropdownState extends State<SingleProxyDropdown> {
             alignment: Alignment.center,
             child: DropdownButton(
               hint: const Text("Assign Teacher"),
-              items: widget.proxyTeachers.map<DropdownMenuItem<String>>((e) {
+              items:
+                  widget.proxyTeachers.map<DropdownMenuItem<String>>((e) {
                 return DropdownMenuItem(
                   child: Text(
                     e['teacherName'],
@@ -1361,7 +1385,8 @@ class _SingleProxyDropdownState extends State<SingleProxyDropdown> {
                   }
                 }
                 if (selectedTeacherId != 0) {
-                  widget.parentCallBack(widget.periodName, selectedTeacherId);
+                  widget.parentCallBack(
+                      widget.periodName, selectedTeacherId);
                 }
               },
             ),
