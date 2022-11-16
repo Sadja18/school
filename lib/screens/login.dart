@@ -53,7 +53,8 @@ class _LoginState extends State<Login> {
                   child: const Text('Okay'),
                   onPressed: () {
                     Navigator.of(context).pop();
-                    Navigator.of(context).popAndPushNamed(Dashboard.routeName);
+                    Navigator.of(context)
+                        .popAndPushNamed(Dashboard.routeName);
                   },
                 ),
               ],
@@ -90,12 +91,13 @@ class _LoginState extends State<Login> {
       }
       try {
         // try sending a test request
-        var testResponse = await http.get(
-            Uri.parse('${uri_paths.baseURL}${uri_paths.checkIfOnline}?get=1'));
+        var testResponse = await http.get(Uri.parse(
+            '${uri_paths.baseURL}${uri_paths.checkIfOnline}?get=1'));
 
         if (kDebugMode) {
           log("test response");
           log(testResponse.statusCode.toString());
+          log(testResponse.body);
         }
 
         if (testResponse.statusCode == 200) {
@@ -129,8 +131,8 @@ class _LoginState extends State<Login> {
           log(e.toString());
         }
         if (e is SocketException) {
-          var recordCheck =
-              await DBProvider.db.isUser(enteredUserName, enteredUserPassword);
+          var recordCheck = await DBProvider.db
+              .isUser(enteredUserName, enteredUserPassword);
 
           if (recordCheck != null && recordCheck.isNotEmpty) {
             // record exists locally
@@ -217,8 +219,8 @@ class _LoginState extends State<Login> {
                           children: [
                             Container(
                               alignment: Alignment.centerLeft,
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 12.0),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 12.0),
                               child: Text(
                                 'User Name',
                                 style: TextStyle(
@@ -243,7 +245,8 @@ class _LoginState extends State<Login> {
                                       color: Colors.purpleAccent.shade100,
                                       width: 2.0,
                                     ),
-                                    borderRadius: BorderRadius.circular(10.0),
+                                    borderRadius:
+                                        BorderRadius.circular(10.0),
                                   ),
                                   padding: const EdgeInsets.fromLTRB(
                                       4.0, 20.0, 5.0, 1.0),
@@ -256,15 +259,18 @@ class _LoginState extends State<Login> {
                                       // disabledBorder: InputBorder.none,
                                       constraints:
                                           BoxConstraints.tightForFinite(
-                                        height:
-                                            MediaQuery.of(context).size.height *
-                                                0.09,
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                0.90,
+                                        height: MediaQuery.of(context)
+                                                .size
+                                                .height *
+                                            0.09,
+                                        width: MediaQuery.of(context)
+                                                .size
+                                                .width *
+                                            0.90,
                                       ),
                                       hintText: 'User Name',
-                                      contentPadding: const EdgeInsets.only(
+                                      contentPadding:
+                                          const EdgeInsets.only(
                                         left: 15,
                                         bottom: 11,
                                         top: 11,
@@ -284,8 +290,8 @@ class _LoginState extends State<Login> {
                           children: [
                             Container(
                               alignment: Alignment.centerLeft,
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 10.0),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 10.0),
                               child: Text(
                                 'Password',
                                 style: TextStyle(
@@ -308,7 +314,8 @@ class _LoginState extends State<Login> {
                                       color: Colors.purpleAccent.shade100,
                                       width: 2.0,
                                     ),
-                                    borderRadius: BorderRadius.circular(10.0),
+                                    borderRadius:
+                                        BorderRadius.circular(10.0),
                                   ),
                                   child: TextField(
                                     decoration: InputDecoration(
@@ -317,15 +324,18 @@ class _LoginState extends State<Login> {
                                       errorBorder: InputBorder.none,
                                       constraints:
                                           BoxConstraints.tightForFinite(
-                                        height:
-                                            MediaQuery.of(context).size.height *
-                                                0.09,
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                0.90,
+                                        height: MediaQuery.of(context)
+                                                .size
+                                                .height *
+                                            0.09,
+                                        width: MediaQuery.of(context)
+                                                .size
+                                                .width *
+                                            0.90,
                                       ),
                                       hintText: 'Password',
-                                      contentPadding: const EdgeInsets.only(
+                                      contentPadding:
+                                          const EdgeInsets.only(
                                         left: 15,
                                         bottom: 11,
                                         top: 11,
@@ -335,7 +345,8 @@ class _LoginState extends State<Login> {
                                         padding: const EdgeInsets.all(0.1),
                                         decoration: BoxDecoration(
                                           border: Border.all(
-                                            color: Colors.purpleAccent.shade100,
+                                            color: Colors
+                                                .purpleAccent.shade100,
                                           ),
                                           borderRadius:
                                               BorderRadius.circular(5.0),
@@ -368,8 +379,8 @@ class _LoginState extends State<Login> {
                         ),
                         Container(
                           alignment: Alignment.center,
-                          margin:
-                              const EdgeInsets.fromLTRB(10.0, 10.0, 0.0, 0.0),
+                          margin: const EdgeInsets.fromLTRB(
+                              10.0, 10.0, 0.0, 0.0),
                           width: MediaQuery.of(context).size.width * 0.90,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(6.0),
@@ -394,7 +405,8 @@ class _LoginState extends State<Login> {
                             ),
                             child: Container(
                               alignment: Alignment.center,
-                              width: MediaQuery.of(context).size.width * 0.90,
+                              width:
+                                  MediaQuery.of(context).size.width * 0.90,
                               child: const Text(
                                 'Login',
                                 style: TextStyle(
@@ -410,8 +422,10 @@ class _LoginState extends State<Login> {
                           margin: const EdgeInsets.symmetric(
                             vertical: 12.0,
                           ),
-                          height: MediaQuery.of(context).size.height * 0.15,
-                          child: Image.asset('assets/icons/icon-144x144.png'),
+                          height:
+                              MediaQuery.of(context).size.height * 0.15,
+                          child:
+                              Image.asset('assets/icons/icon-144x144.png'),
                         ),
                       ],
                     ),

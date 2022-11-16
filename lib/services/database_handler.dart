@@ -71,7 +71,7 @@ class DBProvider {
   String _createStudentTable() {
     return "CREATE TABLE students("
         "student_id INTEGER PRIMARY KEY,"
-        "student_roll_no TEXT,"
+        "student_roll_no INTEGER,"
         "student_name TEXT,"
         "profile_pic TEXT,"
         "class_id INTEGER NOT NULL,"
@@ -575,7 +575,7 @@ class DBProvider {
             Map<String, Object> data = {
               "student_id": studentId,
               "student_name": studentName,
-              "student_roll_no": rollNo.toString(),
+              "student_roll_no": rollNo,
               "class_id": classId,
               "class_name": className.toString(),
               "profile_pic": studentPhoto
