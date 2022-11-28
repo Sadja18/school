@@ -251,7 +251,7 @@ class _EditAttendanceState extends State<EditAttendance> {
                                 ),
                               ),
                               Text(
-                                studentList[index]['rollNo'],
+                                studentList[index]['rollNo'].toString(),
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(
                                   // fontWeight: FontWeight.bold,

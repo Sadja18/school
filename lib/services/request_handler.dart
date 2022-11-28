@@ -54,7 +54,7 @@ const defaultString =
 Future<dynamic> sendTestRequest() async {
   try {
     var response = await http.get(
-        Uri.parse(uri_paths.baseURL + uri_paths.checkIfOnline + '?get=1'));
+        Uri.parse('${uri_paths.baseURL}${uri_paths.checkIfOnline}?get=1'));
 
     return response;
   } on Exception catch (e) {
@@ -243,7 +243,7 @@ Future<void> fetchPersistent() async {
       var grading = jsonDecode(gradingResp.body);
       if (kDebugMode) {
         print('persistent fetched');
-        print(grading.toString());
+        print(classes.toString());
         print(year['academic_year'] != null &&
             classes['classes'] != null &&
             teacher['teacher'] != null &&
@@ -554,6 +554,7 @@ Future<void> attendanceSyncHandler(attendanceRecordQuery) async {
     if (responses.isNotEmpty) {
       for (var response in responses) {
         print(response.statusCode);
+        print("response loop");
         if (response.statusCode == 200 || response.statusCode == '200') {
           print(response.body.runtimeType);
           var resp = jsonDecode(response.body);
@@ -1121,9 +1122,10 @@ Future<void> fetchTeacherProfileFromServerHeadMasterMode() async {
       var resp = jsonDecode(response.body);
       var teachers = resp['teachers'];
 
-      if (kDebugMode) {
-        log(teachers[0].toString());
-      }
+      // if (kDebugMode) {
+      //   log(teachers[0].toString());
+      // }
+      var index = 0;
       for (var teacher in teachers) {
         var teacherId = teacher['id'];
         var teacherName = teacher['name'];
@@ -1138,6 +1140,38 @@ Future<void> fetchTeacherProfileFromServerHeadMasterMode() async {
                 ? teacher['photo']
                 : defaultString;
 
+        if (kDebugMode) {
+          log("null check");
+          var a = school != null &&
+              school != false &&
+              emp != null &&
+              emp != false &&
+              user != null &&
+              user != false &&
+              user.runtimeType == List &&
+              school.runtimeType == List &&
+              emp.runtimeType == List;
+          if (a == false) {
+            log("1\n2\n3");
+            log("print a $a");
+            log('teacher name is ${teacherId.toString()}');
+
+            log('teacher name is ${teacherName.toString()}');
+            log('school is ${school.toString()}');
+
+            log("(school != null).toString() ${(school != null).toString()}");
+            log((school != false).toString());
+            log('emp');
+            log("(emp != null).toString() ${(emp != null).toString()}");
+            log("(emp != false).toString() ${(emp != null).toString()}");
+            log("print user");
+            log("$user");
+            log("u(user != null).toString() ${user != null}");
+            log("(user.runtimeType == List).toString() ${(user.runtimeType == List).toString()}");
+            log("(emp.runtimeType == List).toString() ${(emp.runtimeType == List).toString()}");
+            log("1\n2\n3");
+          }
+        }
         if (school != null &&
             school != false &&
             emp != null &&
@@ -1158,6 +1192,13 @@ Future<void> fetchTeacherProfileFromServerHeadMasterMode() async {
             "userId": userId,
             'profilePic': profilePic,
           };
+
+          // if (kDebugMode) {
+          //   log("teacher is ${teacher['id']}");
+          //   log("index is $index");
+          //   index = index + 1;
+          //   log("entry is $dbEntry");
+          // }
 
           await DBProvider.db.dynamicInsert("TeacherProfile", dbEntry);
         }
@@ -1232,7 +1273,6 @@ Future<void> fetchPersistentHeadMaster() async {
       if (kDebugMode) {
         log('school fetched');
         log(response.body.toString());
-
         log("response can be empty");
       }
       var resp = jsonDecode(response.body);
@@ -1358,16 +1398,6 @@ Future<dynamic> fetchTimeTableFromLocalDB(
         "weekDay=?"
         ";";
     var params = [teacherId, weekDay];
-
-    // var r1 =
-    //     await DBProvider.db.dynamicRead("SELECT * FROM TeacherTimeTable; ", []);
-    // // "WHERE "
-    // // "weekDay=?;",
-    // // ['friday']);
-    // if (kDebugMode) {
-    //   log('friday week day');
-    //   log(r1.toString());
-    // }
     var res = await DBProvider.db.dynamicRead(query, params);
 
     if (res != null && res.isNotEmpty) {

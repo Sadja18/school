@@ -462,6 +462,9 @@ class DBProvider {
       // insert academic year
 
       // insert teacher
+      if (kDebugMode) {
+        print(teacher);
+      }
       if (teacher.isNotEmpty && teacher != null) {
         tableName = 'teacher';
 
