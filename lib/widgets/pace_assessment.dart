@@ -625,7 +625,7 @@ class _PaceAssessmentScreenState extends State<PaceAssessmentScreen> {
               formatterStudentName: nameFormatter(
                   studentList[studentRowIndex]['studentName']!),
               profilePic: studentList[studentRowIndex]['profilePic']!,
-              rollNo: studentList[studentRowIndex]['rollNo']!,
+              rollNo: studentList[studentRowIndex]['rollNo'].toString(),
               obtainedMarksList: studentIdMarksMap[
                   studentList[studentRowIndex]['studentId']]!,
               studentGrading: _grading,
@@ -741,7 +741,8 @@ class _PaceAssessmentScreenState extends State<PaceAssessmentScreen> {
                                     ),
                                   ),
                                   Text(
-                                    studentList[studentRowIndex]['rollNo'],
+                                    studentList[studentRowIndex]['rollNo']
+                                        .toString(),
                                     overflow: TextOverflow.ellipsis,
                                     style: const TextStyle(
                                       // fontWeight: FontWeight.bold,

@@ -961,7 +961,7 @@ class _EditAttendanceState extends State<EditAttendance> {
                 for (var student in studentList) {
                   if (studentId == student['studentId'].toString()) {
                     studentName = nameFormatter(student['studentName']);
-                    rollNo = student['rollNo'];
+                    rollNo = student['rollNo'].toString();
                   }
                 }
                 return TableRow(

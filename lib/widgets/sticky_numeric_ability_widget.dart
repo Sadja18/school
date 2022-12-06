@@ -182,7 +182,7 @@ class _StickyNumericAbilityState extends State<StickyNumericAbility> {
               ),
               content: UserInputWidget(
                 studentName: studentName,
-                rollNo: rollNo,
+                rollNo: rollNo.toString(),
                 studentRowIndex: studentRowIndex,
                 selectedLevel: selectedLevel,
                 result: result,

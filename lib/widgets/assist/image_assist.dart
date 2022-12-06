@@ -19,16 +19,18 @@ class _AvatarGeneratorNewState extends State<AvatarGeneratorNew> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-          // shape: BoxShape.circle,
-          // border: Border.all()
-          // color: Colors.blue,
-          ),
+        // shape: BoxShape.circle,
+        // border: Border.all()
+        // color: Colors.blue,
+        color: Colors.white,
+      ),
       alignment: Alignment.topCenter,
       // width: MediaQuery.of(context).size.width*0.0001,
       height: MediaQuery.of(context).size.height * 0.12,
       child: ClipOval(
         child: Image(
-          image: Image.memory(Base64Decoder().convert(widget.base64Code)).image,
+          image: Image.memory(Base64Decoder().convert(widget.base64Code))
+              .image,
           fit: BoxFit.fill,
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
@@ -44,7 +46,8 @@ class AvatarGeneratorNewTwo extends StatefulWidget {
       : super(key: key);
 
   @override
-  State<AvatarGeneratorNewTwo> createState() => _AvatarGeneratorNewStateTwo();
+  State<AvatarGeneratorNewTwo> createState() =>
+      _AvatarGeneratorNewStateTwo();
 }
 
 class _AvatarGeneratorNewStateTwo extends State<AvatarGeneratorNewTwo> {
@@ -52,16 +55,17 @@ class _AvatarGeneratorNewStateTwo extends State<AvatarGeneratorNewTwo> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-          // shape: BoxShape.circle,
-          // border: Border.all()
-          // color: Colors.blue,
-          ),
+        // shape: BoxShape.circle,
+        // border: Border.all()
+        color: Colors.white,
+      ),
       alignment: Alignment.topCenter,
       // width: MediaQuery.of(context).size.width*0.0001,
       height: MediaQuery.of(context).size.height * 0.087,
       child: ClipOval(
         child: Image(
-          image: Image.memory(Base64Decoder().convert(widget.base64Code)).image,
+          image: Image.memory(Base64Decoder().convert(widget.base64Code))
+              .image,
           fit: BoxFit.fill,
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,

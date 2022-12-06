@@ -214,7 +214,7 @@ class _StickyBasicReadingState extends State<StickyBasicReading> {
               titlePadding: const EdgeInsets.all(0),
               contentPadding: const EdgeInsets.all(0),
               content: UserInputWidget(
-                  rollNo: rollNo,
+                  rollNo: rollNo.toString(),
                   studentName: studentName,
                   profilePic: profilePic,
                   result: resultSheet[studentList[studentRowIndex]

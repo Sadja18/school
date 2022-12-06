@@ -81,7 +81,7 @@ class _DashboardState extends State<Dashboard> {
   void showAlertDialog() async {
     try {
       var response = await http.get(Uri.parse(
-          uri_paths.baseURL + uri_paths.checkIfOnline + '?get=1'));
+          '${uri_paths.baseURL}${uri_paths.checkIfOnline}?get=1'));
 
       if (response.statusCode == 200) {
         showDialog(
