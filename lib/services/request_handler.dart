@@ -126,7 +126,7 @@ Future<void> fetchPersistent() async {
       'Persistent': '1',
     };
     var requestURL = Uri(
-        scheme: 'http',
+        scheme: "http",
         host: uri_paths.baseURLA,
         path: uri_paths.fetchRelevantData,
         queryParameters: queryParams);
@@ -134,7 +134,7 @@ Future<void> fetchPersistent() async {
       print('sending persistent');
     }
     var yearResp = await http.get(Uri(
-        scheme: 'http',
+        scheme: "http",
         host: uri_paths.baseURLA,
         path: uri_paths.fetchYear,
         queryParameters: queryParams));
@@ -142,7 +142,7 @@ Future<void> fetchPersistent() async {
       print('sending year');
     }
     var teacherResp = await http.get(Uri(
-        scheme: 'http',
+        scheme: "http",
         host: uri_paths.baseURLA,
         path: uri_paths.fetchTeacher,
         queryParameters: queryParams));
@@ -150,7 +150,7 @@ Future<void> fetchPersistent() async {
       print('sending teacher');
     }
     var schoolResp = await http.get(Uri(
-        scheme: 'http',
+        scheme: "http",
         host: uri_paths.baseURLA,
         path: uri_paths.fetchSchool,
         queryParameters: queryParams));
@@ -158,7 +158,7 @@ Future<void> fetchPersistent() async {
       print('sending school');
     }
     var classResp = await http.get(Uri(
-        scheme: 'http',
+        scheme: "http",
         host: uri_paths.baseURLA,
         path: uri_paths.fetchClasses,
         queryParameters: queryParams));
@@ -166,7 +166,7 @@ Future<void> fetchPersistent() async {
       print('sending class');
     }
     var studentsResp = await http.get(Uri(
-        scheme: 'http',
+        scheme: "http",
         host: uri_paths.baseURLA,
         path: uri_paths.fetchStudents,
         queryParameters: queryParams));
@@ -174,7 +174,7 @@ Future<void> fetchPersistent() async {
       print('sending students');
     }
     var languagesResp = await http.get(Uri(
-        scheme: 'http',
+        scheme: "http",
         host: uri_paths.baseURLA,
         path: uri_paths.fetchLanguages,
         queryParameters: queryParams));
@@ -182,7 +182,7 @@ Future<void> fetchPersistent() async {
       print('sending languages');
     }
     var readingLevelResp = await http.get(Uri(
-        scheme: 'http',
+        scheme: "http",
         host: uri_paths.baseURLA,
         path: uri_paths.fetchReadingLevels,
         queryParameters: queryParams));
@@ -190,7 +190,7 @@ Future<void> fetchPersistent() async {
       print('sending reading');
     }
     var numericLevelResp = await http.get(Uri(
-        scheme: 'http',
+        scheme: "http",
         host: uri_paths.baseURLA,
         path: uri_paths.fetchNumericLevels,
         queryParameters: queryParams));
@@ -198,7 +198,7 @@ Future<void> fetchPersistent() async {
       print('sending numeric');
     }
     var assessmentsResp = await http.get(Uri(
-        scheme: 'http',
+        scheme: "http",
         host: uri_paths.baseURLA,
         path: uri_paths.fetchAssessments,
         queryParameters: queryParams));
@@ -206,7 +206,7 @@ Future<void> fetchPersistent() async {
       print('sending assessment');
     }
     var qPaperResp = await http.get(Uri(
-        scheme: 'http',
+        scheme: "http",
         host: uri_paths.baseURLA,
         path: uri_paths.fetchQPapers,
         queryParameters: queryParams));
@@ -214,7 +214,7 @@ Future<void> fetchPersistent() async {
       print('sending grading');
     }
     var gradingResp = await http.get(Uri(
-        scheme: 'http',
+        scheme: "http",
         host: uri_paths.baseURLA,
         path: uri_paths.fetchGrading,
         queryParameters: queryParams));
@@ -389,7 +389,7 @@ Future<void> fetchLeaveTypeAndRequests() async {
       print('sending fetch leave types');
     }
     var leaveTypesResponse = await http.get(Uri(
-        scheme: 'http',
+        scheme: "http",
         host: uri_paths.baseURLA,
         path: uri_paths.fetchLeaveTypes,
         queryParameters: queryParams));
@@ -424,7 +424,7 @@ Future<void> fetchLeaveTypeAndRequests() async {
     }
 
     var leaveRequestResponse = await http.get(Uri(
-        scheme: 'http',
+        scheme: "http",
         host: uri_paths.baseURLA,
         path: uri_paths.fetchLeaveRequests,
         queryParameters: queryParams));
@@ -1096,7 +1096,7 @@ Future<void> fetchTeacherProfileFromServerHeadMasterMode() async {
       log(queryParams.toString());
     }
     var requestURL = Uri(
-        scheme: 'http',
+        scheme: "http",
         host: uri_paths.baseURLA,
         path: uri_paths.fetchTeacherProfiles,
         queryParameters: (queryParams));
@@ -1257,7 +1257,7 @@ Future<void> fetchPersistentHeadMaster() async {
       'Persistent': '2',
     };
     var requestURL = Uri(
-        scheme: 'http',
+        scheme: "http",
         host: uri_paths.baseURLA,
         path: uri_paths.fetchSchool,
         queryParameters: queryParams);
@@ -1294,7 +1294,7 @@ Future<void> fetchPersistentHeadMaster() async {
 
     await fetchLeaveTypeAndRequests();
     var leaveTypesResponse = await http.get(Uri(
-        scheme: 'http',
+        scheme: "http",
         host: uri_paths.baseURLA,
         path: uri_paths.fetchLeaveTypes,
         queryParameters: queryParams));
@@ -1327,7 +1327,7 @@ Future<void> fetchPersistentHeadMaster() async {
 
     var timeTableResponse = await http.get(
       Uri(
-          scheme: 'http',
+          scheme: "http",
           host: uri_paths.baseURLA,
           path: uri_paths.fetchTeacherTimeTable,
           queryParameters: queryParams),
