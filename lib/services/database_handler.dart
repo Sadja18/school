@@ -4,10 +4,10 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
-import 'package:path/path.dart';
-import '../models/response_struct.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:intl/intl.dart';
+import 'package:path/path.dart';
+import '../models/response_struct.dart';
 
 final DateFormat format = DateFormat('yyyy-MM-dd');
 
@@ -92,8 +92,8 @@ class DBProvider {
         "submission_date TEXT NOT NULL,"
         "class_name TEXT NOT NULL,"
         "absenteeString TEXT,"
-        'editable TEXT DEFAULT "true" NOT NULL,'
-        'synced TEXT DEFAULT "false" NOT NULL,'
+        "editable TEXT DEFAULT 'true' NOT NULL,"
+        "synced TEXT DEFAULT 'false' NOT NULL,"
         "UNIQUE(date, class_name, editable, synced)"
         ");";
   }
