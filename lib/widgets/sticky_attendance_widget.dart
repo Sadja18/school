@@ -134,10 +134,11 @@ class _StickyAttendanceState extends State<StickyAttendance> {
 
                   var selectedDate = _selectedDate;
                   return EditAttendance(
-                      absentees: absentIds,
-                      studentList: studentList,
-                      selectedDate: selectedDate!,
-                      isSynced: 'true');
+                    absentees: absentIds,
+                    studentList: studentList,
+                    selectedDate: selectedDate!,
+                    isSynced: 'true',
+                  );
                 } else {
                   var absentIds = jsonDecode(absenteeString);
 
@@ -234,8 +235,8 @@ class _StickyAttendanceState extends State<StickyAttendance> {
               onPressed: () {
                 // ignore: avoid_print
                 // print('logout');
-                Navigator.of(context)
-                    .pushNamedAndRemoveUntil(Login.routeName, (route) => false);
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                    Login.routeName, (route) => false);
               },
               icon: const Icon(Icons.logout),
             ),

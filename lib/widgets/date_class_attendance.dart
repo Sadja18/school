@@ -28,11 +28,19 @@ class _StudentAttendanceCalendarViewState
     DateTime _rangeStart =
         DateTime(DateTime.now().year, DateTime.now().month, 0);
     DateTime _rangeEnd = DateTime.now();
+
+    if (kDebugMode) {
+      log(_rangeStart.toString());
+      log(_rangeEnd.toString());
+    }
+
     var data = await readAllAttendanceActive(_rangeStart, _rangeEnd);
 
-    // if (kDebugMode) {
-    //   log(data.toString());
-    // }
+    /// A debug statement.
+    if (kDebugMode) {
+      log("read all active attendance");
+      log(data.toString());
+    }
     setState(() {
       attendanceData = data;
       isInitiated = 1;
@@ -79,14 +87,16 @@ class _StudentAttendanceCalendarViewState
         var record = attendanceData[i];
 
         DateTime startDateParsed = DateTime.parse(record['date']);
-        DateTime endDateParsed = DateTime.parse("${record['date']} 23:59:59");
+        DateTime endDateParsed =
+            DateTime.parse("${record['date']} 23:59:59");
         String subject = record['class_name'];
-        DateTime submissionDateUn = DateTime.parse(record['submission_date']);
+        DateTime submissionDateUn =
+            DateTime.parse(record['submission_date']);
         bool synced = (record['synced'] == 'false') ? false : true;
 
         // String subject = DateFormat('MMMM yyyy')
-        Attendance entry =
-            Attendance(startDateParsed, endDateParsed, subject, true, synced);
+        Attendance entry = Attendance(
+            startDateParsed, endDateParsed, subject, true, synced);
         attendanceViewData.add(entry);
       }
 
@@ -124,6 +134,9 @@ class _StudentAttendanceCalendarViewState
                   decoration: BoxDecoration(),
                   child: TextButton(
                     onPressed: () {
+                      if (kDebugMode) {
+                        log("clicked initiate");
+                      }
                       initiate();
                     },
                     child: const Text("View"),
@@ -202,8 +215,8 @@ class Attendance {
   bool synced;
   bool isAllDay = true;
 
-  Attendance(
-      this.startDate, this.endDate, this.subject, this.isAllDay, this.synced);
+  Attendance(this.startDate, this.endDate, this.subject, this.isAllDay,
+      this.synced);
 }
 
 class AttendanceDataSource extends CalendarDataSource {

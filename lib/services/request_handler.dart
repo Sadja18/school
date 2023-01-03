@@ -548,22 +548,41 @@ Future<void> attendanceSyncHandler(attendanceRecordQuery) async {
         body: body,
       );
 
-      responses.add(a);
-    }
+      // responses.add(a);
 
-    if (responses.isNotEmpty) {
-      for (var response in responses) {
-        print(response.statusCode);
-        print("response loop");
-        if (response.statusCode == 200 || response.statusCode == '200') {
-          print(response.body.runtimeType);
-          var resp = jsonDecode(response.body);
-          log(resp.toString());
+      if (a.statusCode == 200) {
+        try {
+          if (kDebugMode) {
+            log("date is");
+            log(attendance['date'].toString());
+          }
+          // parse the response to JSON
+          var respJson = jsonDecode(a.body);
+          // check if the create attendance was successful
+          // if yes, update the attendance
+          if (respJson['record_create_id'] != null &&
+              int.tryParse(respJson['record_create_id'].toString()) !=
+                  null) {
+            // success
+            // update sync status
+            await DBProvider.db
+                .updateAttendance(attendance['date'], className);
+          }
+        } catch (exception) {
+          if (kDebugMode) {
+            log("attendance sync jsion response error");
+            log(exception.toString());
+          }
+          continue;
         }
       }
-      await DBProvider.db.updateAttendance();
     }
-  } catch (e) {}
+  } catch (e) {
+    if (kDebugMode) {
+      log("Exception attendance sync handler");
+      log(e.toString());
+    }
+  }
 }
 
 String resultKeyGen(resultName) {

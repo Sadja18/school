@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print, unused_local_variable, unnecessary_brace_in_string_interps
+// ignore_for_file: avoid_print, unused_local_variable, unnecessary_brace_in_string_interps, depend_on_referenced_packages
 
 import 'dart:convert';
 import 'dart:developer';
@@ -7,6 +7,7 @@ import 'package:flutter/foundation.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:intl/intl.dart';
 import 'package:path/path.dart';
+
 import '../models/response_struct.dart';
 
 final DateFormat format = DateFormat('yyyy-MM-dd');
@@ -561,14 +562,13 @@ class DBProvider {
                 student['middle'] != null &&
                 student['middle'] != false &&
                 student['middle'] != "false") {
-              studentName =
-                  studentName + " " + student['middle'].toString();
+              studentName = "$studentName ${student['middle']}";
             }
             if (student['last'] != "" &&
                 student['last'] != null &&
                 student['last'] != false &&
                 student['last'] != "false") {
-              studentName = studentName + " " + student['last'].toString();
+              studentName = "$studentName ${student['last']}";
             }
 
             var classId = student['standard_id'][0];
@@ -853,10 +853,10 @@ class DBProvider {
       final db = await initDB();
       // print(submisssionDate);
       if (kDebugMode) {
-        // print(className);
-        // print(selectedDate);
-        // print(absenteeString);
-        print(submissionDate.toString());
+        log(className);
+        log(selectedDate);
+        log(absenteeString);
+        log(submissionDate.toString());
       }
       var resQ = await db.insert(
           'attendance',
@@ -868,6 +868,7 @@ class DBProvider {
           },
           conflictAlgorithm: ConflictAlgorithm.replace);
       if (kDebugMode) {
+        log("Attenbdance is saved?");
         print(resQ.toString());
       }
     } catch (e) {
@@ -1205,13 +1206,13 @@ class DBProvider {
     return result;
   }
 
-  Future<void> updateAttendance() async {
+  Future<void> updateAttendance(String date, String className) async {
     final db = await initDB();
 
     //  final db = value.batch();
     await db.rawDelete(
-      "UPDATE attendance SET synced='true', editable='false' WHERE synced='false';",
-    );
+        "UPDATE attendance SET synced='true', editable='false' WHERE date=? AND class_name=?;",
+        [date, className]);
   }
 
   Future<void> updateNumericAssessment(classId, date) async {
@@ -1385,9 +1386,7 @@ class DBProvider {
   Future<dynamic> readAllAttendanceDateRange(startDate, lastDate) async {
     try {
       final db = await initDB();
-      var res = await db.rawQuery(
-          "SELECT * FROM attendance WHERE date>= ? AND date<=?;",
-          [startDate, lastDate]);
+      var res = await db.rawQuery("SELECT * FROM attendance;");
 
       var resl = res.toList();
       return resl;

@@ -285,7 +285,7 @@ class _EditAttendanceState extends State<EditAttendance> {
           toBeginningOfSentenceCase(word.toLowerCase()).toString();
       formattedName = formattedName + newWord;
       if (i < studentName.split(" ").length - 1) {
-        formattedName = formattedName + " ";
+        formattedName = "$formattedName ";
       }
     }
 
