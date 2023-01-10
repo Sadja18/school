@@ -48,12 +48,17 @@ class _StickyAttendanceState extends State<StickyAttendance> {
 
   // reverse call back function to handle class dropdown
   void selectClass(String selectedClass) {
+    if (kDebugMode) {
+      print('reverse classData callback');
+      print(selectedClass);
+      print(selectedClass.runtimeType);
+      print("idhar");
+      print(_selectedClass.runtimeType);
+    }
+
     setState(() {
       _selectedClass = selectedClass;
     });
-    if (kDebugMode) {
-      print('reverse classData callback');
-    }
   }
 
   // to process fetched student records
@@ -148,7 +153,7 @@ class _StickyAttendanceState extends State<StickyAttendance> {
                     absentees: absentIds,
                     studentList: studentList,
                     selectedDate: selectedDate!,
-                    isSynced: "false",
+                    isSynced: 'false',
                   );
                 }
               }

@@ -803,6 +803,13 @@ class _EditAttendanceState extends State<EditAttendance> {
 
   @override
   void initState() {
+    if (kDebugMode) {
+      log("message");
+      print(widget.absentees);
+      print(widget.studentList);
+      log("messgae");
+    }
+
     for (var studentId in widget.absentees) {
       rowColor[studentId] = Colors.red;
       checkBoxVals[studentId] = false;

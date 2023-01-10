@@ -122,7 +122,9 @@ Future<dynamic> editOrCreateNewAttendance(
         .isEditableAttendanceDate(selectedDate, className);
 
     if (kDebugMode) {
-      // print(resQ.toString());
+      print("isEditableAttendance");
+      print(resQ.toString());
+      print(resQ.isNotEmpty);
     }
 
     if (resQ.isNotEmpty) {
@@ -133,6 +135,9 @@ Future<dynamic> editOrCreateNewAttendance(
 
         var editable = record['editable'];
         var synced = record['synced'];
+        if (kDebugMode) {
+          log((editable == "true" && synced == "false").toString());
+        }
 
         if (editable == "true" && synced == "false") {
           return record;
@@ -141,6 +146,9 @@ Future<dynamic> editOrCreateNewAttendance(
         }
       }
     } else {
+      if (kDebugMode) {
+        log(canNotEdit.toString());
+      }
       return canNotEdit;
     }
   } catch (e) {

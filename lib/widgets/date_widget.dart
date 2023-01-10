@@ -29,7 +29,8 @@ class _DateShowState extends State<DateShow> {
       locale: const Locale('en'),
     );
     if (picked != null && picked != date) {
-      widget.selectedDate(DateFormat('yyyy-MM-dd').format(picked).toString());
+      widget.selectedDate(
+          DateFormat('yyyy-MM-dd').format(picked).toString());
       setState(() {
         date = picked;
       });
