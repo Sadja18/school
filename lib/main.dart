@@ -1,6 +1,9 @@
 // ignore_for_file: prefer_const_constructors, avoid_print, unused_import
 
 // import 'package:flutter/foundation.dart';
+import 'dart:developer';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 // import 'package:workmanager/workmanager.dart';
 
@@ -69,6 +72,10 @@ class _MyAppState extends State<MyApp> {
 
             // return StickyBasicReading();
             var login = snapshot.data;
+
+            if (kDebugMode) {
+              log("Login $login");
+            }
             return Dashboard();
           } else {
             return Login();
