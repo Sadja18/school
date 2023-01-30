@@ -41,24 +41,24 @@ class _LoginState extends State<Login> {
     //   log("pushing to dahsboard");
     // }
     return showDialog<void>(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext ctx) => AlertDialog(
-              title: SizedBox(
-                height: 0,
-              ),
-              content: Text(message),
-              actions: [
-                TextButton(
-                  child: const Text('Okay'),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    Navigator.of(context)
-                        .popAndPushNamed(Dashboard.routeName);
-                  },
-                ),
-              ],
-            ));
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext ctx) => AlertDialog(
+        title: SizedBox(
+          height: 0,
+        ),
+        content: Text(message),
+        actions: [
+          TextButton(
+            child: const Text('Okay'),
+            onPressed: () {
+              Navigator.of(context).pop();
+              Navigator.of(context).popAndPushNamed(Dashboard.routeName);
+            },
+          ),
+        ],
+      ),
+    );
   }
 
   void showAlert(message) async {
@@ -399,8 +399,9 @@ class _LoginState extends State<Login> {
                               _onClickLogin(context);
                             },
                             style: TextButton.styleFrom(
-                              primary: Colors.transparent,
-                              onSurface: Colors.transparent,
+                              foregroundColor: Colors.transparent,
+                              disabledForegroundColor:
+                                  Colors.transparent.withOpacity(0.38),
                               shadowColor: Colors.transparent,
                             ),
                             child: Container(
